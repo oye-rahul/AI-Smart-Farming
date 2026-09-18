@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>CropAI - Smart Farming &amp; Agricultural Intelligence</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- Mobile Device Shell Frame (Responsive on Phones, Sleek Frame on Laptop) -->
+  <main class="device-shell">
+
+    <!-- =========================================================================
+         1. SCREEN: WELCOME & ONBOARDING
+         ========================================================================= -->
+    <section id="screen-welcome" class="screen-view welcome-screen active">
+      <div class="welcome-top-section">
+        <div class="welcome-hero-banner">
+          <div class="hero-art-container">
+            <!-- SVG Landscape Illustration of Terraced Green Fields -->
+            <svg viewBox="0 0 400 300" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#fff8e7"/>
+                  <stop offset="60%" stop-color="#f5e6cc"/>
+                  <stop offset="100%" stop-color="#d4ecd5"/>
+                </linearGradient>
+                <linearGradient id="sunGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#ffb74d"/>
+                  <stop offset="100%" stop-color="#ff9800"/>
+                </linearGradient>
+                <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#66bb6a"/>
+                  <stop offset="100%" stop-color="#2e7d32"/>
+                </linearGradient>
+                <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#81c784"/>
+                  <stop offset="100%" stop-color="#388e3c"/>
+                </linearGradient>
+                <linearGradient id="hill3" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#a5d6a7"/>
+                  <stop offset="100%" stop-color="#4caf50"/>
+                </linearGradient>
+              </defs>
+              <rect width="400" height="300" fill="url(#skyGrad)"/>
+              <!-- Sun -->
+              <circle cx="200" cy="90" r="45" fill="url(#sunGrad)" opacity="0.85"/>
+              <!-- Distant Hills -->
+              <path d="M0,170 Q120,110 240,160 T400,140 L400,300 L0,300 Z" fill="url(#hill3)" opacity="0.7"/>
+              <path d="M0,195 Q140,140 280,185 T400,170 L400,300 L0,300 Z" fill="url(#hill2)" opacity="0.9"/>
+              <!-- Terrace Fields -->
+              <path d="M-20,230 C80,210 180,220 260,250 C330,280 380,240 420,235 L420,320 L-20,320 Z" fill="url(#hill1)"/>
+              <path d="M-10,260 Q100,240 220,270 T410,265 L410,320 L-10,320 Z" fill="#1b5e20"/>
+              <!-- Field Lines Pattern -->
+              <path d="M40,240 Q120,230 180,255 M80,265 Q160,255 240,280 M20,285 Q110,275 190,295" stroke="#a5d6a7" stroke-width="2" stroke-dasharray="4,6" fill="none"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="welcome-branding">
+          <div class="logo-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 20h10M12 20V10M12 10a4 4 0 0 1-4-4 4 4 0 0 1 4 4zm0 0a4 4 0 0 0 4-4 4 4 0 0 0-4 4z"/></svg>
+            <span>Farming Intelligence</span>
+          </div>
+          <h1 class="app-title-huge">CropAI</h1>
+          <p class="app-subtitle-tagline">Smart Farming, Better Harvests</p>
+        </div>
+      </div>
+
+      <div class="welcome-interactive-container">
+        <div class="language-selector-section">
+          <label class="lang-selector-label">Select App Language / भाषा चुनें</label>
+          <div class="lang-chips-grid">
+            <button class="lang-chip active" onclick="selectLang(this)">English</button>
+            <button class="lang-chip" onclick="selectLang(this)">ગુજરાતી</button>
+            <button class="lang-chip" onclick="selectLang(this)">मराठी</button>
+            <button class="lang-chip" onclick="selectLang(this)">हिन्दी</button>
+            <button class="lang-chip" onclick="selectLang(this)">తెలుగు</button>
+          </div>
+        </div>
+
+        <button class="welcome-play-btn" onclick="navigateTo('screen-home')">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span>Get Started</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         2. SCREEN: HOME DASHBOARD
+         ========================================================================= -->
+    <section id="screen-home" class="screen-view">
+      <div class="scroll-area">
+        <!-- Header -->
+        <div class="dashboard-header">
+          <div class="location-weather-badge">
+            <div class="weather-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </div>
+            <div class="weather-text-wrap">
+              <div class="weather-temp">32°C Sunny</div>
+              <div class="weather-location">Ahmedabad, Gujarat</div>
+            </div>
+          </div>
+          <button class="icon-btn" onclick="navigateTo('screen-profile')" title="User Profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+        </div>
+
+        <!-- AI Recommendation Hero Card -->
+        <div class="home-hero-wrap">
+          <div class="hero-recommendation-card">
+            <div class="hero-tag-row">
+              <span class="ai-pill-tag">AI Core Feature</span>
+              <div class="sparkle-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+              </div>
+            </div>
+            <div class="hero-text-block">
+              <h2 class="hero-card-title">AI Crop Recommendation</h2>
+              <p class="hero-card-desc">Get personalized crop suggestions based on your soil &amp; climate profile.</p>
+            </div>
+            <button class="btn-get-rec" onclick="navigateTo('screen-crop-rec')">
+              <span>Get Recommendation</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Market Prices & Trends Carousel -->
+        <div class="market-preview-section">
+          <div class="section-header-row">
+            <span class="section-heading">Market Prices &amp; Trends</span>
+            <span class="link-view-all" onclick="navigateTo('screen-market')">View All</span>
+          </div>
+          <div class="prices-horizontal-scroll">
+            <div class="mini-price-card" onclick="navigateTo('screen-market')">
+              <div class="mini-card-top">
+                <span class="mini-crop-name">Wheat</span>
+                <span class="trend-up-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
+                </span>
+              </div>
+              <div class="mini-price-val">₹2,450/qt</div>
+              <div class="mini-pct-up">+1.2%</div>
+            </div>
+
+            <div class="mini-price-card" onclick="navigateTo('screen-market')">
+              <div class="mini-card-top">
+                <span class="mini-crop-name">Rice</span>
+                <span class="trend-down-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 12-7 7-7-7M12 5v14"/></svg>
+                </span>
+              </div>
+              <div class="mini-price-val">₹3,100/qt</div>
+              <div class="mini-pct-down">-0.5%</div>
+            </div>
+
+            <div class="mini-price-card" onclick="navigateTo('screen-market')">
+              <div class="mini-card-top">
+                <span class="mini-crop-name">Cotton</span>
+                <span class="trend-up-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
+                </span>
+              </div>
+              <div class="mini-price-val">₹6,800/qt</div>
+              <div class="mini-pct-up">+2.4%</div>
+            </div>
+
+            <div class="mini-price-card" onclick="navigateTo('screen-market')">
+              <div class="mini-card-top">
+                <span class="mini-crop-name">Soybean</span>
+                <span class="trend-up-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
+                </span>
+              </div>
+              <div class="mini-price-val">₹4,100/qt</div>
+              <div class="mini-pct-up">+3.5%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Smart Farming Alerts -->
+        <div class="alerts-section">
+          <span class="section-heading">Smart Farming Alerts</span>
+          <div class="alert-card">
+            <div class="alert-bullet bullet-red"></div>
+            <div class="alert-content">
+              <span class="alert-type">Pest Alert</span>
+              <span class="alert-message">Aphid risk high in your area</span>
+            </div>
+            <span class="alert-time">Now</span>
+          </div>
+
+          <div class="alert-card">
+            <div class="alert-bullet bullet-amber"></div>
+            <div class="alert-content">
+              <span class="alert-type">Weather Alert</span>
+              <span class="alert-message">Rain expected in 2 days</span>
+            </div>
+            <span class="alert-time">1h ago</span>
+          </div>
+
+          <div class="alert-card">
+            <div class="alert-bullet bullet-green"></div>
+            <div class="alert-content">
+              <span class="alert-type">Harvest Advice</span>
+              <span class="alert-message">Wheat ready for harvest</span>
+            </div>
+            <span class="alert-time">4h ago</span>
+          </div>
+        </div>
+
+        <!-- Latest Agri News -->
+        <div class="news-section">
+          <span class="section-heading">Latest Agri News</span>
+          <div class="news-card">
+            <div class="news-thumbnail" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🌾</div>
+            <div class="news-info">
+              <span class="news-headline">Government announces new MSP rates for Rabi crops</span>
+              <div class="news-meta">
+                <span>AgriNews</span>
+                <span class="news-dot"></span>
+                <span>2h ago</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="news-card">
+            <div class="news-thumbnail" style="display:flex;align-items:center;justify-content:center;font-size:26px;">💧</div>
+            <div class="news-info">
+              <span class="news-headline">New low-cost irrigation techniques introduced in West Gujarat</span>
+              <div class="news-meta">
+                <span>Soil Science Daily</span>
+                <span class="news-dot"></span>
+                <span>5h ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Explore AI Features Banner -->
+        <div class="explore-banner-wrap">
+          <div class="explore-ai-banner" onclick="navigateTo('screen-ai-features')">
+            <div class="banner-left">
+              <div class="banner-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+              </div>
+              <div>
+                <div class="banner-title">Explore AI Features</div>
+                <div class="banner-sub">Discover diagnostic and analysis tools</div>
+              </div>
+            </div>
+            <div class="banner-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav class="bottom-nav-bar">
+        <div class="nav-tabs-row">
+          <div class="nav-tab-item active" onclick="navigateTo('screen-home')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="nav-tab-label">Home</span>
+          </div>
+          <div class="nav-tab-item" onclick="navigateTo('screen-ai-features')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+            <span class="nav-tab-label">AI Features</span>
+          </div>
+          <div class="nav-tab-item" onclick="navigateTo('screen-market')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            <span class="nav-tab-label">Market</span>
+          </div>
+          <div class="nav-tab-item" onclick="navigateTo('screen-profile')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span class="nav-tab-label">Profile</span>
+          </div>
+        </div>
+      </nav>
+    </section>
+
+    <!-- =========================================================================
+         3. SCREEN: AI FEATURES HUB
+         ========================================================================= -->
+    <section id="screen-ai-features" class="screen-view">
+      <div class="scroll-area">
+        <header class="screen-header">
+          <button class="icon-btn" onclick="navigateTo('screen-home')" title="Back to Home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <span class="header-title">AI Intelligence</span>
+          <button class="icon-btn" onclick="openChatModal()" title="AI Advisor">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </button>
+        </header>
+
+        <div class="ai-hub-hero">
+          <h2 class="ai-hub-title">AI Features</h2>
+          <p class="ai-hub-desc">Power your agricultural decisions with machine-learning analysis and diagnostic tools.</p>
+        </div>
+
+        <div class="ai-tools-list">
+          <!-- 1. AI Farming Assistant -->
+          <div class="ai-tool-card" onclick="openChatModal()">
+            <div class="tool-left">
+              <div class="tool-icon-frame green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12A10 10 0 0 1 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+              </div>
+              <div class="tool-texts">
+                <span class="tool-name">AI Farming Assistant</span>
+                <span class="tool-desc">Chat with AI for instant 24/7 farming advice</span>
+              </div>
+            </div>
+            <div class="tool-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+
+          <!-- 2. Crop Disease Detection -->
+          <div class="ai-tool-card" onclick="navigateTo('screen-disease')">
+            <div class="tool-left">
+              <div class="tool-icon-frame orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24M14.83 14.83l4.24 4.24M14.83 9.17l4.24-4.24M4.93 19.07l4.24-4.24"/></svg>
+              </div>
+              <div class="tool-texts">
+                <span class="tool-name">Crop Disease Detection</span>
+                <span class="tool-desc">Scan leaf photos to diagnose diseases</span>
+              </div>
+            </div>
+            <div class="tool-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+
+          <!-- 3. Yield Prediction -->
+          <div class="ai-tool-card" onclick="navigateTo('screen-yield')">
+            <div class="tool-left">
+              <div class="tool-icon-frame blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              </div>
+              <div class="tool-texts">
+                <span class="tool-name">Yield Prediction</span>
+                <span class="tool-desc">Accurate yield forecast based on soil &amp; climate</span>
+              </div>
+            </div>
+            <div class="tool-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+
+          <!-- 4. Profit Prediction -->
+          <div class="ai-tool-card" onclick="navigateTo('screen-profit')">
+            <div class="tool-left">
+              <div class="tool-icon-frame gold">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div class="tool-texts">
+                <span class="tool-name">Profit Prediction</span>
+                <span class="tool-desc">Calculate expected earnings per crop &amp; area</span>
+              </div>
+            </div>
+            <div class="tool-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+
+          <!-- 5. Smart Recommendations -->
+          <div class="ai-tool-card" onclick="navigateTo('screen-crop-rec')">
+            <div class="tool-left">
+              <div class="tool-icon-frame purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/><path d="M7 20h10M12 20V10M12 10a4 4 0 0 1-4-4 4 4 0 0 1 4 4zm0 0a4 4 0 0 0 4-4 4 4 0 0 0-4 4z"/></svg>
+              </div>
+              <div class="tool-texts">
+                <span class="tool-name">Smart Recommendations</span>
+                <span class="tool-desc">Personalized crop selection for your region</span>
+              </div>
+            </div>
+            <div class="tool-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+
+          <!-- 6. Soil Analysis -->
+          <div class="ai-tool-card" onclick="navigateTo('screen-soil')">
+            <div class="tool-left">
+              <div class="tool-icon-frame teal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
+              </div>
+              <div class="tool-texts">
+                <span class="tool-name">Soil Analysis</span>
+                <span class="tool-desc">Deep nutrient and soil health report</span>
+              </div>
+            </div>
+            <div class="tool-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav class="bottom-nav-bar">
+        <div class="nav-tabs-row">
+          <div class="nav-tab-item" onclick="navigateTo('screen-home')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="nav-tab-label">Home</span>
+          </div>
+          <div class="nav-tab-item active" onclick="navigateTo('screen-ai-features')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+            <span class="nav-tab-label">AI Features</span>
+          </div>
+          <div class="nav-tab-item" onclick="navigateTo('screen-market')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            <span class="nav-tab-label">Market</span>
+          </div>
+          <div class="nav-tab-item" onclick="navigateTo('screen-profile')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span class="nav-tab-label">Profile</span>
+          </div>
+        </div>
+      </nav>
+    </section>
+
+    <!-- =========================================================================
+         4. SCREEN: MARKET PRICES
+         ========================================================================= -->
+    <section id="screen-market" class="screen-view">
+      <div class="scroll-area">
+        <div class="market-header-section">
+          <div>
+            <div class="market-eyebrow">Realtime Trade</div>
+            <h2 class="market-title-text">Market Prices</h2>
+          </div>
+          <div class="market-search-bar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="marketSearchInput" placeholder="Search crop prices..." oninput="filterMarketList()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+          </div>
+        </div>
+
+        <div class="market-list-cards" id="marketListContainer">
+          <!-- Wheat -->
+          <div class="market-crop-card" data-crop="Wheat">
+            <div class="crop-identity">
+              <div class="crop-icon-thumb">🌾</div>
+              <div class="crop-name-stack">
+                <span class="crop-name-label">Wheat</span>
+                <span class="crop-unit-label">$2,150 / Quintal</span>
+              </div>
+            </div>
+            <!-- Sparkline Chart -->
+            <svg class="sparkline-svg" viewBox="0 0 70 24">
+              <path d="M0,18 L15,14 L30,16 L45,8 L60,10 L70,4" fill="none" stroke="#34c759" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <div class="price-change-stack">
+              <span class="price-main-val">$2,150</span>
+              <div class="pct-pill-badge up">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
+                <span>+4.2%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rice (Basmati) -->
+          <div class="market-crop-card" data-crop="Rice Basmati">
+            <div class="crop-identity">
+              <div class="crop-icon-thumb">🍚</div>
+              <div class="crop-name-stack">
+                <span class="crop-name-label">Rice (Basmati)</span>
+                <span class="crop-unit-label">$3,850 / Quintal</span>
+              </div>
+            </div>
+            <svg class="sparkline-svg" viewBox="0 0 70 24">
+              <path d="M0,20 L15,17 L30,12 L45,14 L60,6 L70,2" fill="none" stroke="#34c759" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <div class="price-change-stack">
+              <span class="price-main-val">$3,850</span>
+              <div class="pct-pill-badge up">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
+                <span>+6.1%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cotton -->
+          <div class="market-crop-card" data-crop="Cotton">
+            <div class="crop-identity">
+              <div class="crop-icon-thumb">☁️</div>
+              <div class="crop-name-stack">
+                <span class="crop-name-label">Cotton</span>
+                <span class="crop-unit-label">$6,420 / Quintal</span>
+              </div>
+            </div>
+            <svg class="sparkline-svg" viewBox="0 0 70 24">
+              <path d="M0,6 L15,8 L30,5 L45,14 L60,12 L70,20" fill="none" stroke="#e53935" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <div class="price-change-stack">
+              <span class="price-main-val">$6,420</span>
+              <div class="pct-pill-badge down">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m19 12-7 7-7-7M12 5v14"/></svg>
+                <span>-2.4%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sugarcane -->
+          <div class="market-crop-card" data-crop="Sugarcane">
+            <div class="crop-identity">
+              <div class="crop-icon-thumb">🎋</div>
+              <div class="crop-name-stack">
+                <span class="crop-name-label">Sugarcane</span>
+                <span class="crop-unit-label">$345 / Quintal</span>
+              </div>
+            </div>
+            <svg class="sparkline-svg" viewBox="0 0 70 24">
+              <path d="M0,16 L15,12 L30,15 L45,10 L60,11 L70,6" fill="none" stroke="#34c759" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <div class="price-change-stack">
+              <span class="price-main-val">$345</span>
+              <div class="pct-pill-badge up">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
+                <span>+1.8%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Maize -->
+          <div class="market-crop-card" data-crop="Maize Corn">
+            <div class="crop-identity">
+              <div class="crop-icon-thumb">🌽</div>
+              <div class="crop-name-stack">
+                <span class="crop-name-label">Maize</span>
+                <span class="crop-unit-label">$1,920 / Quintal</span>
+              </div>
+            </div>
+            <svg class="sparkline-svg" viewBox="0 0 70 24">
+              <path d="M0,8 L15,6 L30,12 L45,10 L60,18 L70,16" fill="none" stroke="#e53935" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <div class="price-change-stack">
+              <span class="price-main-val">$1,920</span>
+              <div class="pct-pill-badge down">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m19 12-7 7-7-7M12 5v14"/></svg>
+                <span>-1.2%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Soybean -->
+          <div class="market-crop-card" data-crop="Soybean">
+            <div class="crop-identity">
+              <div class="crop-icon-thumb">🌱</div>
+              <div class="crop-name-stack">
+                <span class="crop-name-label">Soybean</span>
+                <span class="crop-unit-label">$4,100 / Quintal</span>
+              </div>
+            </div>
+            <svg class="sparkline-svg" viewBox="0 0 70 24">
+              <path d="M0,18 L15,14 L30,10 L45,12 L60,7 L70,3" fill="none" stroke="#34c759" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <div class="price-change-stack">
+              <span class="price-main-val">$4,100</span>
+              <div class="pct-pill-badge up">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
+                <span>+3.5%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav class="bottom-nav-bar">
+        <div class="nav-tabs-row">
+          <div class="nav-tab-item" onclick="navigateTo('screen-home')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="nav-tab-label">Home</span>
+          </div>
+          <div class="nav-tab-item" onclick="navigateTo('screen-ai-features')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+            <span class="nav-tab-label">AI Features</span>
+          </div>
+          <div class="nav-tab-item active" onclick="navigateTo('screen-market')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            <span class="nav-tab-label">Market</span>
+          </div>
+          <div class="nav-tab-item" onclick="navigateTo('screen-profile')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span class="nav-tab-label">Profile</span>
+          </div>
+        </div>
+      </nav>
+    </section>
+
+    <!-- =========================================================================
+         5. SCREEN: PROFILE & SETTINGS
+         ========================================================================= -->
+    <section id="screen-profile" class="screen-view">
+      <div class="scroll-area">
+        <div class="profile-card-top">
+          <div class="avatar-ring-container">
+            <div class="avatar-img-circle">👨‍🌾</div>
+          </div>
+          <div class="profile-meta-center">
+            <h2 class="farmer-full-name">David Miller</h2>
+            <div class="location-pin-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>Green Valley Farms, Oregon</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2x2 Stats Grid -->
+        <div class="stats-2x2-grid">
+          <div class="farmer-stat-card">
+            <span class="stat-header-text">Farm Size</span>
+            <span class="stat-bold-value">142 Acres</span>
+            <span class="stat-footer-text">Highlands</span>
+          </div>
+          <div class="farmer-stat-card">
+            <span class="stat-header-text">Soil Type</span>
+            <span class="stat-bold-value">Silt Loam</span>
+            <span class="stat-footer-text">pH 6.2 - 6.8</span>
+          </div>
+          <div class="farmer-stat-card">
+            <span class="stat-header-text">Crops Growing</span>
+            <span class="stat-bold-value">Wheat, Soy</span>
+            <span class="stat-footer-text">2 Active plots</span>
+          </div>
+          <div class="farmer-stat-card">
+            <span class="stat-header-text">Member Tier</span>
+            <span class="stat-bold-value">Gold Yield</span>
+            <span class="stat-footer-text">Renew Nov 2026</span>
+          </div>
+        </div>
+
+        <!-- Settings List -->
+        <div class="profile-settings-section">
+          <span class="section-heading">Settings</span>
+          <div class="settings-card-group">
+            <div class="settings-item-row" onclick="alert('Edit Profile: Name, contact & plot coordinates updated.')">
+              <div class="settings-item-left">
+                <div class="settings-icon-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </div>
+                <div class="settings-text-col">
+                  <span class="settings-opt-title">Edit Profile</span>
+                  <span class="settings-opt-sub">Change name, phone, crop focus</span>
+                </div>
+              </div>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+
+            <div class="settings-item-row" onclick="alert('Notification Preferences: SMS & Soil Health alerts enabled.')">
+              <div class="settings-item-left">
+                <div class="settings-icon-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </div>
+                <div class="settings-text-col">
+                  <span class="settings-opt-title">Notification Preferences</span>
+                  <span class="settings-opt-sub">Soil alerts, market price surges</span>
+                </div>
+              </div>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+
+            <div class="settings-item-row" onclick="navigateTo('screen-welcome')">
+              <div class="settings-item-left">
+                <div class="settings-icon-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </div>
+                <div class="settings-text-col">
+                  <span class="settings-opt-title">Language</span>
+                  <span class="settings-opt-sub">English (US) / Switch language</span>
+                </div>
+              </div>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+
+            <div class="settings-item-row" onclick="openChatModal()">
+              <div class="settings-item-left">
+                <div class="settings-icon-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div class="settings-text-col">
+                  <span class="settings-opt-title">Help &amp; Support</span>
+                  <span class="settings-opt-sub">FAQ, talk to agri-advisor</span>
+                </div>
+              </div>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+
+          <button class="btn-logout-danger" onclick="navigateTo('screen-welcome')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span>Log Out</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav class="bottom-nav-bar">
+        <div class="nav-tabs-row">
+          <div class="nav-tab-item" onclick="navigateTo('screen-home')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="nav-tab-label">Home</span>
+          </div>
+          <div class="nav-tab-item" onclick="navigateTo('screen-ai-features')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+            <span class="nav-tab-label">AI Features</span>
+          </div>
+          <div class="nav-tab-item" onclick="navigateTo('screen-market')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            <span class="nav-tab-label">Market</span>
+          </div>
+          <div class="nav-tab-item active" onclick="navigateTo('screen-profile')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span class="nav-tab-label">Profile</span>
+          </div>
+        </div>
+      </nav>
+    </section>
+
+    <!-- =========================================================================
+         6. SCREEN: DISEASE DETECTION
+         ========================================================================= -->
+    <section id="screen-disease" class="screen-view">
+      <div class="scroll-area no-tab">
+        <header class="screen-header">
+          <button class="icon-btn" onclick="navigateTo('screen-ai-features')" title="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <span class="header-title">Disease Detection</span>
+          <button class="icon-btn" onclick="alert('Point camera at plant leaves with clear daylight.')" title="Info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </button>
+        </header>
+
+        <div class="disease-body">
+          <div class="disease-scan-frame">
+            <div class="leaf-photo-container">
+              <!-- Leaf with Blight Graphic -->
+              <svg viewBox="0 0 300 200" width="100%" height="100%">
+                <defs>
+                  <radialGradient id="leafGrad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#4caf50"/>
+                    <stop offset="100%" stop-color="#1b5e20"/>
+                  </radialGradient>
+                  <radialGradient id="spotGrad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#5d4037"/>
+                    <stop offset="60%" stop-color="#8d6e63"/>
+                    <stop offset="100%" stop-color="#3e2723"/>
+                  </radialGradient>
+                </defs>
+                <rect width="300" height="200" fill="#2d4734"/>
+                <!-- Big Leaf -->
+                <path d="M60,160 Q150,20 240,160 Q150,190 60,160 Z" fill="url(#leafGrad)"/>
+                <!-- Leaf Veins -->
+                <path d="M150,45 L150,175 M150,75 Q110,95 90,110 M150,75 Q190,95 210,110 M150,115 Q110,135 80,150 M150,115 Q190,135 220,150" stroke="#81c784" stroke-width="2.5" fill="none"/>
+                <!-- Blight Patches -->
+                <ellipse cx="130" cy="100" rx="22" ry="16" fill="url(#spotGrad)" opacity="0.95"/>
+                <ellipse cx="175" cy="125" rx="26" ry="18" fill="url(#spotGrad)" opacity="0.95"/>
+                <circle cx="160" cy="85" r="12" fill="url(#spotGrad)" opacity="0.9"/>
+                <!-- Yellowish Halo around Blight -->
+                <ellipse cx="130" cy="100" rx="26" ry="20" stroke="#fbc02d" stroke-width="2" fill="none" opacity="0.7"/>
+                <ellipse cx="175" cy="125" rx="30" ry="22" stroke="#fbc02d" stroke-width="2" fill="none" opacity="0.7"/>
+              </svg>
+              <!-- Animated Scanning Laser -->
+              <div class="scan-laser-beam" id="scanLaser"></div>
+            </div>
+          </div>
+
+          <div class="disease-results-card">
+            <div class="disease-title-badge-row">
+              <div>
+                <div class="disease-detected-sub">Detected Disease</div>
+                <h3 class="disease-name-title" id="diseaseNameDisplay">Tomato Late Blight</h3>
+              </div>
+              <div class="severity-pill" id="severityPillDisplay">High Severity</div>
+            </div>
+
+            <div class="disease-stats-2col">
+              <div class="disease-stat-box">
+                <span class="stat-header-text">AI Confidence</span>
+                <span class="stat-bold-value" id="confidenceDisplay">94.2%</span>
+              </div>
+              <div class="disease-stat-box">
+                <span class="stat-header-text">Crop Family</span>
+                <span class="stat-bold-value" id="cropFamilyDisplay">Solanaceae</span>
+              </div>
+            </div>
+
+            <div class="symptoms-desc-block">
+              <span class="section-label-bold">Symptoms</span>
+              <p class="symptoms-text" id="symptomsTextDisplay">
+                Large, blue-gray to dark brown patches appear on leaves and stems, often accompanied by pale green halos and white mold on leaf undersides.
+              </p>
+            </div>
+
+            <div class="action-items-list">
+              <span class="section-label-bold">Recommended Actions</span>
+              <div class="action-item-row">
+                <div class="action-step-num">1</div>
+                <div class="action-step-text">Prune and destroy infected foliage immediately.</div>
+              </div>
+              <div class="action-item-row">
+                <div class="action-step-num">2</div>
+                <div class="action-step-text">Apply registered copper-based fungicides weekly.</div>
+              </div>
+              <div class="action-item-row">
+                <div class="action-step-num">3</div>
+                <div class="action-step-text">Avoid overhead irrigation to reduce canopy wetness.</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-primary-action" onclick="simulateNewScan()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Scan Another Crop</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         7. SCREEN: AI CROP DECISION
+         ========================================================================= -->
+    <section id="screen-crop-rec" class="screen-view">
+      <div class="scroll-area no-tab">
+        <header class="screen-header">
+          <button class="icon-btn" onclick="navigateTo('screen-home')" title="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <span class="header-title">AI Crop Decision</span>
+          <button class="icon-btn" onclick="alert('Metrics are auto-synced with regional soil telemetry.')" title="Info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </button>
+        </header>
+
+        <div style="padding: 0 18px 18px 18px; display: flex; flex-direction: column; gap: 14px;">
+          <div class="crop-form-card">
+            <div class="form-header-row">
+              <span class="form-heading-title">Soil &amp; Environment Metrics</span>
+              <div class="iot-live-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>
+                <span>IoT Synced</span>
+              </div>
+            </div>
+
+            <div class="crop-inputs-grid">
+              <div class="input-group-item">
+                <label class="input-field-label">Nitrogen (N)</label>
+                <div class="custom-input-box">
+                  <input type="number" id="recN" value="45">
+                  <span style="font-size:11px;color:var(--text-light)">mg/kg</span>
+                </div>
+              </div>
+
+              <div class="input-group-item">
+                <label class="input-field-label">Phosphorus (P)</label>
+                <div class="custom-input-box">
+                  <input type="number" id="recP" value="32">
+                  <span style="font-size:11px;color:var(--text-light)">mg/kg</span>
+                </div>
+              </div>
+
+              <div class="input-group-item">
+                <label class="input-field-label">Potassium (K)</label>
+                <div class="custom-input-box">
+                  <input type="number" id="recK" value="120">
+                  <span style="font-size:11px;color:var(--text-light)">mg/kg</span>
+                </div>
+              </div>
+
+              <div class="input-group-item">
+                <label class="input-field-label">pH Level</label>
+                <div class="custom-input-box">
+                  <input type="number" step="0.1" id="recPH" value="6.5">
+                  <span style="font-size:11px;color:var(--text-light)">pH</span>
+                </div>
+              </div>
+
+              <div class="input-group-item">
+                <label class="input-field-label">Rainfall (mm)</label>
+                <div class="custom-input-box">
+                  <input type="number" id="recRain" value="1200">
+                  <span style="font-size:11px;color:var(--text-light)">mm</span>
+                </div>
+              </div>
+
+              <div class="input-group-item">
+                <label class="input-field-label">Temperature (°C)</label>
+                <div class="custom-input-box">
+                  <input type="number" id="recTemp" value="24">
+                  <span style="font-size:11px;color:var(--text-light)">°C</span>
+                </div>
+              </div>
+
+              <div class="input-group-item full-width">
+                <label class="input-field-label">Humidity (%)</label>
+                <div class="custom-input-box">
+                  <input type="number" id="recHumid" value="68">
+                  <span style="font-size:11px;color:var(--text-light)">%</span>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn-primary-action" style="padding: 12px; margin-top: 4px;" onclick="calculateCropRecommendation()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+              <span>Analyze &amp; Recommend</span>
+            </button>
+          </div>
+
+          <span class="section-heading">Recommended Match</span>
+
+          <div class="crop-rec-result-card" id="cropRecResultCard">
+            <div class="rec-crop-badge-row">
+              <div class="rec-crop-left">
+                <div class="crop-img-thumb" id="recCropEmoji">🌾</div>
+                <div class="crop-name-stack">
+                  <span class="crop-name-label" id="recCropName" style="font-size:16px;">Golden Wheat</span>
+                  <span class="crop-unit-label" id="recCropCategory">Grain • Cereal Crop</span>
+                </div>
+              </div>
+              <div class="match-score-pill" id="recMatchScore">94% Match</div>
+            </div>
+
+            <div style="height:1px;background:var(--border-light);width:100%;"></div>
+
+            <div class="symptoms-desc-block">
+              <span class="section-label-bold">AI Sowing Insights</span>
+              <p class="symptoms-text" id="recInsightTemp">
+                <strong>• Ideal Sowing Temp:</strong> Your soil pH (<span id="recPHDisplay">6.5</span>) is perfect. Plant in late Autumn when temperatures steady at 22-24°C.
+              </p>
+              <p class="symptoms-text" id="recInsightFertilizer" style="margin-top:4px;">
+                <strong>• Fertilizer Hint:</strong> Nitrogen levels are slightly low. Apply a N-rich starter fertilizer before initial watering.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         8. SCREEN: YIELD PREDICTION
+         ========================================================================= -->
+    <section id="screen-yield" class="screen-view">
+      <div class="scroll-area no-tab">
+        <header class="screen-header">
+          <button class="icon-btn" onclick="navigateTo('screen-ai-features')" title="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <span class="header-title">Yield Prediction</span>
+          <button class="icon-btn" onclick="alert('Yield forecasting trained on 10,000+ regional harvest datasets.')" title="Info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </button>
+        </header>
+
+        <div style="padding: 0 18px 18px 18px; display: flex; flex-direction: column; gap: 14px;">
+          <div class="yield-form-card">
+            <div class="input-group-item">
+              <label class="input-field-label">Crop Type</label>
+              <div class="yield-select-box">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#2b6b2e" stroke-width="2"><path d="M7 20h10M12 20V10M12 10a4 4 0 0 1-4-4 4 4 0 0 1 4 4zm0 0a4 4 0 0 0 4-4 4 4 0 0 0-4 4z"/></svg>
+                <select id="yieldCropSelect" onchange="calculateYield()">
+                  <option value="wheat">Wheat (Triticum aestivum)</option>
+                  <option value="rice">Rice (Basmati)</option>
+                  <option value="cotton">Cotton</option>
+                  <option value="maize">Maize (Corn)</option>
+                  <option value="soybean">Soybean</option>
+                  <option value="sugarcane">Sugarcane</option>
+                </select>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <div class="input-group-item" style="flex:1;">
+                <label class="input-field-label">Farm Area (Acres)</label>
+                <div class="yield-select-box">
+                  <select id="yieldAreaSelect" onchange="calculateYield()">
+                    <option value="2.5">2.5 Acres</option>
+                    <option value="5.5" selected>5.5 Acres</option>
+                    <option value="10">10 Acres</option>
+                    <option value="25">25 Acres</option>
+                    <option value="50">50 Acres</option>
+                  </select>
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+
+              <div class="input-group-item" style="flex:1;">
+                <label class="input-field-label">Soil Type</label>
+                <div class="yield-select-box">
+                  <select id="yieldSoilSelect" onchange="calculateYield()">
+                    <option value="clay" selected>Clay Loam</option>
+                    <option value="sandy">Sandy Loam</option>
+                    <option value="silt">Silt Loam</option>
+                    <option value="black">Black Soil</option>
+                  </select>
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group-item">
+              <label class="input-field-label">Irrigation Method</label>
+              <div class="yield-select-box">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#007aff" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                <select id="yieldIrrigSelect" onchange="calculateYield()">
+                  <option value="drip" selected>Drip Irrigation</option>
+                  <option value="sprinkler">Sprinkler System</option>
+                  <option value="flood">Flood / Furrow</option>
+                  <option value="rainfed">Rainfed</option>
+                </select>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-primary-action" onclick="calculateYield()">
+            <span>Calculate Yield Prediction</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+
+          <div class="yield-results-panel">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="disease-detected-sub">Estimated Farm Harvest</span>
+              <div class="harvest-big-num" id="yieldOutputDisplay">224.5 Quintals</div>
+            </div>
+
+            <div style="height:1px;background:var(--border-light);width:100%;"></div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <span class="stat-header-text">Estimated Harvest Date</span>
+                <span class="stat-bold-value" id="yieldDateDisplay">Oct 18 - Oct 25, 2026</span>
+              </div>
+              <div class="regional-trend-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
+                <span id="yieldTrendDisplay">+14% Regional Avg</span>
+              </div>
+            </div>
+
+            <div class="disease-stat-box" style="background:#f5f8f6;border-radius:14px;padding:12px;">
+              <span class="section-label-bold" style="color:var(--primary-dark)">Yield Improvement Tips</span>
+              <p class="symptoms-text" id="yieldTipsDisplay" style="margin-top:3px;">
+                Increase drip cycles by 10% during late flowering stage. Consider top-dressing with nitrogen-based compost.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         9. SCREEN: PROFIT ESTIMATOR
+         ========================================================================= -->
+    <section id="screen-profit" class="screen-view">
+      <div class="scroll-area no-tab">
+        <header class="screen-header">
+          <button class="icon-btn" onclick="navigateTo('screen-ai-features')" title="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <span class="header-title">Profit Estimator</span>
+          <button class="icon-btn" onclick="alert('Profit calculator accounts for market rates and cultivation costs.')" title="Info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </button>
+        </header>
+
+        <div style="padding: 0 18px 18px 18px; display: flex; flex-direction: column; gap: 14px;">
+          <div class="crop-form-card">
+            <div class="profit-form-grid">
+              <div class="input-group-item">
+                <label class="input-field-label">Crop Type</label>
+                <div class="yield-select-box">
+                  <select id="profitCropSelect" onchange="calculateProfit()">
+                    <option value="cotton" selected>Cotton</option>
+                    <option value="wheat">Wheat</option>
+                    <option value="rice">Rice</option>
+                    <option value="soybean">Soybean</option>
+                    <option value="sugarcane">Sugarcane</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="input-group-item">
+                <label class="input-field-label">Est. Yield (Qtl)</label>
+                <div class="custom-input-box">
+                  <input type="number" id="profitYieldInput" value="180" oninput="calculateProfit()">
+                </div>
+              </div>
+
+              <div class="input-group-item">
+                <label class="input-field-label">Investment Cost ($)</label>
+                <div class="custom-input-box">
+                  <input type="number" id="profitCostInput" value="3200" oninput="calculateProfit()">
+                </div>
+              </div>
+
+              <div class="input-group-item">
+                <label class="input-field-label">Market Rate ($/Qtl)</label>
+                <div class="custom-input-box">
+                  <input type="number" id="profitRateInput" value="85" oninput="calculateProfit()">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-primary-action" onclick="calculateProfit()">
+            <span>Calculate Projected Profit</span>
+          </button>
+
+          <div class="profit-result-card">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="disease-detected-sub">Estimated Net Profit</span>
+              <div class="net-profit-val" id="profitNetDisplay">$12,100.00</div>
+            </div>
+
+            <div class="roi-metrics-row">
+              <div class="roi-box">
+                <span class="stat-header-text">Profit Margin</span>
+                <span class="roi-val-green" id="profitMarginDisplay">79.08%</span>
+              </div>
+              <div class="roi-box">
+                <span class="stat-header-text">ROI Multiplier</span>
+                <span class="roi-val-green" id="profitRoiDisplay">3.78x</span>
+              </div>
+            </div>
+
+            <div style="height:1px;background:var(--border-light);width:100%;"></div>
+
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <span class="section-label-bold">Cost vs Revenue Ratio</span>
+              <div class="cost-ratio-track">
+                <div class="cost-portion" id="costPortionBar" style="width: 21%;"></div>
+                <div class="profit-portion" id="profitPortionBar" style="width: 79%;"></div>
+              </div>
+              <div class="ratio-legend-row">
+                <div class="legend-dot-item">
+                  <div class="legend-dot dot-red"></div>
+                  <span id="costLegendText">Cost ($3.2K)</span>
+                </div>
+                <div class="legend-dot-item">
+                  <div class="legend-dot dot-green"></div>
+                  <span id="profitLegendText">Profit ($12.1K)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         10. SCREEN: SOIL ANALYZER
+         ========================================================================= -->
+    <section id="screen-soil" class="screen-view">
+      <div class="scroll-area no-tab">
+        <header class="screen-header">
+          <button class="icon-btn" onclick="navigateTo('screen-ai-features')" title="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <span class="header-title">Soil Analyzer</span>
+          <button class="icon-btn" onclick="alert('Upload lab soil tests or input NPK values manually.')" title="Info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </button>
+        </header>
+
+        <div style="padding: 0 18px 18px 18px; display: flex; flex-direction: column; gap: 14px;">
+          <!-- Toggle Pill -->
+          <div class="soil-toggle-pill">
+            <div class="toggle-option-btn" id="toggleReportBtn" onclick="toggleSoilMode('report')">Report Scan</div>
+            <div class="toggle-option-btn active" id="toggleManualBtn" onclick="toggleSoilMode('manual')">Manual Inputs</div>
+          </div>
+
+          <div class="crop-form-card" id="soilManualForm">
+            <!-- N P K -->
+            <div class="npk-inputs-row">
+              <div class="input-group-item">
+                <label class="input-field-label">N</label>
+                <div class="custom-input-box">
+                  <input type="number" id="soilN" value="48" oninput="calculateSoilHealth()">
+                </div>
+              </div>
+              <div class="input-group-item">
+                <label class="input-field-label">P</label>
+                <div class="custom-input-box">
+                  <input type="number" id="soilP" value="14" oninput="calculateSoilHealth()">
+                </div>
+              </div>
+              <div class="input-group-item">
+                <label class="input-field-label">K</label>
+                <div class="custom-input-box">
+                  <input type="number" id="soilK" value="32" oninput="calculateSoilHealth()">
+                </div>
+              </div>
+            </div>
+
+            <!-- pH & Moisture -->
+            <div style="display: flex; gap: 10px;">
+              <div class="input-group-item" style="flex:1;">
+                <label class="input-field-label">pH Level</label>
+                <div class="custom-input-box">
+                  <input type="number" step="0.1" id="soilPH" value="6.5" oninput="calculateSoilHealth()">
+                </div>
+              </div>
+              <div class="input-group-item" style="flex:1;">
+                <label class="input-field-label">Moisture (%)</label>
+                <div class="custom-input-box">
+                  <input type="number" id="soilMoist" value="34" oninput="calculateSoilHealth()">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-primary-action" onclick="calculateSoilHealth()">
+            <span>Analyze Nutrient Health</span>
+          </button>
+
+          <div class="profit-result-card">
+            <div class="gauge-score-container">
+              <div>
+                <span class="disease-detected-sub">Health Index</span>
+                <div class="form-heading-title" id="soilConditionDisplay" style="font-size: 19px; font-weight:800; color:var(--primary-dark)">Good Condition</div>
+              </div>
+              <div class="circle-gauge-wrap">
+                <svg class="circle-gauge-svg" viewBox="0 0 70 70">
+                  <circle class="gauge-bg-circle" cx="35" cy="35" r="30"/>
+                  <circle class="gauge-bar-circle" id="soilGaugeCircle" cx="35" cy="35" r="30"/>
+                </svg>
+                <span class="gauge-score-number" id="soilScoreNumber">85</span>
+              </div>
+            </div>
+
+            <div style="height:1px;background:var(--border-light);width:100%;"></div>
+
+            <!-- Nutrient Bars -->
+            <div class="nutrient-status-list">
+              <div class="nutrient-status-row">
+                <div>
+                  <div class="crop-name-label">Nitrogen (N)</div>
+                  <div class="crop-unit-label" id="soilNText">Current value: 48 mg/kg</div>
+                </div>
+                <span class="status-badge-optimal" id="soilNBadge">Optimal</span>
+              </div>
+
+              <div class="nutrient-status-row">
+                <div>
+                  <div class="crop-name-label">Phosphorus (P)</div>
+                  <div class="crop-unit-label" id="soilPText">Current value: 14 mg/kg</div>
+                </div>
+                <span class="status-badge-deficient" id="soilPBadge">Low Deficient</span>
+              </div>
+
+              <div class="nutrient-status-row">
+                <div>
+                  <div class="crop-name-label">Potassium (K)</div>
+                  <div class="crop-unit-label" id="soilKText">Current value: 32 mg/kg</div>
+                </div>
+                <span class="status-badge-optimal" id="soilKBadge">Optimal</span>
+              </div>
+            </div>
+
+            <div style="height:1px;background:var(--border-light);width:100%;"></div>
+
+            <!-- Highly Recommended Crops -->
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <span class="section-label-bold">Highly Recommended Crops</span>
+              <div class="crop-tags-wrap" id="soilRecCropsWrap">
+                <span class="crop-rec-tag">Soybeans</span>
+                <span class="crop-rec-tag">Corn</span>
+                <span class="crop-rec-tag">Potatoes</span>
+                <span class="crop-rec-tag">Legumes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         AI FARMING ASSISTANT MODAL OVERLAY
+         ========================================================================= -->
+    <div id="aiChatModal" class="chat-modal-overlay">
+      <div class="chat-modal-content">
+        <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border-light);padding-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="logo-badge" style="padding:3px 8px;">AI</div>
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:14px;color:var(--primary-dark)">CropAI Advisor</span>
+          </div>
+          <button class="icon-btn" onclick="closeChatModal()" style="width:30px;height:30px;">✕</button>
+        </div>
+
+        <div class="chat-messages-scroll" id="chatMessagesBox">
+          <div class="chat-bubble-ai">
+            Hello David! 👋 I am your CropAI Assistant. How can I help you with your 142-acre plots in Oregon today?
+          </div>
+        </div>
+
+        <div class="chat-input-row">
+          <input type="text" id="chatInputText" placeholder="Ask about fertilizer, pests, market..." onkeypress="handleChatKey(event)">
+          <button class="chat-send-btn" onclick="sendChatMessage()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Application Logic -->
+<script>
+  // Navigation Controller
+  function navigateTo(screenId) {
+    const screens = document.querySelectorAll('.screen-view');
+    screens.forEach(s => s.classList.remove('active'));
+
+    const target = document.getElementById(screenId);
+    if (target) {
+      target.classList.add('active');
+      const scroll = target.querySelector('.scroll-area');
+      if (scroll) scroll.scrollTop = 0;
+    }
+  }
+
+  // Language Chip Selector
+  function selectLang(btn) {
+    const chips = document.querySelectorAll('.lang-chip');
+    chips.forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // Market Search Filter
+  function filterMarketList() {
+    const query = document.getElementById('marketSearchInput').value.toLowerCase();
+    const cards = document.querySelectorAll('#marketListContainer .market-crop-card');
+    cards.forEach(card => {
+      const cropText = card.getAttribute('data-crop')?.toLowerCase() || '';
+      if (cropText.includes(query)) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  // Disease Scanner Simulation
+  const diseasesDatabase = [
+    {
+      name: "Tomato Late Blight",
+      severity: "High Severity",
+      confidence: "94.2%",
+      family: "Solanaceae",
+      symptoms: "Large, blue-gray to dark brown patches appear on leaves and stems, often accompanied by pale green halos and white mold on leaf undersides."
+    },
+    {
+      name: "Wheat Powdery Mildew",
+      severity: "Moderate Severity",
+      confidence: "91.8%",
+      family: "Poaceae",
+      symptoms: "White fluffy fungal patches on upper leaf surfaces turning into light brown powdery lesions."
+    },
+    {
+      name: "Cotton Bacterial Blight",
+      severity: "Critical Severity",
+      confidence: "96.4%",
+      family: "Malvaceae",
+      symptoms: "Angular water-soaked spots on leaf blades with reddish-brown necrotic centers and vein blackening."
+    }
+  ];
+  let currentDiseaseIndex = 0;
+
+  function simulateNewScan() {
+    const laser = document.getElementById('scanLaser');
+    laser.style.display = 'block';
+    laser.style.animation = 'scanLaser 1.5s ease-in-out infinite alternate';
+
+    setTimeout(() => {
+      currentDiseaseIndex = (currentDiseaseIndex + 1) % diseasesDatabase.length;
+      const data = diseasesDatabase[currentDiseaseIndex];
+
+      document.getElementById('diseaseNameDisplay').textContent = data.name;
+      document.getElementById('severityPillDisplay').textContent = data.severity;
+      document.getElementById('confidenceDisplay').textContent = data.confidence;
+      document.getElementById('cropFamilyDisplay').textContent = data.family;
+      document.getElementById('symptomsTextDisplay').textContent = data.symptoms;
+      alert(`AI Scan Complete: Diagnosed "${data.name}" with ${data.confidence} accuracy.`);
+    }, 1000);
+  }
+
+  // AI Crop Recommendation Engine
+  function calculateCropRecommendation() {
+    const N = parseFloat(document.getElementById('recN').value) || 45;
+    const P = parseFloat(document.getElementById('recP').value) || 32;
+    const K = parseFloat(document.getElementById('recK').value) || 120;
+    const pH = parseFloat(document.getElementById('recPH').value) || 6.5;
+    const rain = parseFloat(document.getElementById('recRain').value) || 1200;
+    const temp = parseFloat(document.getElementById('recTemp').value) || 24;
+
+    let crop = "Golden Wheat";
+    let emoji = "🌾";
+    let category = "Grain • Cereal Crop";
+    let score = "94% Match";
+
+    if (rain > 1500) {
+      crop = "Basmati Rice";
+      emoji = "🍚";
+      category = "Paddy • Wetland Crop";
+      score = "97% Match";
+    } else if (temp > 28) {
+      crop = "Hybrid Cotton";
+      emoji = "☁️";
+      category = "Fiber • Cash Crop";
+      score = "92% Match";
+    } else if (N > 80) {
+      crop = "Sweet Corn";
+      emoji = "🌽";
+      category = "Grain • High Nutrient";
+      score = "95% Match";
+    }
+
+    document.getElementById('recCropName').textContent = crop;
+    document.getElementById('recCropEmoji').textContent = emoji;
+    document.getElementById('recCropCategory').textContent = category;
+    document.getElementById('recMatchScore').textContent = score;
+    document.getElementById('recPHDisplay').textContent = pH;
+
+    const card = document.getElementById('cropRecResultCard');
+    card.style.transform = 'scale(1.02)';
+    setTimeout(() => card.style.transform = 'scale(1)', 200);
+  }
+
+  // Yield Prediction Engine
+  function calculateYield() {
+    const crop = document.getElementById('yieldCropSelect').value;
+    const area = parseFloat(document.getElementById('yieldAreaSelect').value) || 5.5;
+    const soil = document.getElementById('yieldSoilSelect').value;
+    const irrig = document.getElementById('yieldIrrigSelect').value;
+
+    let baseYieldPerAcre = 40;
+    if (crop === 'wheat') baseYieldPerAcre = 41;
+    if (crop === 'rice') baseYieldPerAcre = 48;
+    if (crop === 'cotton') baseYieldPerAcre = 33;
+    if (crop === 'maize') baseYieldPerAcre = 52;
+    if (crop === 'soybean') baseYieldPerAcre = 28;
+    if (crop === 'sugarcane') baseYieldPerAcre = 290;
+
+    let soilMultiplier = soil === 'clay' ? 1.05 : (soil === 'black' ? 1.15 : 0.95);
+    let irrigMultiplier = irrig === 'drip' ? 1.15 : (irrig === 'sprinkler' ? 1.08 : 0.9);
+
+    const total = (baseYieldPerAcre * area * soilMultiplier * irrigMultiplier).toFixed(1);
+    document.getElementById('yieldOutputDisplay').textContent = `${total} Quintals`;
+  }
+
+  // Profit Calculation Engine
+  function calculateProfit() {
+    const yieldAmt = parseFloat(document.getElementById('profitYieldInput').value) || 180;
+    const cost = parseFloat(document.getElementById('profitCostInput').value) || 3200;
+    const rate = parseFloat(document.getElementById('profitRateInput').value) || 85;
+
+    const totalRevenue = yieldAmt * rate;
+    const netProfit = totalRevenue - cost;
+    const margin = ((netProfit / (totalRevenue || 1)) * 100).toFixed(2);
+    const roi = (totalRevenue / (cost || 1)).toFixed(2);
+
+    document.getElementById('profitNetDisplay').textContent = `$${netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById('profitMarginDisplay').textContent = `${margin}%`;
+    document.getElementById('profitRoiDisplay').textContent = `${roi}x`;
+
+    const costPct = Math.min(Math.max((cost / (totalRevenue || 1)) * 100, 10), 90);
+    const profitPct = 100 - costPct;
+
+    document.getElementById('costPortionBar').style.width = `${costPct}%`;
+    document.getElementById('profitPortionBar').style.width = `${profitPct}%`;
+    document.getElementById('costLegendText').textContent = `Cost ($${(cost/1000).toFixed(1)}K)`;
+    document.getElementById('profitLegendText').textContent = `Profit ($${(netProfit/1000).toFixed(1)}K)`;
+  }
+
+  // Soil Health Score Engine
+  function calculateSoilHealth() {
+    const N = parseFloat(document.getElementById('soilN').value) || 48;
+    const P = parseFloat(document.getElementById('soilP').value) || 14;
+    const K = parseFloat(document.getElementById('soilK').value) || 32;
+
+    let score = Math.round(Math.min(100, (N * 0.4 + P * 1.5 + K * 0.8)));
+    if (score < 40) score = 55;
+    if (score > 98) score = 96;
+
+    document.getElementById('soilScoreNumber').textContent = score;
+    const circle = document.getElementById('soilGaugeCircle');
+    const offset = 188 - (188 * score / 100);
+    circle.style.strokeDashoffset = offset;
+
+    document.getElementById('soilNText').textContent = `Current value: ${N} mg/kg`;
+    document.getElementById('soilPText').textContent = `Current value: ${P} mg/kg`;
+    document.getElementById('soilKText').textContent = `Current value: ${K} mg/kg`;
+
+    const pBadge = document.getElementById('soilPBadge');
+    if (P < 20) {
+      pBadge.className = 'status-badge-deficient';
+      pBadge.textContent = 'Low Deficient';
+    } else {
+      pBadge.className = 'status-badge-optimal';
+      pBadge.textContent = 'Optimal';
+    }
+  }
+
+  function toggleSoilMode(mode) {
+    const reportBtn = document.getElementById('toggleReportBtn');
+    const manualBtn = document.getElementById('toggleManualBtn');
+    if (mode === 'report') {
+      reportBtn.classList.add('active');
+      manualBtn.classList.remove('active');
+      alert('Report Scan: Camera & OCR ready to scan your official soil lab PDF / printout.');
+    } else {
+      manualBtn.classList.add('active');
+      reportBtn.classList.remove('active');
+    }
+  }
+
+  // AI Assistant Chat Modal
+  function openChatModal() {
+    document.getElementById('aiChatModal').classList.add('active');
+  }
+
+  function closeChatModal() {
+    document.getElementById('aiChatModal').classList.remove('active');
+  }
+
+  function handleChatKey(e) {
+    if (e.key === 'Enter') sendChatMessage();
+  }
+
+  function sendChatMessage() {
+    const input = document.getElementById('chatInputText');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const box = document.getElementById('chatMessagesBox');
+    
+    const userDiv = document.createElement('div');
+    userDiv.className = 'chat-bubble-user';
+    userDiv.textContent = text;
+    box.appendChild(userDiv);
+    input.value = '';
+
+    box.scrollTop = box.scrollHeight;
+
+    setTimeout(() => {
+      const aiDiv = document.createElement('div');
+      aiDiv.className = 'chat-bubble-ai';
+      
+      const lower = text.toLowerCase();
+      if (lower.includes('wheat') || lower.includes('yield')) {
+        aiDiv.textContent = "Based on your 142-acre plot in Oregon, wheat is currently tracking +14% above regional yield averages. Keep drip irrigation steady during late flowering.";
+      } else if (lower.includes('price') || lower.includes('market')) {
+        aiDiv.textContent = "Realtime trade update: Wheat is up +4.2% at $2,150/qtl and Cotton is down -2.4%. We recommend locking in forward contracts for Soybeans!";
+      } else if (lower.includes('soil') || lower.includes('fertilizer')) {
+        aiDiv.textContent = "Your recent soil test shows Phosphorus is slightly deficient (14 mg/kg). Consider top-dressing with 25kg/acre DAP before the next rain.";
+      } else {
+        aiDiv.textContent = "I have analyzed your request against local weather sensors and crop databases. All telemetry indicates healthy vegetative growth!";
+      }
+
+      box.appendChild(aiDiv);
+      box.scrollTop = box.scrollHeight;
+    }, 600);
+  }
+</script>
+
+</body>
+</html>

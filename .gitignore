@@ -1,0 +1,22 @@
+# Original draft / raw screen files
+welcom
+main
+Ai-feture
+market
+profile
+plant-scanning
+crop-recommdetion
+yalt-calcu
+profit-celcu
+soil-test
+
+# OS & Editor generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*.log
+
+# IDE & Editor folders
+.vscode/
+.idea/
