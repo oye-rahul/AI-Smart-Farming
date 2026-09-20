@@ -103,7 +103,7 @@ body {
   height: 98vh;
   max-height: 99vh;
   background: var(--bg-app);
-  border-radius: 25px;
+  border-radius: 42px;
   border: 4px solid #000000;
   box-shadow: 0 25px 60px rgba(208, 208, 208, 0.168), 0 0 0 2px rgba(183, 183, 183, 0.842);
   position: relative;
@@ -1270,24 +1270,75 @@ body {
   padding: 6px 18px 8px 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.market-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .market-eyebrow {
   color: var(--accent-green);
   font-family: var(--font-heading);
   font-size: 11px;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   font-weight: 700;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-dot-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34c759;
+  display: inline-block;
+  box-shadow: 0 0 8px #34c759;
+  animation: livePulse 1.8s infinite;
+}
+
+@keyframes livePulse {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
 }
 
 .market-title-text {
   color: var(--primary-green);
   font-family: var(--font-heading);
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
+}
+
+.market-location-btn {
+  background: #eaf5eb;
+  border: 1px solid rgba(52, 199, 89, 0.3);
+  border-radius: 100px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--primary-green);
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.market-location-btn svg {
+  width: 13px;
+  height: 13px;
+  stroke: var(--accent-green-dark);
+}
+
+.market-location-btn:hover {
+  background: #d9f0dc;
 }
 
 .market-search-bar {
@@ -1296,8 +1347,8 @@ body {
   padding: 0 14px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 44px;
+  gap: 8px;
+  height: 42px;
   box-shadow: inset 1px 1px 2px 0 rgba(220, 220, 220, 0.5),
     inset -1px -1px 2px 0 rgba(220, 220, 220, 0.5);
 }
@@ -1313,27 +1364,181 @@ body {
 }
 
 .market-search-bar svg {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   stroke: var(--text-muted);
 }
 
+.state-chips-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 0 4px 0;
+  scrollbar-width: none;
+}
+
+.state-chips-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.state-chip {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: 1000px;
+  padding: 6px 12px;
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.state-chip.active {
+  background: var(--primary-green);
+  color: #ffffff;
+  border-color: var(--primary-green);
+  box-shadow: 0 3px 10px rgba(26, 77, 46, 0.25);
+}
+
+.market-status-bar {
+  padding: 0 18px 6px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.api-sync-indicator {
+  color: var(--accent-green-dark);
+  font-weight: 700;
+  font-size: 10px;
+  background: #eaf5eb;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
 .market-list-cards {
-  padding: 6px 18px;
+  padding: 4px 18px 18px 18px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .market-crop-card {
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 18px;
   padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(18, 53, 36, 0.04);
+  border: 1px solid rgba(226, 235, 229, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.market-crop-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(18, 53, 36, 0.08);
+}
+
+.mandi-card-main-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: inset 1px 1px 2px 0 rgba(220, 220, 220, 0.5),
-    inset -1px -1px 2px 0 rgba(220, 220, 220, 0.5);
+  width: 100%;
+}
+
+.crop-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.crop-icon-thumb {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: #f0f7f2;
+  flex-shrink: 0;
+}
+
+.crop-name-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.crop-name-label {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.crop-variety-tag {
+  font-size: 10px;
+  font-weight: 600;
+  background: #f0f4f1;
+  color: var(--text-muted);
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+
+.mandi-name-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.mandi-price-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.price-main-val {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--primary-green);
+}
+
+.price-unit-small {
+  font-size: 10px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.mandi-card-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border-light);
+  font-size: 10px;
+  color: var(--text-light);
+}
+
+.mandi-range-pill {
+  background: #f7faf8;
+  border-radius: 6px;
+  padding: 2px 6px;
+  color: var(--text-muted);
+  font-weight: 600;
 }
 
 .crop-identity {
@@ -2292,6 +2497,676 @@ body {
 }
 
 /* ==========================================================================
+   WEATHER SCREEN & AGRO-ADVISORY STYLES
+   ========================================================================== */
+.weather-hero-card {
+  background: linear-gradient(135deg, #1a4d2e 0%, #0d2e1b 100%);
+  border-radius: 24px;
+  padding: 20px;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(26, 77, 46, 0.2);
+}
+
+.weather-hero-card::after {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(52, 199, 89, 0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.weather-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.weather-city-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.weather-temp-huge {
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-top: 4px;
+  letter-spacing: -1px;
+}
+
+.weather-condition-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 2px;
+  display: block;
+}
+
+.weather-hero-icon {
+  font-size: 44px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
+}
+
+.weather-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.weather-stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.weather-stat-box .stat-header-text {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.weather-stat-box .stat-bold-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 2px;
+}
+
+/* Agro-Advisories List */
+.agro-advisory-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.agro-advisory-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 14px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.advisory-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.advisory-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  display: block;
+}
+
+.advisory-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: block;
+}
+
+.advisory-badge-green {
+  background: #eaf9ee;
+  color: #2b6b2e;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 100px;
+  border: 1px solid rgba(52, 199, 89, 0.3);
+}
+
+.advisory-badge-yellow {
+  background: #fff8e6;
+  color: #b26a00;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 149, 0, 0.3);
+}
+
+.advisory-badge-red {
+  background: #fceceb;
+  color: #e53935;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 100px;
+  border: 1px solid rgba(229, 57, 53, 0.3);
+}
+
+.advisory-text {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+/* 5-Day Forecast Carousel */
+.forecast-horizontal-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: none;
+}
+
+.forecast-horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.forecast-day-card {
+  min-width: 78px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.forecast-day-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.forecast-emoji {
+  font-size: 24px;
+}
+
+.forecast-temp-val {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.forecast-rain-pill {
+  font-size: 10px;
+  font-weight: 600;
+  background: #eef5fc;
+  color: #1a73e8;
+  padding: 2px 6px;
+  border-radius: 100px;
+}
+
+/* ==========================================================================
+   KISAN HELPLINE & KVK DIRECTORY STYLES
+   ========================================================================== */
+.emergency-badge-tag {
+  background: #fceceb;
+  color: #e53935;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid rgba(229, 57, 53, 0.2);
+}
+
+.kcc-hero-card {
+  background: linear-gradient(135deg, #155724 0%, #0d3817 100%);
+  border-radius: 22px;
+  padding: 18px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 8px 20px rgba(21, 87, 36, 0.2);
+}
+
+.kcc-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kcc-icon-box {
+  font-size: 28px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kcc-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.kcc-subtitle {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.kcc-number-badge {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.kcc-call-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #34c759;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px;
+  border-radius: 100px;
+  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.35);
+  transition: transform 0.2s ease;
+}
+
+.kcc-call-btn:hover {
+  transform: translateY(-1px);
+}
+
+.kcc-call-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: #ffffff;
+}
+
+/* KVK Cards */
+.kvk-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kvk-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 14px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.kvk-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.kvk-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.kvk-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.kvk-specialty {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent-green-dark);
+  background: var(--accent-green-light);
+  padding: 2px 6px;
+  border-radius: 6px;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+.kvk-call-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #eaf9ee;
+  color: #2b6b2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  flex-shrink: 0;
+  border: 1px solid rgba(52, 199, 89, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.kvk-call-icon-btn:hover {
+  transform: scale(1.08);
+}
+
+.kvk-call-icon-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: #2b6b2e;
+}
+
+/* ==========================================================================
+   FULL DAY FARMER WEATHER: SUN SCHEDULE, HOURLY TIMELINE & DAY PHASES
+   ========================================================================== */
+.sun-schedule-banner {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sun-schedule-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sun-icon {
+  font-size: 20px;
+}
+
+.sun-text-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.sun-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sun-val {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.sun-divider {
+  width: 1px;
+  height: 26px;
+  background: var(--border-light);
+}
+
+/* Hourly Weather Carousel */
+.hourly-weather-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: none;
+}
+
+.hourly-weather-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.hourly-weather-card {
+  min-width: 84px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.hourly-weather-card.current {
+  border-color: var(--accent-green);
+  background: #f4faf5;
+  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.15);
+}
+
+.hourly-time {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.hourly-emoji {
+  font-size: 22px;
+  margin: 2px 0;
+}
+
+.hourly-temp {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.hourly-rain {
+  font-size: 10px;
+  font-weight: 600;
+  color: #1a73e8;
+}
+
+.hourly-wind {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.hourly-agro-tag {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 100px;
+  margin-top: 2px;
+  text-align: center;
+}
+
+.hourly-agro-tag.ideal {
+  background: #eaf9ee;
+  color: #2b6b2e;
+}
+
+.hourly-agro-tag.safe {
+  background: #eef2ef;
+  color: var(--primary-dark);
+}
+
+.hourly-agro-tag.heat {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.hourly-agro-tag.irrig {
+  background: #e1f5fe;
+  color: #0277bd;
+}
+
+/* Day-Phases Schedule */
+.day-phases-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.phase-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.phase-time-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+  flex-shrink: 0;
+}
+
+.phase-icon {
+  font-size: 22px;
+}
+
+.phase-hour {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.phase-detail-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.phase-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.phase-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.phase-desc {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   APPLE SF HIGH DEFINITION EMOJIS (CROPS & WEATHER)
+   ========================================================================== */
+.crop-icon-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f2f7f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.apple-crop-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: middle;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+}
+
+.apple-crop-icon-mini {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: -3px;
+  margin-right: 5px;
+}
+
+.apple-crop-rec-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: middle;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.1));
+}
+
+.apple-weather-hero-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+}
+
+.apple-hourly-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+  margin: 3px 0;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.08));
+}
+
+.apple-forecast-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+  margin: 3px 0;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.08));
+}
+
+.apple-sun-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.apple-phase-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.06));
+}
+
+.apple-news-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: inline-block;
+}
+
+/* ==========================================================================
    MOBILE RESPONSIVENESS: Full Native Screen on Mobile Phones
    ========================================================================== */
 @media (max-width: 768px) {
@@ -2327,4 +3202,4 @@ body {
   .bottom-nav-bar {
     padding-bottom: env(safe-area-inset-bottom, 0);
   }
-}
+}

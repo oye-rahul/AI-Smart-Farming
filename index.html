@@ -87,13 +87,13 @@
       <div class="scroll-area">
         <!-- Header -->
         <div class="dashboard-header">
-          <div class="location-weather-badge">
+          <div class="location-weather-badge" onclick="detectUserLocationAndFetch(true)" style="cursor:pointer;" title="Tap to refresh live location">
             <div class="weather-icon-box">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
             </div>
             <div class="weather-text-wrap">
-              <div class="weather-temp">32°C Sunny</div>
-              <div class="weather-location">Ahmedabad, Gujarat</div>
+              <div class="weather-temp" id="dashboardWeatherText">32°C Sunny</div>
+              <div class="weather-location" id="dashboardLocationText">Ahmedabad, Gujarat</div>
             </div>
           </div>
           <button class="icon-btn" onclick="navigateTo('screen-profile')" title="User Profile">
@@ -127,7 +127,7 @@
             <span class="section-heading">Market Prices &amp; Trends</span>
             <span class="link-view-all" onclick="navigateTo('screen-market')">View All</span>
           </div>
-          <div class="prices-horizontal-scroll">
+          <div class="prices-horizontal-scroll" id="homePricesHorizontalScroll">
             <div class="mini-price-card" onclick="navigateTo('screen-market')">
               <div class="mini-card-top">
                 <span class="mini-crop-name">Wheat</span>
@@ -209,7 +209,9 @@
         <div class="news-section">
           <span class="section-heading">Latest Agri News</span>
           <div class="news-card">
-            <div class="news-thumbnail" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🌾</div>
+            <div class="news-thumbnail" style="display:flex;align-items:center;justify-content:center;background:#eef6ee;border-radius:12px;">
+              <img src="https://em-content.zobj.net/source/apple/453/sheaf-of-rice_1f33e.png" class="apple-news-icon" alt="Wheat">
+            </div>
             <div class="news-info">
               <span class="news-headline">Government announces new MSP rates for Rabi crops</span>
               <div class="news-meta">
@@ -221,7 +223,9 @@
           </div>
 
           <div class="news-card">
-            <div class="news-thumbnail" style="display:flex;align-items:center;justify-content:center;font-size:26px;">💧</div>
+            <div class="news-thumbnail" style="display:flex;align-items:center;justify-content:center;background:#eef6ff;border-radius:12px;">
+              <img src="https://em-content.zobj.net/source/apple/453/cloud-with-rain_1f327-fe0f.png" class="apple-news-icon" alt="Water">
+            </div>
             <div class="news-info">
               <span class="news-headline">New low-cost irrigation techniques introduced in West Gujarat</span>
               <div class="news-meta">
@@ -391,6 +395,22 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </div>
           </div>
+
+          <!-- 7. Agro-Weather & Sowing Advisory -->
+          <div class="ai-tool-card" onclick="navigateTo('screen-weather')">
+            <div class="tool-left">
+              <div class="tool-icon-frame cyan">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+              </div>
+              <div class="tool-texts">
+                <span class="tool-name">Agro-Weather &amp; Sowing Advisory</span>
+                <span class="tool-desc">OpenWeather live forecast &amp; spray suitability</span>
+              </div>
+            </div>
+            <div class="tool-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -423,144 +443,47 @@
     <section id="screen-market" class="screen-view">
       <div class="scroll-area">
         <div class="market-header-section">
-          <div>
-            <div class="market-eyebrow">Realtime Trade</div>
-            <h2 class="market-title-text">Market Prices</h2>
+          <div class="market-header-top">
+            <div>
+              <div class="market-eyebrow">
+                <span>Realtime APMC Mandi</span>
+                <span class="live-dot-pulse"></span>
+              </div>
+              <h2 class="market-title-text">Market Prices</h2>
+            </div>
+            <button class="market-location-btn" onclick="detectUserLocationAndFetch(true)" title="Auto-detect My State Location">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span id="marketStateBadge">Gujarat (Live)</span>
+            </button>
           </div>
+
           <div class="market-search-bar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" id="marketSearchInput" placeholder="Search crop prices..." oninput="filterMarketList()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+            <input type="text" id="marketSearchInput" placeholder="Search crop or mandi (e.g. Wheat, Cotton)..." oninput="filterMarketList()">
+          </div>
+
+          <div class="state-chips-scroll" id="marketStateChips">
+            <button class="state-chip active" data-state="Gujarat" onclick="selectStateFilter('Gujarat', this)">📍 Gujarat</button>
+            <button class="state-chip" data-state="All" onclick="selectStateFilter('All', this)">🇮🇳 All India</button>
+            <button class="state-chip" data-state="Maharashtra" onclick="selectStateFilter('Maharashtra', this)">Maharashtra</button>
+            <button class="state-chip" data-state="Punjab" onclick="selectStateFilter('Punjab', this)">Punjab</button>
+            <button class="state-chip" data-state="Uttar Pradesh" onclick="selectStateFilter('Uttar Pradesh', this)">Uttar Pradesh</button>
+            <button class="state-chip" data-state="Rajasthan" onclick="selectStateFilter('Rajasthan', this)">Rajasthan</button>
+            <button class="state-chip" data-state="Madhya Pradesh" onclick="selectStateFilter('Madhya Pradesh', this)">Madhya Pradesh</button>
+            <button class="state-chip" data-state="Haryana" onclick="selectStateFilter('Haryana', this)">Haryana</button>
+            <button class="state-chip" data-state="Karnataka" onclick="selectStateFilter('Karnataka', this)">Karnataka</button>
+            <button class="state-chip" data-state="Telangana" onclick="selectStateFilter('Telangana', this)">Telangana</button>
+            <button class="state-chip" data-state="Odisha" onclick="selectStateFilter('Odisha', this)">Odisha</button>
           </div>
         </div>
 
+        <div class="market-status-bar">
+          <span id="marketResultsCount">Loading live mandi prices...</span>
+          <span class="api-sync-indicator" id="apiSyncStatus">⚡ Live Agmarknet Gov API</span>
+        </div>
+
         <div class="market-list-cards" id="marketListContainer">
-          <!-- Wheat -->
-          <div class="market-crop-card" data-crop="Wheat">
-            <div class="crop-identity">
-              <div class="crop-icon-thumb">🌾</div>
-              <div class="crop-name-stack">
-                <span class="crop-name-label">Wheat</span>
-                <span class="crop-unit-label">$2,150 / Quintal</span>
-              </div>
-            </div>
-            <!-- Sparkline Chart -->
-            <svg class="sparkline-svg" viewBox="0 0 70 24">
-              <path d="M0,18 L15,14 L30,16 L45,8 L60,10 L70,4" fill="none" stroke="#34c759" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-            <div class="price-change-stack">
-              <span class="price-main-val">$2,150</span>
-              <div class="pct-pill-badge up">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
-                <span>+4.2%</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Rice (Basmati) -->
-          <div class="market-crop-card" data-crop="Rice Basmati">
-            <div class="crop-identity">
-              <div class="crop-icon-thumb">🍚</div>
-              <div class="crop-name-stack">
-                <span class="crop-name-label">Rice (Basmati)</span>
-                <span class="crop-unit-label">$3,850 / Quintal</span>
-              </div>
-            </div>
-            <svg class="sparkline-svg" viewBox="0 0 70 24">
-              <path d="M0,20 L15,17 L30,12 L45,14 L60,6 L70,2" fill="none" stroke="#34c759" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-            <div class="price-change-stack">
-              <span class="price-main-val">$3,850</span>
-              <div class="pct-pill-badge up">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
-                <span>+6.1%</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Cotton -->
-          <div class="market-crop-card" data-crop="Cotton">
-            <div class="crop-identity">
-              <div class="crop-icon-thumb">☁️</div>
-              <div class="crop-name-stack">
-                <span class="crop-name-label">Cotton</span>
-                <span class="crop-unit-label">$6,420 / Quintal</span>
-              </div>
-            </div>
-            <svg class="sparkline-svg" viewBox="0 0 70 24">
-              <path d="M0,6 L15,8 L30,5 L45,14 L60,12 L70,20" fill="none" stroke="#e53935" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-            <div class="price-change-stack">
-              <span class="price-main-val">$6,420</span>
-              <div class="pct-pill-badge down">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m19 12-7 7-7-7M12 5v14"/></svg>
-                <span>-2.4%</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Sugarcane -->
-          <div class="market-crop-card" data-crop="Sugarcane">
-            <div class="crop-identity">
-              <div class="crop-icon-thumb">🎋</div>
-              <div class="crop-name-stack">
-                <span class="crop-name-label">Sugarcane</span>
-                <span class="crop-unit-label">$345 / Quintal</span>
-              </div>
-            </div>
-            <svg class="sparkline-svg" viewBox="0 0 70 24">
-              <path d="M0,16 L15,12 L30,15 L45,10 L60,11 L70,6" fill="none" stroke="#34c759" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-            <div class="price-change-stack">
-              <span class="price-main-val">$345</span>
-              <div class="pct-pill-badge up">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
-                <span>+1.8%</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Maize -->
-          <div class="market-crop-card" data-crop="Maize Corn">
-            <div class="crop-identity">
-              <div class="crop-icon-thumb">🌽</div>
-              <div class="crop-name-stack">
-                <span class="crop-name-label">Maize</span>
-                <span class="crop-unit-label">$1,920 / Quintal</span>
-              </div>
-            </div>
-            <svg class="sparkline-svg" viewBox="0 0 70 24">
-              <path d="M0,8 L15,6 L30,12 L45,10 L60,18 L70,16" fill="none" stroke="#e53935" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-            <div class="price-change-stack">
-              <span class="price-main-val">$1,920</span>
-              <div class="pct-pill-badge down">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m19 12-7 7-7-7M12 5v14"/></svg>
-                <span>-1.2%</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Soybean -->
-          <div class="market-crop-card" data-crop="Soybean">
-            <div class="crop-identity">
-              <div class="crop-icon-thumb">🌱</div>
-              <div class="crop-name-stack">
-                <span class="crop-name-label">Soybean</span>
-                <span class="crop-unit-label">$4,100 / Quintal</span>
-              </div>
-            </div>
-            <svg class="sparkline-svg" viewBox="0 0 70 24">
-              <path d="M0,18 L15,14 L30,10 L45,12 L60,7 L70,3" fill="none" stroke="#34c759" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-            <div class="price-change-stack">
-              <span class="price-main-val">$4,100</span>
-              <div class="pct-pill-badge up">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
-                <span>+3.5%</span>
-              </div>
-            </div>
-          </div>
+          <!-- Dynamic Mandi Crop Cards will be rendered here by JavaScript -->
         </div>
       </div>
 
@@ -667,6 +590,19 @@
                 <div class="settings-text-col">
                   <span class="settings-opt-title">Language</span>
                   <span class="settings-opt-sub">English (US) / Switch language</span>
+                </div>
+              </div>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+
+            <div class="settings-item-row" onclick="navigateTo('screen-kvk-directory')">
+              <div class="settings-item-left">
+                <div class="settings-icon-box" style="background:#eaf9ee;color:#2b6b2e;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </div>
+                <div class="settings-text-col">
+                  <span class="settings-opt-title">Kisan Helpline &amp; KVK Directory</span>
+                  <span class="settings-opt-sub">Toll-free 1800-180-1551 &amp; state KVKs</span>
                 </div>
               </div>
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
@@ -911,7 +847,9 @@
           <div class="crop-rec-result-card" id="cropRecResultCard">
             <div class="rec-crop-badge-row">
               <div class="rec-crop-left">
-                <div class="crop-img-thumb" id="recCropEmoji">🌾</div>
+                <div class="crop-img-thumb" id="recCropEmoji">
+                  <img src="https://em-content.zobj.net/source/apple/453/sheaf-of-rice_1f33e.png" class="apple-crop-rec-img" alt="Wheat">
+                </div>
                 <div class="crop-name-stack">
                   <span class="crop-name-label" id="recCropName" style="font-size:16px;">Golden Wheat</span>
                   <span class="crop-unit-label" id="recCropCategory">Grain • Cereal Crop</span>
@@ -1275,6 +1213,344 @@
     </section>
 
     <!-- =========================================================================
+         11. SCREEN: REAL-TIME WEATHER & AGRO-ADVISORY (OPENWEATHER)
+         ========================================================================= -->
+    <section id="screen-weather" class="screen-view">
+      <div class="scroll-area no-tab">
+        <header class="screen-header">
+          <button class="icon-btn" onclick="navigateTo('screen-ai-features')" title="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <span class="header-title">Full Day Agro-Weather</span>
+          <button class="icon-btn" onclick="fetchLiveWeatherData(true)" title="Refresh Live Weather">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          </button>
+        </header>
+
+        <div style="padding: 0 18px 24px 18px; display: flex; flex-direction: column; gap: 14px;">
+          <!-- Weather Hero Card -->
+          <div class="weather-hero-card">
+            <div class="weather-hero-top">
+              <div>
+                <span class="weather-city-label" id="weatherCityDisplay">📍 Ahmedabad, Gujarat</span>
+                <div class="weather-temp-huge" id="weatherTempDisplay">32°C</div>
+                <span class="weather-condition-sub" id="weatherCondDisplay">Partly Cloudy • RealFeel 35°C</span>
+              </div>
+              <div class="weather-hero-icon" id="weatherIconEmoji">
+                <img src="https://em-content.zobj.net/source/apple/453/sun-behind-cloud_26c5.png" class="apple-weather-hero-img" alt="Weather">
+              </div>
+            </div>
+
+            <div class="weather-stats-grid">
+              <div class="weather-stat-box">
+                <span class="stat-header-text">Humidity</span>
+                <span class="stat-bold-value" id="weatherHumidityDisplay">62%</span>
+              </div>
+              <div class="weather-stat-box">
+                <span class="stat-header-text">Wind Speed</span>
+                <span class="stat-bold-value" id="weatherWindDisplay">12 km/h</span>
+              </div>
+              <div class="weather-stat-box">
+                <span class="stat-header-text">Rain Chance</span>
+                <span class="stat-bold-value" id="weatherRainDisplay">10%</span>
+              </div>
+              <div class="weather-stat-box">
+                <span class="stat-header-text">UV Index</span>
+                <span class="stat-bold-value" id="weatherUVDisplay">6 High</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sunrise, Sunset & Day Length for Farmers -->
+          <div class="sun-schedule-banner">
+            <div class="sun-schedule-item">
+              <span class="sun-icon"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-small-cloud_1f324-fe0f.png" class="apple-sun-img" alt="Sunrise"></span>
+              <div class="sun-text-stack">
+                <span class="sun-label">Sunrise</span>
+                <strong class="sun-val" id="weatherSunrise">06:14 AM</strong>
+              </div>
+            </div>
+            <div class="sun-divider"></div>
+            <div class="sun-schedule-item">
+              <span class="sun-icon"><img src="https://em-content.zobj.net/source/apple/453/crescent-moon_1f319.png" class="apple-sun-img" alt="Sunset"></span>
+              <div class="sun-text-stack">
+                <span class="sun-label">Sunset</span>
+                <strong class="sun-val" id="weatherSunset">06:38 PM</strong>
+              </div>
+            </div>
+            <div class="sun-divider"></div>
+            <div class="sun-schedule-item">
+              <span class="sun-icon"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-cloud_26c5.png" class="apple-sun-img" alt="Solar"></span>
+              <div class="sun-text-stack">
+                <span class="sun-label">Solar Window</span>
+                <strong class="sun-val" style="color:var(--accent-green-dark);">12h 24m</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Full Day 24-Hour Timeline for Farmers -->
+          <div class="section-header-row" style="padding:0;">
+            <span class="section-heading">Full Day Hourly Forecast</span>
+            <span class="link-view-all" style="font-size:11px;">24-Hr Cycle</span>
+          </div>
+
+          <div class="hourly-weather-scroll" id="hourlyWeatherScroll">
+            <!-- Populated dynamically by JS -->
+            <div class="hourly-weather-card current">
+              <span class="hourly-time">Now</span>
+              <span class="hourly-emoji"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-cloud_26c5.png" class="apple-hourly-icon" alt="Cloudy"></span>
+              <span class="hourly-temp">32°C</span>
+              <span class="hourly-rain">💧 10%</span>
+              <span class="hourly-wind">💨 12k/h</span>
+              <span class="hourly-agro-tag ideal">Ideal Spray</span>
+            </div>
+            <div class="hourly-weather-card">
+              <span class="hourly-time">09:00 AM</span>
+              <span class="hourly-emoji"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-small-cloud_1f324-fe0f.png" class="apple-hourly-icon" alt="Sunny"></span>
+              <span class="hourly-temp">29°C</span>
+              <span class="hourly-rain">💧 5%</span>
+              <span class="hourly-wind">💨 10k/h</span>
+              <span class="hourly-agro-tag safe">Field Work</span>
+            </div>
+            <div class="hourly-weather-card">
+              <span class="hourly-time">12:00 PM</span>
+              <span class="hourly-emoji"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-small-cloud_1f324-fe0f.png" class="apple-hourly-icon" alt="Sun"></span>
+              <span class="hourly-temp">34°C</span>
+              <span class="hourly-rain">💧 10%</span>
+              <span class="hourly-wind">💨 14k/h</span>
+              <span class="hourly-agro-tag heat">Peak Heat</span>
+            </div>
+            <div class="hourly-weather-card">
+              <span class="hourly-time">03:00 PM</span>
+              <span class="hourly-emoji"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-large-cloud_1f325-fe0f.png" class="apple-hourly-icon" alt="Sun cloud"></span>
+              <span class="hourly-temp">35°C</span>
+              <span class="hourly-rain">💧 15%</span>
+              <span class="hourly-wind">💨 16k/h</span>
+              <span class="hourly-agro-tag safe">Tillage</span>
+            </div>
+            <div class="hourly-weather-card">
+              <span class="hourly-time">06:00 PM</span>
+              <span class="hourly-emoji"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-cloud_26c5.png" class="apple-hourly-icon" alt="Evening sun"></span>
+              <span class="hourly-temp">30°C</span>
+              <span class="hourly-rain">💧 10%</span>
+              <span class="hourly-wind">💨 11k/h</span>
+              <span class="hourly-agro-tag irrig">Drip Irrig</span>
+            </div>
+            <div class="hourly-weather-card">
+              <span class="hourly-time">09:00 PM</span>
+              <span class="hourly-emoji"><img src="https://em-content.zobj.net/source/apple/453/crescent-moon_1f319.png" class="apple-hourly-icon" alt="Moon"></span>
+              <span class="hourly-temp">26°C</span>
+              <span class="hourly-rain">💧 5%</span>
+              <span class="hourly-wind">💨 8k/h</span>
+              <span class="hourly-agro-tag safe">Cool Rest</span>
+            </div>
+          </div>
+
+          <!-- Farmer Day-Phases Action Schedule -->
+          <span class="section-heading">Farmer Day Schedule &amp; Actions</span>
+          <div class="day-phases-container">
+            <div class="phase-card">
+              <div class="phase-time-col">
+                <span class="phase-icon"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-small-cloud_1f324-fe0f.png" class="apple-phase-img" alt="Morning"></span>
+                <span class="phase-hour">06:00 - 10:00</span>
+              </div>
+              <div class="phase-detail-col">
+                <div class="phase-title-row">
+                  <span class="phase-title">Morning: Spray &amp; Weeding</span>
+                  <span class="advisory-badge-green">Best Window</span>
+                </div>
+                <p class="phase-desc">Dew dries up by 8 AM. Wind speed is low (&lt;10 km/h). Optimal for foliar micro-nutrient spray and weed removal.</p>
+              </div>
+            </div>
+
+            <div class="phase-card">
+              <div class="phase-time-col">
+                <span class="phase-icon"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-large-cloud_1f325-fe0f.png" class="apple-phase-img" alt="Mid-day"></span>
+                <span class="phase-hour">11:00 - 15:30</span>
+              </div>
+              <div class="phase-detail-col">
+                <div class="phase-title-row">
+                  <span class="phase-title">Mid-Day: Heat &amp; Solar Pumping</span>
+                  <span class="advisory-badge-yellow">Peak UV</span>
+                </div>
+                <p class="phase-desc">Peak solar irradiance for solar tubewells. Avoid chemical spraying or overhead sprinkler irrigation to prevent leaf burn and evaporation.</p>
+              </div>
+            </div>
+
+            <div class="phase-card">
+              <div class="phase-time-col">
+                <span class="phase-icon"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-cloud_26c5.png" class="apple-phase-img" alt="Evening"></span>
+                <span class="phase-hour">16:00 - 19:30</span>
+              </div>
+              <div class="phase-detail-col">
+                <div class="phase-title-row">
+                  <span class="phase-title">Evening: Irrigation &amp; Harvesting</span>
+                  <span class="advisory-badge-green">Ideal Irrigation</span>
+                </div>
+                <p class="phase-desc">Temperatures cool to 29°C. Best period for drip irrigation (45 mins) and vegetable harvesting to keep produce fresh for morning mandi.</p>
+              </div>
+            </div>
+
+            <div class="phase-card">
+              <div class="phase-time-col">
+                <span class="phase-icon"><img src="https://em-content.zobj.net/source/apple/453/crescent-moon_1f319.png" class="apple-phase-img" alt="Night"></span>
+                <span class="phase-hour">20:00 - 05:30</span>
+              </div>
+              <div class="phase-detail-col">
+                <div class="phase-title-row">
+                  <span class="phase-title">Night: Dew &amp; Pest Monitoring</span>
+                  <span class="advisory-badge-yellow">Watch Humidity</span>
+                </div>
+                <p class="phase-desc">Night temperature drops to 23°C with humidity rising to 78%. Favorable for crop rest; monitor for nocturnal bollworm or aphid flight.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Agro-Advisories for Farmers -->
+          <span class="section-heading">Smart Agricultural Advisories</span>
+          <div class="agro-advisory-list">
+            <!-- Spray Advisory -->
+            <div class="agro-advisory-card">
+              <div class="advisory-top-row">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:20px;">🚜</span>
+                  <div>
+                    <span class="advisory-title">Pesticide Spray Suitability</span>
+                    <span class="advisory-subtitle">Based on wind &amp; rain radar</span>
+                  </div>
+                </div>
+                <span class="advisory-badge-green" id="sprayBadge">Ideal Today</span>
+              </div>
+              <p class="advisory-text" id="sprayText">
+                🟢 Rain probability is low (&lt;15%) and wind is gentle (&lt;15 km/h). Safe for foliar spray and fertilizer top-dressing.
+              </p>
+            </div>
+
+            <!-- Irrigation Advisory -->
+            <div class="agro-advisory-card">
+              <div class="advisory-top-row">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:20px;">💧</span>
+                  <div>
+                    <span class="advisory-title">Irrigation Management</span>
+                    <span class="advisory-subtitle">Soil moisture &amp; evapotranspiration</span>
+                  </div>
+                </div>
+                <span class="advisory-badge-yellow" id="irrigBadge">Moderate</span>
+              </div>
+              <p class="advisory-text" id="irrigText">
+                🟡 Run evening drip irrigation for 40-50 mins. Avoid afternoon flood watering to prevent root heating.
+              </p>
+            </div>
+
+            <!-- Sowing Advisory -->
+            <div class="agro-advisory-card">
+              <div class="advisory-top-row">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:20px;">🌱</span>
+                  <div>
+                    <span class="advisory-title">Sowing &amp; Field Operations</span>
+                    <span class="advisory-subtitle">Soil temperature window</span>
+                  </div>
+                </div>
+                <span class="advisory-badge-green" id="sowingBadge">Favorable</span>
+              </div>
+              <p class="advisory-text" id="sowingText">
+                🟢 Soil moisture and temperature steady at 24-28°C. Favorable for Rabi season field preparation.
+              </p>
+            </div>
+          </div>
+
+          <!-- 5-Day Forecast Carousel -->
+          <span class="section-heading">5-Day Agro Forecast</span>
+          <div class="forecast-horizontal-scroll" id="weatherForecastScroll">
+            <div class="forecast-day-card">
+              <span class="forecast-day-name">Today</span>
+              <span class="forecast-emoji"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-cloud_26c5.png" class="apple-forecast-icon" alt="Cloudy"></span>
+              <span class="forecast-temp-val">32° / 23°</span>
+              <span class="forecast-rain-pill">10% Rain</span>
+            </div>
+            <div class="forecast-day-card">
+              <span class="forecast-day-name">Tue</span>
+              <span class="forecast-emoji"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-small-cloud_1f324-fe0f.png" class="apple-forecast-icon" alt="Sunny"></span>
+              <span class="forecast-temp-val">34° / 24°</span>
+              <span class="forecast-rain-pill">5% Rain</span>
+            </div>
+            <div class="forecast-day-card">
+              <span class="forecast-day-name">Wed</span>
+              <span class="forecast-emoji"><img src="https://em-content.zobj.net/source/apple/453/cloud-with-rain_1f327-fe0f.png" class="apple-forecast-icon" alt="Rain"></span>
+              <span class="forecast-temp-val">29° / 22°</span>
+              <span class="forecast-rain-pill" style="background:#fff3cd;color:#856404;">65% Rain</span>
+            </div>
+            <div class="forecast-day-card">
+              <span class="forecast-day-name">Thu</span>
+              <span class="forecast-emoji"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-rain-cloud_1f326-fe0f.png" class="apple-forecast-icon" alt="Showers"></span>
+              <span class="forecast-temp-val">31° / 23°</span>
+              <span class="forecast-rain-pill">30% Rain</span>
+            </div>
+            <div class="forecast-day-card">
+              <span class="forecast-day-name">Fri</span>
+              <span class="forecast-emoji"><img src="https://em-content.zobj.net/source/apple/453/sun-behind-cloud_26c5.png" class="apple-forecast-icon" alt="Sunny"></span>
+              <span class="forecast-temp-val">33° / 24°</span>
+              <span class="forecast-rain-pill">0% Rain</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         12. SCREEN: KISAN HELPLINE & KRISHI VIGYAN KENDRA (KVK) DIRECTORY
+         ========================================================================= -->
+    <section id="screen-kvk-directory" class="screen-view">
+      <div class="scroll-area no-tab">
+        <header class="screen-header">
+          <button class="icon-btn" onclick="navigateTo('screen-profile')" title="Back to Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <span class="header-title">Kisan Helpline &amp; KVK</span>
+          <div class="emergency-badge-tag">24/7 Support</div>
+        </header>
+
+        <div style="padding: 0 18px 24px 18px; display: flex; flex-direction: column; gap: 14px;">
+          <!-- National Kisan Call Center Banner -->
+          <div class="kcc-hero-card">
+            <div class="kcc-top">
+              <div class="kcc-icon-box">📞</div>
+              <div>
+                <h3 class="kcc-title">National Kisan Call Center</h3>
+                <span class="kcc-subtitle">Govt of India • Toll Free (6 AM - 10 PM)</span>
+              </div>
+            </div>
+            <div class="kcc-number-badge">
+              <span>Toll Free Number:</span>
+              <strong style="font-size:20px;letter-spacing:1px;">1800-180-1551</strong>
+            </div>
+            <a href="tel:18001801551" class="kcc-call-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <span>Call Kisan Expert (Free)</span>
+            </a>
+          </div>
+
+          <!-- KVK Directory Filter -->
+          <div class="section-header-row" style="padding:0;">
+            <span class="section-heading">State Krishi Vigyan Kendras (KVK)</span>
+          </div>
+
+          <div class="market-search-bar" style="height:40px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="kvkSearchInput" placeholder="Search state or district (e.g. Gujarat, Pune)..." oninput="filterKvkDirectory()">
+          </div>
+
+          <!-- KVK Centers List -->
+          <div class="kvk-list-container" id="kvkListContainer">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
          AI FARMING ASSISTANT MODAL OVERLAY
          ========================================================================= -->
     <div id="aiChatModal" class="chat-modal-overlay">
@@ -1305,305 +1581,8 @@
   </main>
 </div>
 
-<!-- Application Logic -->
-<script>
-  // Navigation Controller
-  function navigateTo(screenId) {
-    const screens = document.querySelectorAll('.screen-view');
-    screens.forEach(s => s.classList.remove('active'));
-
-    const target = document.getElementById(screenId);
-    if (target) {
-      target.classList.add('active');
-      const scroll = target.querySelector('.scroll-area');
-      if (scroll) scroll.scrollTop = 0;
-    }
-  }
-
-  // Language Chip Selector
-  function selectLang(btn) {
-    const chips = document.querySelectorAll('.lang-chip');
-    chips.forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  // Market Search Filter
-  function filterMarketList() {
-    const query = document.getElementById('marketSearchInput').value.toLowerCase();
-    const cards = document.querySelectorAll('#marketListContainer .market-crop-card');
-    cards.forEach(card => {
-      const cropText = card.getAttribute('data-crop')?.toLowerCase() || '';
-      if (cropText.includes(query)) {
-        card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  }
-
-  // Disease Scanner Simulation
-  const diseasesDatabase = [
-    {
-      name: "Tomato Late Blight",
-      severity: "High Severity",
-      confidence: "94.2%",
-      family: "Solanaceae",
-      symptoms: "Large, blue-gray to dark brown patches appear on leaves and stems, often accompanied by pale green halos and white mold on leaf undersides."
-    },
-    {
-      name: "Wheat Powdery Mildew",
-      severity: "Moderate Severity",
-      confidence: "91.8%",
-      family: "Poaceae",
-      symptoms: "White fluffy fungal patches on upper leaf surfaces turning into light brown powdery lesions."
-    },
-    {
-      name: "Cotton Bacterial Blight",
-      severity: "Critical Severity",
-      confidence: "96.4%",
-      family: "Malvaceae",
-      symptoms: "Angular water-soaked spots on leaf blades with reddish-brown necrotic centers and vein blackening."
-    }
-  ];
-  let currentDiseaseIndex = 0;
-
-  function simulateNewScan() {
-    const laser = document.getElementById('scanLaser');
-    laser.style.display = 'block';
-    laser.style.animation = 'scanLaser 1.5s ease-in-out infinite alternate';
-
-    setTimeout(() => {
-      currentDiseaseIndex = (currentDiseaseIndex + 1) % diseasesDatabase.length;
-      const data = diseasesDatabase[currentDiseaseIndex];
-
-      document.getElementById('diseaseNameDisplay').textContent = data.name;
-      document.getElementById('severityPillDisplay').textContent = data.severity;
-      document.getElementById('confidenceDisplay').textContent = data.confidence;
-      document.getElementById('cropFamilyDisplay').textContent = data.family;
-      document.getElementById('symptomsTextDisplay').textContent = data.symptoms;
-      alert(`AI Scan Complete: Diagnosed "${data.name}" with ${data.confidence} accuracy.`);
-    }, 1000);
-  }
-
-  // AI Crop Recommendation Engine
-  function calculateCropRecommendation() {
-    const N = parseFloat(document.getElementById('recN').value) || 45;
-    const P = parseFloat(document.getElementById('recP').value) || 32;
-    const K = parseFloat(document.getElementById('recK').value) || 120;
-    const pH = parseFloat(document.getElementById('recPH').value) || 6.5;
-    const rain = parseFloat(document.getElementById('recRain').value) || 1200;
-    const temp = parseFloat(document.getElementById('recTemp').value) || 24;
-
-    let crop = "Golden Wheat";
-    let emoji = "🌾";
-    let category = "Grain • Cereal Crop";
-    let score = "94% Match";
-
-    if (rain > 1500) {
-      crop = "Basmati Rice";
-      emoji = "🍚";
-      category = "Paddy • Wetland Crop";
-      score = "97% Match";
-    } else if (temp > 28) {
-      crop = "Hybrid Cotton";
-      emoji = "☁️";
-      category = "Fiber • Cash Crop";
-      score = "92% Match";
-    } else if (N > 80) {
-      crop = "Sweet Corn";
-      emoji = "🌽";
-      category = "Grain • High Nutrient";
-      score = "95% Match";
-    }
-
-    document.getElementById('recCropName').textContent = crop;
-    document.getElementById('recCropEmoji').textContent = emoji;
-    document.getElementById('recCropCategory').textContent = category;
-    document.getElementById('recMatchScore').textContent = score;
-    document.getElementById('recPHDisplay').textContent = pH;
-
-    const card = document.getElementById('cropRecResultCard');
-    card.style.transform = 'scale(1.02)';
-    setTimeout(() => card.style.transform = 'scale(1)', 200);
-  }
-
-  // Yield Prediction Engine
-  function calculateYield() {
-    const crop = document.getElementById('yieldCropSelect').value;
-    const area = parseFloat(document.getElementById('yieldAreaSelect').value) || 5.5;
-    const soil = document.getElementById('yieldSoilSelect').value;
-    const irrig = document.getElementById('yieldIrrigSelect').value;
-
-    let baseYieldPerAcre = 40;
-    if (crop === 'wheat') baseYieldPerAcre = 41;
-    if (crop === 'rice') baseYieldPerAcre = 48;
-    if (crop === 'cotton') baseYieldPerAcre = 33;
-    if (crop === 'maize') baseYieldPerAcre = 52;
-    if (crop === 'soybean') baseYieldPerAcre = 28;
-    if (crop === 'sugarcane') baseYieldPerAcre = 290;
-
-    let soilMultiplier = soil === 'clay' ? 1.05 : (soil === 'black' ? 1.15 : 0.95);
-    let irrigMultiplier = irrig === 'drip' ? 1.15 : (irrig === 'sprinkler' ? 1.08 : 0.9);
-
-    const total = (baseYieldPerAcre * area * soilMultiplier * irrigMultiplier).toFixed(1);
-    document.getElementById('yieldOutputDisplay').textContent = `${total} Quintals`;
-  }
-
-  // Profit Calculation Engine
-  function calculateProfit() {
-    const yieldAmt = parseFloat(document.getElementById('profitYieldInput').value) || 180;
-    const cost = parseFloat(document.getElementById('profitCostInput').value) || 3200;
-    const rate = parseFloat(document.getElementById('profitRateInput').value) || 85;
-
-    const totalRevenue = yieldAmt * rate;
-    const netProfit = totalRevenue - cost;
-    const margin = ((netProfit / (totalRevenue || 1)) * 100).toFixed(2);
-    const roi = (totalRevenue / (cost || 1)).toFixed(2);
-
-    document.getElementById('profitNetDisplay').textContent = `$${netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    document.getElementById('profitMarginDisplay').textContent = `${margin}%`;
-    document.getElementById('profitRoiDisplay').textContent = `${roi}x`;
-
-    const costPct = Math.min(Math.max((cost / (totalRevenue || 1)) * 100, 10), 90);
-    const profitPct = 100 - costPct;
-
-    document.getElementById('costPortionBar').style.width = `${costPct}%`;
-    document.getElementById('profitPortionBar').style.width = `${profitPct}%`;
-    document.getElementById('costLegendText').textContent = `Cost ($${(cost/1000).toFixed(1)}K)`;
-    document.getElementById('profitLegendText').textContent = `Profit ($${(netProfit/1000).toFixed(1)}K)`;
-  }
-
-  // Soil Health Score Engine
-  function calculateSoilHealth() {
-    const N = parseFloat(document.getElementById('soilN').value) || 48;
-    const P = parseFloat(document.getElementById('soilP').value) || 14;
-    const K = parseFloat(document.getElementById('soilK').value) || 32;
-
-    let score = Math.round(Math.min(100, (N * 0.4 + P * 1.5 + K * 0.8)));
-    if (score < 40) score = 55;
-    if (score > 98) score = 96;
-
-    document.getElementById('soilScoreNumber').textContent = score;
-    const circle = document.getElementById('soilGaugeCircle');
-    const offset = 188 - (188 * score / 100);
-    circle.style.strokeDashoffset = offset;
-
-    document.getElementById('soilNText').textContent = `Current value: ${N} mg/kg`;
-    document.getElementById('soilPText').textContent = `Current value: ${P} mg/kg`;
-    document.getElementById('soilKText').textContent = `Current value: ${K} mg/kg`;
-
-    const pBadge = document.getElementById('soilPBadge');
-    if (P < 20) {
-      pBadge.className = 'status-badge-deficient';
-      pBadge.textContent = 'Low Deficient';
-    } else {
-      pBadge.className = 'status-badge-optimal';
-      pBadge.textContent = 'Optimal';
-    }
-  }
-
-  function toggleSoilMode(mode) {
-    const reportBtn = document.getElementById('toggleReportBtn');
-    const manualBtn = document.getElementById('toggleManualBtn');
-    if (mode === 'report') {
-      reportBtn.classList.add('active');
-      manualBtn.classList.remove('active');
-      alert('Report Scan: Camera & OCR ready to scan your official soil lab PDF / printout.');
-    } else {
-      manualBtn.classList.add('active');
-      reportBtn.classList.remove('active');
-    }
-  }
-
-  // AI Assistant Chat Modal
-  function openChatModal() {
-    document.getElementById('aiChatModal').classList.add('active');
-  }
-
-  function closeChatModal() {
-    document.getElementById('aiChatModal').classList.remove('active');
-  }
-
-  function handleChatKey(e) {
-    if (e.key === 'Enter') sendChatMessage();
-  }
-
-  function sendChatMessage() {
-    const input = document.getElementById('chatInputText');
-    const text = input.value.trim();
-    if (!text) return;
-
-    const box = document.getElementById('chatMessagesBox');
-    
-    const userDiv = document.createElement('div');
-    userDiv.className = 'chat-bubble-user';
-    userDiv.textContent = text;
-    box.appendChild(userDiv);
-    input.value = '';
-
-    box.scrollTop = box.scrollHeight;
-
-    setTimeout(() => {
-      const aiDiv = document.createElement('div');
-      aiDiv.className = 'chat-bubble-ai';
-      
-      const lower = text.toLowerCase();
-      if (lower.includes('wheat') || lower.includes('yield')) {
-        aiDiv.textContent = "Based on your 142-acre plot in Oregon, wheat is currently tracking +14% above regional yield averages. Keep drip irrigation steady during late flowering.";
-      } else if (lower.includes('price') || lower.includes('market')) {
-        aiDiv.textContent = "Realtime trade update: Wheat is up +4.2% at $2,150/qtl and Cotton is down -2.4%. We recommend locking in forward contracts for Soybeans!";
-      } else if (lower.includes('soil') || lower.includes('fertilizer')) {
-        aiDiv.textContent = "Your recent soil test shows Phosphorus is slightly deficient (14 mg/kg). Consider top-dressing with 25kg/acre DAP before the next rain.";
-      } else {
-        aiDiv.textContent = "I have analyzed your request against local weather sensors and crop databases. All telemetry indicates healthy vegetative growth!";
-      }
-
-      box.appendChild(aiDiv);
-      box.scrollTop = box.scrollHeight;
-    }, 600);
-  }
-
-  // Welcome Screen Slideshow Carousel (Auto transition every 3s)
-  let currentWelcomeSlide = 0;
-  let welcomeSlideInterval = null;
-
-  function showSlide(index) {
-    const slides = document.querySelectorAll('.welcome-slide');
-    const dots = document.querySelectorAll('.slide-dot');
-    if (!slides.length) return;
-
-    currentWelcomeSlide = (index + slides.length) % slides.length;
-
-    slides.forEach((s, idx) => {
-      s.classList.toggle('active', idx === currentWelcomeSlide);
-    });
-
-    dots.forEach((d, idx) => {
-      d.classList.toggle('active', idx === currentWelcomeSlide);
-    });
-  }
-
-  function nextSlide() {
-    showSlide(currentWelcomeSlide + 1);
-  }
-
-  function jumpToSlide(index) {
-    showSlide(index);
-    resetSlideTimer();
-  }
-
-  function resetSlideTimer() {
-    if (welcomeSlideInterval) clearInterval(welcomeSlideInterval);
-    welcomeSlideInterval = setInterval(nextSlide, 3000);
-  }
-
-  // Start auto-transition on page load
-  document.addEventListener('DOMContentLoaded', () => {
-    resetSlideTimer();
-  });
-  // Also initiate immediately if DOM is ready
-  resetSlideTimer();
-</script>
+<!-- Application Logic Script -->
+<script src="app.js"></script>
 
 </body>
 </html>
