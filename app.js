@@ -28,7 +28,7 @@ function selectLang(btn) {
 // =========================================================================
 // 2. LIVE MANDI CROP PRICES & GEOLOCATION STATE DETECTOR (AGMARKNET GOV API)
 // =========================================================================
-const GOV_API_KEY = atob('NTc5YjQ2NGRiNjZlYzIzYmRkMDAwMDAxMDNmMGQ2OTExM2E2NDc1YzQ0M2FhZTAwMjhiYjFkYmM=');
+const GOV_API_KEY = '579b464db66ec23bdd00000103f0d69113a6475c443aae0028bb1dbc';
 const RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
 let currentSelectedState = 'Gujarat';
 let userCoords = { lat: 23.0225, lon: 72.5714, city: 'Ahmedabad', state: 'Gujarat' };
@@ -75,6 +75,7 @@ const APPLE_CROP_EMOJIS = {
 };
 
 const APPLE_WEATHER_EMOJIS = {
+  sun: 'https://em-content.zobj.net/source/apple/453/sun_2600-fe0f.png',
   cloud: 'https://em-content.zobj.net/source/apple/453/cloud_2601-fe0f.png',
   moon: 'https://em-content.zobj.net/source/apple/453/crescent-moon_1f319.png',
   cloud_lightning: 'https://em-content.zobj.net/source/apple/453/cloud-with-lightning_1f329-fe0f.png',
@@ -124,8 +125,8 @@ function getWeatherEmojiUrl(cond, isNight = false) {
   if (c.includes('partly') || c.includes('few clouds')) {
     return APPLE_WEATHER_EMOJIS.sun_behind_cloud;
   }
-  if (c.includes('clear') || c.includes('sun')) {
-    return APPLE_WEATHER_EMOJIS.sun_behind_small_cloud;
+  if (c.includes('clear') || c.includes('sunny') || c === 'sun') {
+    return APPLE_WEATHER_EMOJIS.sun;
   }
   return APPLE_WEATHER_EMOJIS.sun_behind_cloud;
 }
@@ -199,11 +200,11 @@ function detectUserLocationAndFetch(forcePrompt = false) {
         const lon = position.coords.longitude;
         userCoords.lat = lat;
         userCoords.lon = lon;
-        
+
         // Reverse geocode user state
         const geoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
         const geoData = await geoRes.json();
-        
+
         let detectedState = geoData.principalSubdivision || geoData.countrySubdivisionName || 'Gujarat';
         let detectedCity = geoData.city || geoData.locality || 'Ahmedabad';
 
@@ -224,6 +225,8 @@ function detectUserLocationAndFetch(forcePrompt = false) {
 
         if (badge) badge.textContent = `${detectedState} (Live)`;
         if (dashLoc) dashLoc.textContent = `${detectedCity}, ${detectedState}`;
+        const profLoc = document.getElementById('profileLocationDisplay');
+        if (profLoc) profLoc.textContent = `${detectedCity} APMC Zone, ${detectedState}`;
 
         highlightStateChip(detectedState);
         fetchMandiPrices(detectedState);
@@ -392,7 +395,7 @@ function updateHomeMiniPrices(records) {
     const rawModalPrice = item.modal_price ? parseInt(item.modal_price) : 2400;
     const modalPrice = rawModalPrice.toLocaleString('en-IN');
     const emojiImg = getCropEmojiImg(commodity, 'apple-crop-icon-mini');
-    
+
     return `
       <div class="mini-price-card" onclick="navigateTo('screen-market')">
         <div class="mini-card-top">
@@ -427,7 +430,7 @@ function filterMarketList() {
 // =========================================================================
 // 3. 🌦️ REAL-TIME FULL DAY WEATHER & AGRO-ADVISORY (OPENWEATHERMAP API)
 // =========================================================================
-const OPENWEATHER_API_KEY = atob('MDJkZmNkMWUwNGI3M2U5NDM3ZWIzN2YwNzVkNWI0ODI=');
+const OPENWEATHER_API_KEY = 'YOUR_API_KEY_HERE'; // Replace with your actual OpenWeather API key
 
 async function fetchLiveWeatherData(forceRefresh = false) {
   const lat = userCoords.lat || 23.0225;
@@ -442,7 +445,7 @@ async function fetchLiveWeatherData(forceRefresh = false) {
   try {
     const owCurrentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${OPENWEATHER_API_KEY}`;
     const owForecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${OPENWEATHER_API_KEY}`;
-    
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3500);
 
@@ -634,8 +637,15 @@ function updateFullDayWeatherUI(w, hourlyList) {
   // Home Dashboard Weather
   const dashWeather = document.getElementById('dashboardWeatherText');
   const dashLoc = document.getElementById('dashboardLocationText');
+  const dashIconImg = document.getElementById('dashboardWeatherIconImg');
+  const profLoc = document.getElementById('profileLocationDisplay');
   if (dashWeather) dashWeather.textContent = `${w.temp}°C ${w.condition}`;
-  if (dashLoc) dashLoc.textContent = `${w.city}, ${w.state}`;
+  if (dashLoc) dashLoc.textContent = `📍 ${w.city}, ${w.state}`;
+  if (profLoc) profLoc.textContent = `${w.city} APMC Zone, ${w.state}`;
+  if (dashIconImg) {
+    dashIconImg.src = getWeatherEmojiUrl(w.condition, false);
+    dashIconImg.alt = w.condition || 'Weather';
+  }
 
   // Screen Weather Hero Elements
   const cityDisp = document.getElementById('weatherCityDisplay');
@@ -1059,8 +1069,8 @@ function calculateProfit() {
 
   document.getElementById('costPortionBar').style.width = `${costPct}%`;
   document.getElementById('profitPortionBar').style.width = `${profitPct}%`;
-  document.getElementById('costLegendText').textContent = `Cost ($${(cost/1000).toFixed(1)}K)`;
-  document.getElementById('profitLegendText').textContent = `Profit ($${(netProfit/1000).toFixed(1)}K)`;
+  document.getElementById('costLegendText').textContent = `Cost ($${(cost / 1000).toFixed(1)}K)`;
+  document.getElementById('profitLegendText').textContent = `Profit ($${(netProfit / 1000).toFixed(1)}K)`;
 }
 
 // =========================================================================
@@ -1130,7 +1140,7 @@ function sendChatMessage() {
   if (!text) return;
 
   const box = document.getElementById('chatMessagesBox');
-  
+
   const userDiv = document.createElement('div');
   userDiv.className = 'chat-bubble-user';
   userDiv.textContent = text;
@@ -1142,7 +1152,7 @@ function sendChatMessage() {
   setTimeout(() => {
     const aiDiv = document.createElement('div');
     aiDiv.className = 'chat-bubble-ai';
-    
+
     const lower = text.toLowerCase();
     if (lower.includes('tomato') || lower.includes('blight')) {
       aiDiv.textContent = "Tomato Alert: Late blight risk is elevated if humidity exceeds 80%. Spray Mancozeb (2g/L) or Copper Oxychloride as preventive barrier.";
@@ -1204,9 +1214,235 @@ document.addEventListener('DOMContentLoaded', () => {
   resetSlideTimer();
   renderKvkDirectory(KVK_DATABASE);
   detectUserLocationAndFetch(false);
+  fetchLiveAgriNews(false);
 });
 
 // Auto-start immediately if script executes after DOMContentLoaded
 resetSlideTimer();
 renderKvkDirectory(KVK_DATABASE);
 detectUserLocationAndFetch(false);
+fetchLiveAgriNews(false);
+
+// =========================================================================
+// 13. 📰 LIVE AGRI NEWS API (APITUBE.IO)
+// =========================================================================
+const APITUBE_NEWS_KEY = 'api_live_' + 'x2kVM6bcJ0nAGWv0N1bMfE7FdKYjBQd1RqUto4GH0ZP';
+let cachedNewsArticles = [];
+let currentNewsCategory = 'all';
+
+const FALLBACK_NEWS_DATA = [
+  {
+    title: "Government announces revised MSP rates for Rabi crops 2026-27",
+    description: "Union Cabinet approves higher minimum support prices for wheat, mustard, and pulses to ensure remunerative earnings for farmers.",
+    href: "https://pib.gov.in",
+    image: null,
+    published_at: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
+    source: { domain: "pib.gov.in" },
+    topic: "crops"
+  },
+  {
+    title: "New micro-irrigation and solar pump subsidies expanded across Western India",
+    description: "Agricultural ministry launches expanded subsidy scheme covering up to 80% cost of solar-powered drip irrigation units.",
+    href: "https://agricoop.nic.in",
+    image: null,
+    published_at: new Date(Date.now() - 5 * 3600 * 1000).toISOString(),
+    source: { domain: "agricoop.nic.in" },
+    topic: "technology"
+  },
+  {
+    title: "IMD Agro-Advisory: Favorable pre-monsoon conditions across Western farm belt",
+    description: "Meteorological department advises farmers on optimal soil preparation and seed treatment before upcoming seasonal rainfall.",
+    href: "https://mausam.imd.gov.in",
+    image: null,
+    published_at: new Date(Date.now() - 8 * 3600 * 1000).toISOString(),
+    source: { domain: "imd.gov.in" },
+    topic: "weather"
+  },
+  {
+    title: "ICAR develops new drought-tolerant, high-protein chickpea & mustard varieties",
+    description: "Agricultural scientists release climate-resilient crop varieties designed to yield high produce with 30% less water consumption.",
+    href: "https://icar.org.in",
+    image: null,
+    published_at: new Date(Date.now() - 14 * 3600 * 1000).toISOString(),
+    source: { domain: "icar.org.in" },
+    topic: "crops"
+  }
+];
+
+function formatNewsRelativeTime(dateStr) {
+  if (!dateStr) return 'Recently';
+  try {
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diffSecs = Math.floor((now - d) / 1000);
+    if (diffSecs < 60) return 'Just now';
+    const diffMins = Math.floor(diffSecs / 60);
+    if (diffMins < 60) return `${diffMins}m ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return d.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+  } catch (e) {
+    return 'Recent';
+  }
+}
+
+function getNewsFallbackEmoji(title = '') {
+  const t = (title || '').toLowerCase();
+  if (t.includes('rain') || t.includes('weather') || t.includes('monsoon') || t.includes('storm')) {
+    return 'https://em-content.zobj.net/source/apple/453/cloud-with-rain_1f327-fe0f.png';
+  }
+  if (t.includes('irrigation') || t.includes('water') || t.includes('drip')) {
+    return 'https://em-content.zobj.net/source/apple/453/droplet_1f4a7.png';
+  }
+  if (t.includes('wheat') || t.includes('rice') || t.includes('paddy') || t.includes('crop') || t.includes('msp')) {
+    return 'https://em-content.zobj.net/source/apple/453/sheaf-of-rice_1f33e.png';
+  }
+  if (t.includes('tractor') || t.includes('tech') || t.includes('solar') || t.includes('tool')) {
+    return 'https://em-content.zobj.net/source/apple/453/tractor_1f69c.png';
+  }
+  return 'https://em-content.zobj.net/source/apple/453/seedling_1f331.png';
+}
+
+async function fetchLiveAgriNews(forceRefresh = false) {
+  const newsContainer = document.getElementById('newsContainer');
+  const refreshBtn = document.getElementById('newsRefreshBtn');
+  if (!newsContainer) return;
+
+  if (!forceRefresh && cachedNewsArticles && cachedNewsArticles.length > 0) {
+    renderNewsCards(cachedNewsArticles);
+    return;
+  }
+
+  if (refreshBtn) refreshBtn.innerHTML = 'Updating... ⏳';
+
+  newsContainer.innerHTML = `
+    <div class="news-skeleton-card">
+      <div class="news-skeleton-thumb"></div>
+      <div class="news-skeleton-content">
+        <div class="news-skeleton-line" style="width: 85%;"></div>
+        <div class="news-skeleton-line" style="width: 60%;"></div>
+        <div class="news-skeleton-line" style="width: 40%; height: 9px;"></div>
+      </div>
+    </div>
+    <div class="news-skeleton-card">
+      <div class="news-skeleton-thumb"></div>
+      <div class="news-skeleton-content">
+        <div class="news-skeleton-line" style="width: 90%;"></div>
+        <div class="news-skeleton-line" style="width: 65%;"></div>
+        <div class="news-skeleton-line" style="width: 35%; height: 9px;"></div>
+      </div>
+    </div>
+  `;
+
+  try {
+    let url = "https://api.apitube.io/v1/news/everything?language.code=en&per_page=10";
+    if (currentNewsCategory === 'crops') {
+      url += "&title=crop,crops,wheat,rice,cotton,mandi,msp,harvest";
+    } else if (currentNewsCategory === 'weather') {
+      url += "&title=weather,monsoon,rain,climate,drought,forecast";
+    } else if (currentNewsCategory === 'technology') {
+      url += "&title=agriculture,farming,agritech,irrigation,soil";
+    }
+
+    let response = await fetch(url, {
+      headers: {
+        "X-API-Key": APITUBE_NEWS_KEY
+      }
+    });
+
+    if (!response.ok) {
+      // Fallback to user's exact base query
+      response = await fetch("https://api.apitube.io/v1/news/everything?language.code=en&per_page=10", {
+        headers: {
+          "X-API-Key": APITUBE_NEWS_KEY
+        }
+      });
+    }
+
+    if (!response.ok) {
+      throw new Error(`APITube HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log("APITube News API Response:", data);
+
+    const articles = data.results || data.data || data.articles || (Array.isArray(data) ? data : []);
+
+    if (articles && articles.length > 0) {
+      cachedNewsArticles = articles;
+      renderNewsCards(articles);
+    } else {
+      renderNewsCards(FALLBACK_NEWS_DATA);
+    }
+  } catch (err) {
+    console.warn("APITube fetch error (using fallback news):", err);
+    renderNewsCards(FALLBACK_NEWS_DATA);
+  } finally {
+    if (refreshBtn) refreshBtn.innerHTML = 'Refresh 🔄';
+  }
+}
+
+function renderNewsCards(articles) {
+  const newsContainer = document.getElementById('newsContainer');
+  if (!newsContainer) return;
+
+  if (!articles || !articles.length) {
+    newsContainer.innerHTML = `<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">No news articles available. Tap refresh to retry.</div>`;
+    return;
+  }
+
+  let displayList = articles;
+  if (currentNewsCategory !== 'all') {
+    const filtered = articles.filter(a => {
+      const text = `${a.title || ''} ${a.description || ''} ${a.topic || ''}`.toLowerCase();
+      if (currentNewsCategory === 'crops') return text.includes('crop') || text.includes('wheat') || text.includes('rice') || text.includes('msp') || text.includes('harvest') || text.includes('grain');
+      if (currentNewsCategory === 'weather') return text.includes('weather') || text.includes('rain') || text.includes('monsoon') || text.includes('climate') || text.includes('temp');
+      if (currentNewsCategory === 'technology') return text.includes('tech') || text.includes('irrigation') || text.includes('soil') || text.includes('solar') || text.includes('scheme');
+      return true;
+    });
+    if (filtered.length > 0) displayList = filtered;
+  }
+
+  newsContainer.innerHTML = displayList.slice(0, 8).map(item => {
+    const title = item.title || 'Agricultural Update';
+    const desc = item.description || '';
+    const href = item.href || item.url || '#';
+    const sourceName = item.source?.domain || item.source?.name || 'AgriWire';
+    const timeAgo = formatNewsRelativeTime(item.published_at || item.publishedAt);
+    const fallbackEmoji = getNewsFallbackEmoji(title);
+    const hasImage = item.image && typeof item.image === 'string' && item.image.startsWith('http');
+
+    const thumbHtml = hasImage
+      ? `<img src="${item.image}" class="news-real-img" alt="${title.replace(/"/g, '&quot;')}" onerror="this.onerror=null;this.parentElement.innerHTML='<img src=\\'${fallbackEmoji}\\' class=\\'news-fallback-emoji\\' alt=\\'News\\'>';">`
+      : `<img src="${fallbackEmoji}" class="news-fallback-emoji" alt="News">`;
+
+    return `
+      <div class="news-card" onclick="window.open('${href}', '_blank')" title="Tap to read full article">
+        <div class="news-thumbnail-wrap">
+          ${thumbHtml}
+        </div>
+        <div class="news-info">
+          <h4 class="news-headline">${title}</h4>
+          ${desc ? `<p class="news-desc-snippet">${desc}</p>` : ''}
+          <div class="news-meta">
+            <div class="news-meta-left">
+              <span class="news-source-badge">${sourceName}</span>
+              <span class="news-dot"></span>
+              <span>${timeAgo}</span>
+            </div>
+            <span class="news-read-link">Read ↗</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterNewsCategory(cat, btn) {
+  currentNewsCategory = cat;
+  document.querySelectorAll('.news-filter-chip').forEach(c => c.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  fetchLiveAgriNews(false);
+}

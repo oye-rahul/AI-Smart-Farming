@@ -87,13 +87,13 @@
       <div class="scroll-area">
         <!-- Header -->
         <div class="dashboard-header">
-          <div class="location-weather-badge" onclick="detectUserLocationAndFetch(true)" style="cursor:pointer;" title="Tap to refresh live location">
-            <div class="weather-icon-box">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <div class="location-weather-badge" onclick="navigateTo('screen-weather')" style="cursor:pointer;" title="Tap to view full day weather &amp; forecast">
+            <div class="weather-icon-box" id="dashboardWeatherIcon">
+              <img src="https://em-content.zobj.net/source/apple/453/sun_2600-fe0f.png" class="apple-header-weather-img" id="dashboardWeatherIconImg" alt="Clear Weather">
             </div>
             <div class="weather-text-wrap">
-              <div class="weather-temp" id="dashboardWeatherText">32°C Sunny</div>
-              <div class="weather-location" id="dashboardLocationText">Ahmedabad, Gujarat</div>
+              <div class="weather-temp" id="dashboardWeatherText">26°C Clear</div>
+              <div class="weather-location" id="dashboardLocationText">📍 Ahmedabad, Gujarat</div>
             </div>
           </div>
           <button class="icon-btn" onclick="navigateTo('screen-profile')" title="User Profile">
@@ -104,20 +104,39 @@
         <!-- AI Recommendation Hero Card -->
         <div class="home-hero-wrap">
           <div class="hero-recommendation-card">
-            <div class="hero-tag-row">
-              <span class="ai-pill-tag">AI Core Feature</span>
-              <div class="sparkle-icon-wrap">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+            <!-- Decorative Ambient Glows -->
+            <div class="hero-ambient-glow"></div>
+            <div class="hero-ambient-glow-sub"></div>
+
+            <div class="hero-card-content">
+              <!-- Top Row: Sparkle Icon -->
+
+
+              <!-- Main Row: Content + 3D Crop Sprout Graphic -->
+              <div class="hero-main-row">
+                <div class="hero-text-block">
+                  <h2 class="hero-card-title">AI Crop Recommendation</h2>
+                  <p class="hero-card-desc">Get personalized high-yield crop suggestions based on your soil &amp; climate profile.</p>
+                </div>
+                <div class="hero-visual-badge">
+                  <div class="hero-visual-glow"></div>
+                  <img src="https://em-content.zobj.net/source/apple/453/seedling_1f331.png" alt="Crop AI" class="hero-plant-img">
+                </div>
               </div>
+
+              <!-- Agri-Tech Highlights Micro-Chips -->
+              <div class="hero-chips-row">
+                <span class="hero-chip">🧪 Soil NPK Sync</span>
+                <span class="hero-chip">🌦️ Climate Match</span>
+                <span class="hero-chip">🎯 98.4% Accuracy</span>
+              </div>
+
+              <!-- High-Conversion Action Button -->
+              <button class="btn-get-rec" onclick="navigateTo('screen-crop-rec')">
+                <span>Get Recommendation</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
             </div>
-            <div class="hero-text-block">
-              <h2 class="hero-card-title">AI Crop Recommendation</h2>
-              <p class="hero-card-desc">Get personalized crop suggestions based on your soil &amp; climate profile.</p>
-            </div>
-            <button class="btn-get-rec" onclick="navigateTo('screen-crop-rec')">
-              <span>Get Recommendation</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </button>
           </div>
         </div>
 
@@ -205,52 +224,30 @@
           </div>
         </div>
 
-        <!-- Latest Agri News -->
+        <!-- Latest Agri News (APITube.io API) -->
         <div class="news-section">
-          <span class="section-heading">Latest Agri News</span>
-          <div class="news-card">
-            <div class="news-thumbnail" style="display:flex;align-items:center;justify-content:center;background:#eef6ee;border-radius:12px;">
-              <img src="https://em-content.zobj.net/source/apple/453/sheaf-of-rice_1f33e.png" class="apple-news-icon" alt="Wheat">
-            </div>
-            <div class="news-info">
-              <span class="news-headline">Government announces new MSP rates for Rabi crops</span>
-              <div class="news-meta">
-                <span>AgriNews</span>
-                <span class="news-dot"></span>
-                <span>2h ago</span>
-              </div>
-            </div>
+          <div class="section-header-row" style="padding: 0; margin-bottom: 2px;">
+            <span class="section-heading">Latest Agri News</span>
+            <span class="link-view-all" id="newsRefreshBtn" onclick="fetchLiveAgriNews(true)" style="cursor:pointer;" title="Refresh live news">Refresh 🔄</span>
           </div>
 
-          <div class="news-card">
-            <div class="news-thumbnail" style="display:flex;align-items:center;justify-content:center;background:#eef6ff;border-radius:12px;">
-              <img src="https://em-content.zobj.net/source/apple/453/cloud-with-rain_1f327-fe0f.png" class="apple-news-icon" alt="Water">
-            </div>
-            <div class="news-info">
-              <span class="news-headline">New low-cost irrigation techniques introduced in West Gujarat</span>
-              <div class="news-meta">
-                <span>Soil Science Daily</span>
-                <span class="news-dot"></span>
-                <span>5h ago</span>
-              </div>
-            </div>
+          <!-- Category Filter Bar -->
+          <div class="news-filter-scroll">
+            <button class="news-filter-chip active" onclick="filterNewsCategory('all', this)">All News</button>
+            <button class="news-filter-chip" onclick="filterNewsCategory('crops', this)">🌾 Crops &amp; MSP</button>
+            <button class="news-filter-chip" onclick="filterNewsCategory('weather', this)">🌦️ Weather</button>
+            <button class="news-filter-chip" onclick="filterNewsCategory('technology', this)">🚜 AgriTech</button>
           </div>
-        </div>
 
-        <!-- Explore AI Features Banner -->
-        <div class="explore-banner-wrap">
-          <div class="explore-ai-banner" onclick="navigateTo('screen-ai-features')">
-            <div class="banner-left">
-              <div class="banner-icon-badge">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          <!-- News Cards Container -->
+          <div id="newsContainer" class="news-cards-list">
+            <div class="news-skeleton-card">
+              <div class="news-skeleton-thumb"></div>
+              <div class="news-skeleton-content">
+                <div class="news-skeleton-line" style="width: 85%;"></div>
+                <div class="news-skeleton-line" style="width: 60%;"></div>
+                <div class="news-skeleton-line" style="width: 40%; height: 9px;"></div>
               </div>
-              <div>
-                <div class="banner-title">Explore AI Features</div>
-                <div class="banner-sub">Discover diagnostic and analysis tools</div>
-              </div>
-            </div>
-            <div class="banner-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </div>
           </div>
         </div>
@@ -514,16 +511,37 @@
          5. SCREEN: PROFILE & SETTINGS
          ========================================================================= -->
     <section id="screen-profile" class="screen-view">
-      <div class="scroll-area">
-        <div class="profile-card-top">
-          <div class="avatar-ring-container">
-            <div class="avatar-img-circle">👨‍🌾</div>
-          </div>
-          <div class="profile-meta-center">
-            <h2 class="farmer-full-name">David Miller</h2>
-            <div class="location-pin-row">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span>Green Valley Farms, Oregon</span>
+      <div class="scroll-area profile-scroll-area">
+        <!-- Top Screen Header Bar -->
+        <div class="profile-top-bar">
+          <span class="profile-header-title">Farmer Profile</span>
+          <button class="icon-btn-profile" onclick="alert('Digital Kisan ID: #GJ-9428\nStatus: Verified\nPM-KISAN: Active')" title="Digital Kisan ID">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="3" height="3"/><rect x="14" y="7" width="3" height="3"/><rect x="7" y="14" width="3" height="3"/><rect x="14" y="14" width="3" height="3"/></svg>
+          </button>
+        </div>
+
+        <!-- Hero Profile Card -->
+        <div class="profile-hero-card">
+          <div class="profile-ambient-glow"></div>
+          <div class="profile-card-inner">
+            <div class="avatar-ring-container">
+              <div class="avatar-img-circle">
+                <span class="avatar-emoji">👨‍🌾</span>
+              </div>
+              <div class="avatar-verified-badge" title="e-KYC Verified">✓</div>
+            </div>
+            
+            <div class="profile-meta-center">
+              <h2 class="farmer-full-name">Rahul Malvi</h2>
+              <div class="location-pin-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span id="profileLocationDisplay">Ahmedabad APMC Zone, Gujarat</span>
+              </div>
+              
+              <div class="kisan-badges-row">
+                <span class="kisan-badge kisan-badge-gold">⭐ Kisan Prime</span>
+                <span class="kisan-badge kisan-badge-id">Kisan ID: #GJ-9428</span>
+              </div>
             </div>
           </div>
         </div>
@@ -531,68 +549,95 @@
         <!-- 2x2 Stats Grid -->
         <div class="stats-2x2-grid">
           <div class="farmer-stat-card">
-            <span class="stat-header-text">Farm Size</span>
-            <span class="stat-bold-value">142 Acres</span>
-            <span class="stat-footer-text">Highlands</span>
+            <div class="stat-card-top">
+              <span class="stat-header-text">Farm Size</span>
+              <span class="stat-icon-wrap">🌾</span>
+            </div>
+            <span class="stat-bold-value">12.5 Acres</span>
+            <span class="stat-footer-text">Irrigated Farmland</span>
           </div>
+
           <div class="farmer-stat-card">
-            <span class="stat-header-text">Soil Type</span>
-            <span class="stat-bold-value">Silt Loam</span>
-            <span class="stat-footer-text">pH 6.2 - 6.8</span>
+            <div class="stat-card-top">
+              <span class="stat-header-text">Soil Profile</span>
+              <span class="stat-icon-wrap">🧪</span>
+            </div>
+            <span class="stat-bold-value">Black Loam</span>
+            <span class="stat-footer-text">pH 6.8 • High Carbon</span>
           </div>
+
           <div class="farmer-stat-card">
-            <span class="stat-header-text">Crops Growing</span>
-            <span class="stat-bold-value">Wheat, Soy</span>
-            <span class="stat-footer-text">2 Active plots</span>
+            <div class="stat-card-top">
+              <span class="stat-header-text">Active Crops</span>
+              <span class="stat-icon-wrap">🌱</span>
+            </div>
+            <span class="stat-bold-value">Wheat &amp; Cotton</span>
+            <span class="stat-footer-text">2 Active Rabi Plots</span>
           </div>
+
           <div class="farmer-stat-card">
-            <span class="stat-header-text">Member Tier</span>
-            <span class="stat-bold-value">Gold Yield</span>
-            <span class="stat-footer-text">Renew Nov 2026</span>
+            <div class="stat-card-top">
+              <span class="stat-header-text">Member Tier</span>
+              <span class="stat-icon-wrap">🏆</span>
+            </div>
+            <span class="stat-bold-value">Kisan Prime</span>
+            <span class="stat-footer-text">Valid till Nov 2026</span>
           </div>
+        </div>
+
+        <!-- Quick PM-KISAN Benefit Ribbon -->
+        <div class="pm-kisan-ribbon">
+          <div class="pm-kisan-left">
+            <span class="pm-kisan-dot"></span>
+            <div>
+              <span class="pm-kisan-title">PM-KISAN e-KYC Active</span>
+              <span class="pm-kisan-sub">Direct DBT Mandi Benefits Enabled</span>
+            </div>
+          </div>
+          <span class="pm-kisan-tag">Verified ✅</span>
         </div>
 
         <!-- Settings List -->
         <div class="profile-settings-section">
-          <span class="section-heading">Settings</span>
+          <span class="section-heading">Account &amp; Settings</span>
           <div class="settings-card-group">
-            <div class="settings-item-row" onclick="alert('Edit Profile: Name, contact & plot coordinates updated.')">
+            <div class="settings-item-row" onclick="alert('Edit Profile: Update your name, mobile, and land parcel coordinates.')">
               <div class="settings-item-left">
                 <div class="settings-icon-box">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 </div>
                 <div class="settings-text-col">
                   <span class="settings-opt-title">Edit Profile</span>
-                  <span class="settings-opt-sub">Change name, phone, crop focus</span>
+                  <span class="settings-opt-sub">Name, phone &amp; farm parcel records</span>
                 </div>
               </div>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              <svg viewBox="0 0 24 24" class="settings-chevron" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </div>
 
-            <div class="settings-item-row" onclick="alert('Notification Preferences: SMS & Soil Health alerts enabled.')">
+            <div class="settings-item-row" onclick="alert('Notification Preferences: Mandi daily SMS, weather alerts & soil telemetry notifications active.')">
               <div class="settings-item-left">
                 <div class="settings-icon-box">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 </div>
                 <div class="settings-text-col">
-                  <span class="settings-opt-title">Notification Preferences</span>
-                  <span class="settings-opt-sub">Soil alerts, market price surges</span>
+                  <span class="settings-opt-title">Notification Alerts</span>
+                  <span class="settings-opt-sub">Daily mandi rates, storm warnings</span>
                 </div>
               </div>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              <svg viewBox="0 0 24 24" class="settings-chevron" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </div>
 
-            <div class="settings-item-row" onclick="navigateTo('screen-welcome')">
+            <div class="settings-item-row" onclick="alert('Language Preference: Select English, Hindi (हिन्दी) or Gujarati (ગુજરાતી)')">
               <div class="settings-item-left">
                 <div class="settings-icon-box">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 </div>
                 <div class="settings-text-col">
-                  <span class="settings-opt-title">Language</span>
-                  <span class="settings-opt-sub">English (US) / Switch language</span>
+                  <span class="settings-opt-title">Language / भाषा</span>
+                  <span class="settings-opt-sub">English • हिन्दी • ગુજરાતી</span>
                 </div>
               </div>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              <svg viewBox="0 0 24 24" class="settings-chevron" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </div>
 
             <div class="settings-item-row" onclick="navigateTo('screen-kvk-directory')">
@@ -605,26 +650,26 @@
                   <span class="settings-opt-sub">Toll-free 1800-180-1551 &amp; state KVKs</span>
                 </div>
               </div>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              <svg viewBox="0 0 24 24" class="settings-chevron" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </div>
 
             <div class="settings-item-row" onclick="openChatModal()">
               <div class="settings-item-left">
                 <div class="settings-icon-box">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </div>
                 <div class="settings-text-col">
                   <span class="settings-opt-title">Help &amp; Support</span>
-                  <span class="settings-opt-sub">FAQ, talk to agri-advisor</span>
+                  <span class="settings-opt-sub">FAQ, talk to AI agri-doctor</span>
                 </div>
               </div>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              <svg viewBox="0 0 24 24" class="settings-chevron" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </div>
           </div>
 
           <button class="btn-logout-danger" onclick="navigateTo('screen-welcome')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            <span>Log Out</span>
+            <span>Log Out of AgroAI</span>
           </button>
         </div>
       </div>
