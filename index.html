@@ -23,44 +23,31 @@
     <section id="screen-welcome" class="screen-view welcome-screen active">
       <div class="welcome-top-section">
         <div class="welcome-hero-banner">
-          <div class="hero-art-container">
-            <!-- SVG Landscape Illustration of Terraced Green Fields -->
-            <svg viewBox="0 0 400 300" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
-              <defs>
-                <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#fff8e7"/>
-                  <stop offset="60%" stop-color="#f5e6cc"/>
-                  <stop offset="100%" stop-color="#d4ecd5"/>
-                </linearGradient>
-                <linearGradient id="sunGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#ffb74d"/>
-                  <stop offset="100%" stop-color="#ff9800"/>
-                </linearGradient>
-                <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#66bb6a"/>
-                  <stop offset="100%" stop-color="#2e7d32"/>
-                </linearGradient>
-                <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#81c784"/>
-                  <stop offset="100%" stop-color="#388e3c"/>
-                </linearGradient>
-                <linearGradient id="hill3" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#a5d6a7"/>
-                  <stop offset="100%" stop-color="#4caf50"/>
-                </linearGradient>
-              </defs>
-              <rect width="400" height="300" fill="url(#skyGrad)"/>
-              <!-- Sun -->
-              <circle cx="200" cy="90" r="45" fill="url(#sunGrad)" opacity="0.85"/>
-              <!-- Distant Hills -->
-              <path d="M0,170 Q120,110 240,160 T400,140 L400,300 L0,300 Z" fill="url(#hill3)" opacity="0.7"/>
-              <path d="M0,195 Q140,140 280,185 T400,170 L400,300 L0,300 Z" fill="url(#hill2)" opacity="0.9"/>
-              <!-- Terrace Fields -->
-              <path d="M-20,230 C80,210 180,220 260,250 C330,280 380,240 420,235 L420,320 L-20,320 Z" fill="url(#hill1)"/>
-              <path d="M-10,260 Q100,240 220,270 T410,265 L410,320 L-10,320 Z" fill="#1b5e20"/>
-              <!-- Field Lines Pattern -->
-              <path d="M40,240 Q120,230 180,255 M80,265 Q160,255 240,280 M20,285 Q110,275 190,295" stroke="#a5d6a7" stroke-width="2" stroke-dasharray="4,6" fill="none"/>
-            </svg>
+          <div class="welcome-slideshow-container">
+            <div class="welcome-slides-wrapper" id="welcomeSlidesWrapper">
+              <div class="welcome-slide active">
+                <img src="https://cdn.pixabay.com/photo/2022/09/15/18/40/farmers-7457046_1280.jpg" alt="Farmers in field">
+                <div class="slide-overlay"></div>
+              </div>
+              <div class="welcome-slide">
+                <img src="https://images.pexels.com/photos/2933243/pexels-photo-2933243.jpeg?cs=srgb&dl=pexels-jk04-2933243.jpg&fm=jpg" alt="Agriculture landscape">
+                <div class="slide-overlay"></div>
+              </div>
+              <div class="welcome-slide">
+                <img src="https://img.freepik.com/premium-photo/farmer-tending-crops-field-emphasizing-cycle-growth-sustainable-agriculture_996993-126149.jpg" alt="Farmer tending crops">
+                <div class="slide-overlay"></div>
+              </div>
+              <div class="welcome-slide">
+                <img src="https://media.istockphoto.com/id/1633877502/photo/smart-farming-agriculture-concept-man-holding-smartphone-monitor-and-track-agricultural.jpg?s=170667a&w=0&k=20&c=a_o7sky-tUpURgMu3EN2q37-H2zfUb5lwNKe7RwKpAM=" alt="Smart farming smartphone">
+                <div class="slide-overlay"></div>
+              </div>
+            </div>
+            <div class="slideshow-indicators" id="welcomeSlideDots">
+              <span class="slide-dot active" onclick="jumpToSlide(0)"></span>
+              <span class="slide-dot" onclick="jumpToSlide(1)"></span>
+              <span class="slide-dot" onclick="jumpToSlide(2)"></span>
+              <span class="slide-dot" onclick="jumpToSlide(3)"></span>
+            </div>
           </div>
         </div>
 
@@ -269,19 +256,19 @@
       <nav class="bottom-nav-bar">
         <div class="nav-tabs-row">
           <div class="nav-tab-item active" onclick="navigateTo('screen-home')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=6RlaHUy2CmGh&format=png&color=000000" class="nav-tab-icon" alt="Home">
             <span class="nav-tab-label">Home</span>
           </div>
           <div class="nav-tab-item" onclick="navigateTo('screen-ai-features')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=vyLn6TeXU6F9&format=png&color=000000" class="nav-tab-icon" alt="AI Tools">
             <span class="nav-tab-label">AI Tools</span>
           </div>
           <div class="nav-tab-item" onclick="navigateTo('screen-market')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=MJLpEC1bm3Vc&format=png&color=000000" class="nav-tab-icon" alt="Market">
             <span class="nav-tab-label">Market</span>
           </div>
           <div class="nav-tab-item" onclick="navigateTo('screen-profile')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=M9s3DeMEWotE&format=png&color=000000" class="nav-tab-icon" alt="Profile">
             <span class="nav-tab-label">Profile</span>
           </div>
         </div>
@@ -411,19 +398,19 @@
       <nav class="bottom-nav-bar">
         <div class="nav-tabs-row">
           <div class="nav-tab-item" onclick="navigateTo('screen-home')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=6RlaHUy2CmGh&format=png&color=000000" class="nav-tab-icon" alt="Home">
             <span class="nav-tab-label">Home</span>
           </div>
           <div class="nav-tab-item active" onclick="navigateTo('screen-ai-features')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
-            <span class="nav-tab-label">AI Features</span>
+            <img src="https://img.icons8.com/?size=100&id=vyLn6TeXU6F9&format=png&color=000000" class="nav-tab-icon" alt="AI Tools">
+            <span class="nav-tab-label">AI Tools</span>
           </div>
           <div class="nav-tab-item" onclick="navigateTo('screen-market')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=MJLpEC1bm3Vc&format=png&color=000000" class="nav-tab-icon" alt="Market">
             <span class="nav-tab-label">Market</span>
           </div>
           <div class="nav-tab-item" onclick="navigateTo('screen-profile')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=M9s3DeMEWotE&format=png&color=000000" class="nav-tab-icon" alt="Profile">
             <span class="nav-tab-label">Profile</span>
           </div>
         </div>
@@ -581,19 +568,19 @@
       <nav class="bottom-nav-bar">
         <div class="nav-tabs-row">
           <div class="nav-tab-item" onclick="navigateTo('screen-home')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=6RlaHUy2CmGh&format=png&color=000000" class="nav-tab-icon" alt="Home">
             <span class="nav-tab-label">Home</span>
           </div>
           <div class="nav-tab-item" onclick="navigateTo('screen-ai-features')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
-            <span class="nav-tab-label">AI Features</span>
+            <img src="https://img.icons8.com/?size=100&id=vyLn6TeXU6F9&format=png&color=000000" class="nav-tab-icon" alt="AI Tools">
+            <span class="nav-tab-label">AI Tools</span>
           </div>
           <div class="nav-tab-item active" onclick="navigateTo('screen-market')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=MJLpEC1bm3Vc&format=png&color=000000" class="nav-tab-icon" alt="Market">
             <span class="nav-tab-label">Market</span>
           </div>
           <div class="nav-tab-item" onclick="navigateTo('screen-profile')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=M9s3DeMEWotE&format=png&color=000000" class="nav-tab-icon" alt="Profile">
             <span class="nav-tab-label">Profile</span>
           </div>
         </div>
@@ -710,19 +697,19 @@
       <nav class="bottom-nav-bar">
         <div class="nav-tabs-row">
           <div class="nav-tab-item" onclick="navigateTo('screen-home')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=6RlaHUy2CmGh&format=png&color=000000" class="nav-tab-icon" alt="Home">
             <span class="nav-tab-label">Home</span>
           </div>
           <div class="nav-tab-item" onclick="navigateTo('screen-ai-features')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
-            <span class="nav-tab-label">AI Features</span>
+            <img src="https://img.icons8.com/?size=100&id=vyLn6TeXU6F9&format=png&color=000000" class="nav-tab-icon" alt="AI Tools">
+            <span class="nav-tab-label">AI Tools</span>
           </div>
           <div class="nav-tab-item" onclick="navigateTo('screen-market')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=MJLpEC1bm3Vc&format=png&color=000000" class="nav-tab-icon" alt="Market">
             <span class="nav-tab-label">Market</span>
           </div>
           <div class="nav-tab-item active" onclick="navigateTo('screen-profile')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <img src="https://img.icons8.com/?size=100&id=M9s3DeMEWotE&format=png&color=000000" class="nav-tab-icon" alt="Profile">
             <span class="nav-tab-label">Profile</span>
           </div>
         </div>
@@ -1575,6 +1562,47 @@
       box.scrollTop = box.scrollHeight;
     }, 600);
   }
+
+  // Welcome Screen Slideshow Carousel (Auto transition every 3s)
+  let currentWelcomeSlide = 0;
+  let welcomeSlideInterval = null;
+
+  function showSlide(index) {
+    const slides = document.querySelectorAll('.welcome-slide');
+    const dots = document.querySelectorAll('.slide-dot');
+    if (!slides.length) return;
+
+    currentWelcomeSlide = (index + slides.length) % slides.length;
+
+    slides.forEach((s, idx) => {
+      s.classList.toggle('active', idx === currentWelcomeSlide);
+    });
+
+    dots.forEach((d, idx) => {
+      d.classList.toggle('active', idx === currentWelcomeSlide);
+    });
+  }
+
+  function nextSlide() {
+    showSlide(currentWelcomeSlide + 1);
+  }
+
+  function jumpToSlide(index) {
+    showSlide(index);
+    resetSlideTimer();
+  }
+
+  function resetSlideTimer() {
+    if (welcomeSlideInterval) clearInterval(welcomeSlideInterval);
+    welcomeSlideInterval = setInterval(nextSlide, 3000);
+  }
+
+  // Start auto-transition on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    resetSlideTimer();
+  });
+  // Also initiate immediately if DOM is ready
+  resetSlideTimer();
 </script>
 
 </body>
