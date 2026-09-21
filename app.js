@@ -396,10 +396,15 @@ function updateHomeMiniPrices(records) {
     const modalPrice = rawModalPrice.toLocaleString('en-IN');
     const emojiImg = getCropEmojiImg(commodity, 'apple-crop-icon-mini');
 
+    const isLongText = commodity.length > 10;
+    const nameContent = isLongText 
+      ? `<marquee scrollamount="3" style="width: 100%; margin: 0; vertical-align: middle;">${emojiImg} <span style="margin-left:2px;">${commodity}</span></marquee>`
+      : `${emojiImg} <span style="margin-left:2px;">${commodity}</span>`;
+
     return `
       <div class="mini-price-card" onclick="navigateTo('screen-market')">
         <div class="mini-card-top">
-          <span class="mini-crop-name">${emojiImg} ${commodity}</span>
+          <span class="mini-crop-name" style="${isLongText ? 'display:block; min-width:0;' : 'display:flex; align-items:center;'}">${nameContent}</span>
           <span class="trend-up-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 7-7 7 7M12 19V5"/></svg>
           </span>

@@ -312,7 +312,7 @@ body {
 
 .nav-tab-item.active {
   background: #6dff8173;
-  padding: 6px 0;
+  padding: 7px 0;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
@@ -436,7 +436,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  padding: 25px 24px 8px 24px;
+  padding: 14px 14px 8px 14px;
 }
 
 .welcome-branding-new {
@@ -446,26 +446,21 @@ body {
 }
 
 .welcome-logo {
-  width: 44px;
-  height: 44px;
-  background: #eaf5eb;
+  width: 64px;
+  height: 64px;
+  background: #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
-  border: 1px solid rgba(52, 199, 89, 0.2);
-}
-
-.welcome-logo svg {
-  width: 22px;
-  height: 22px;
-  stroke: #1a8e35;
+  margin-bottom: 16px;
+  border: 2px solid rgba(52, 199, 89, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .welcome-typography {
   font-family: var(--font-heading);
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.8px;
@@ -565,15 +560,15 @@ body {
 
 .slide-button-container {
   width: 100%;
-  height: 68px;
+  height: 70px;
   background: rgba(255, 255, 255, 0.058);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
-  border-radius: 34px;
+  border-radius: 35px;
   position: relative;
   display: flex;
   align-items: center;
-  padding: 2px;
+  padding: 4px;
   border: 1px solid rgba(255, 255, 255, 0.393);
   box-shadow:
     inset 1px 1px 5px 0 rgba(255, 255, 255, 0.3),
@@ -595,7 +590,7 @@ body {
   color: #ffffff;
   font-size: 17px;
   font-weight: 500;
-  margin-right: 40px;
+  margin-right: 55px;
   letter-spacing: 0.5px;
 }
 
@@ -2077,25 +2072,20 @@ body {
 /* Profile Hero Card */
 .profile-hero-card {
   margin: 0 18px 14px 18px;
-  padding: 12px;
-  border-radius: 26px;
-  background: linear-gradient(145deg, #0e301d 0%, #154528 50%, #0a2517 100%);
+  padding: 24px 16px;
+  border-radius: 20px;
+  background: #ffffff;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(52, 199, 89, 0.3);
-  box-shadow: 0 1px 10px 0px rgba(10, 36, 20, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  border: 1px solid var(--border-light);
+  box-shadow:
+  inset 1px 1px 8px 0 rgba(0, 0, 0, 0.05),
+  inset -1px -1px 8px 0 rgba(0, 0, 0, 0.05),
+  0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .profile-ambient-glow {
-  position: absolute;
-  top: -40px;
-  right: -30px;
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(circle, rgba(52, 199, 89, 0.35) 0%, transparent 70%);
-  pointer-events: none;
-  border-radius: 50%;
+  display: none;
 }
 
 .profile-card-inner {
@@ -2110,26 +2100,27 @@ body {
 
 .avatar-ring-container {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
 }
 
 .avatar-img-circle {
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2b6b2e 0%, #174a26 100%);
-  border: 3px solid #34c759;
+  background: #f4f6f5;
+  border: 2px solid var(--primary-green);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 12px rgba(26, 142, 53, 0.15);
   overflow: hidden;
 }
 
 .avatar-img-circle img {
-  height: 98px;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .avatar-verified-badge {
@@ -2139,45 +2130,45 @@ body {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #34c759;
+  background: var(--primary-green);
   color: #ffffff;
-  border: 2px solid #0e301d;
+  border: 2px solid #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .profile-meta-center {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .farmer-full-name {
-  color: #ffffff;
+  color: var(--text-main);
   font-family: var(--font-heading);
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: 0.4px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
 }
 
 .location-pin-row {
   display: flex;
   align-items: center;
-  gap: 5px;
-  color: #cbe8d9;
-  font-size: 12px;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: 13px;
   font-weight: 500;
 }
 
 .location-pin-row svg {
   width: 14px;
   height: 14px;
-  stroke: #34c759;
+  stroke: var(--primary-green);
   flex-shrink: 0;
 }
 
