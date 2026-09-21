@@ -96,7 +96,7 @@
               <div class="weather-location" id="dashboardLocationText">📍 Ahmedabad, Gujarat</div>
             </div>
           </div>
-          <button class="icon-btn" onclick="navigateTo('screen-profile')" title="User Profile">
+          <button class="icon-btn" onclick="navigateTo('screen-profile')" title="User Profile" style="width: 50px; height: 50px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </button>
         </div>
@@ -281,16 +281,6 @@
          ========================================================================= -->
     <section id="screen-ai-features" class="screen-view">
       <div class="scroll-area">
-        <header class="screen-header">
-          <button class="icon-btn" onclick="navigateTo('screen-home')" title="Back to Home">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
-          </button>
-          <span class="header-title">AI Intelligence</span>
-          <button class="icon-btn" onclick="openChatModal()" title="AI Advisor">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </button>
-        </header>
-
         <div class="ai-hub-hero">
           <h2 class="ai-hub-title">AI Features</h2>
           <p class="ai-hub-desc">Power your agricultural decisions with machine-learning analysis and diagnostic tools.</p>
@@ -442,10 +432,6 @@
         <div class="market-header-section">
           <div class="market-header-top">
             <div>
-              <div class="market-eyebrow">
-                <span>Realtime APMC Mandi</span>
-                <span class="live-dot-pulse"></span>
-              </div>
               <h2 class="market-title-text">Market Prices</h2>
             </div>
             <button class="market-location-btn" onclick="detectUserLocationAndFetch(true)" title="Auto-detect My State Location">
@@ -460,8 +446,8 @@
           </div>
 
           <div class="state-chips-scroll" id="marketStateChips">
-            <button class="state-chip active" data-state="Gujarat" onclick="selectStateFilter('Gujarat', this)">📍 Gujarat</button>
-            <button class="state-chip" data-state="All" onclick="selectStateFilter('All', this)">🇮🇳 All India</button>
+            <button class="state-chip active" data-state="Gujarat" onclick="selectStateFilter('Gujarat', this)">Gujarat</button>
+            <button class="state-chip" data-state="All" onclick="selectStateFilter('All', this)">All India</button>
             <button class="state-chip" data-state="Maharashtra" onclick="selectStateFilter('Maharashtra', this)">Maharashtra</button>
             <button class="state-chip" data-state="Punjab" onclick="selectStateFilter('Punjab', this)">Punjab</button>
             <button class="state-chip" data-state="Uttar Pradesh" onclick="selectStateFilter('Uttar Pradesh', this)">Uttar Pradesh</button>
@@ -522,25 +508,18 @@
 
         <!-- Hero Profile Card -->
         <div class="profile-hero-card">
-          <div class="profile-ambient-glow"></div>
           <div class="profile-card-inner">
             <div class="avatar-ring-container">
               <div class="avatar-img-circle">
-                <span class="avatar-emoji">👨‍🌾</span>
+                <img src="ChatGPT Image Feb 1, 2026, 06_48_04 PM.png" alt="">
               </div>
               <div class="avatar-verified-badge" title="e-KYC Verified">✓</div>
             </div>
-            
             <div class="profile-meta-center">
               <h2 class="farmer-full-name">Rahul Malvi</h2>
               <div class="location-pin-row">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 <span id="profileLocationDisplay">Ahmedabad APMC Zone, Gujarat</span>
-              </div>
-              
-              <div class="kisan-badges-row">
-                <span class="kisan-badge kisan-badge-gold">⭐ Kisan Prime</span>
-                <span class="kisan-badge kisan-badge-id">Kisan ID: #GJ-9428</span>
               </div>
             </div>
           </div>
