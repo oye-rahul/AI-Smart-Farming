@@ -21,62 +21,49 @@
          1. SCREEN: WELCOME & ONBOARDING
          ========================================================================= -->
     <section id="screen-welcome" class="screen-view welcome-screen active">
-      <div class="welcome-top-section">
-        <div class="welcome-hero-banner">
-          <div class="welcome-slideshow-container">
-            <div class="welcome-slides-wrapper" id="welcomeSlidesWrapper">
-              <div class="welcome-slide active">
-                <img src="https://cdn.pixabay.com/photo/2022/09/15/18/40/farmers-7457046_1280.jpg" alt="Farmers in field">
-                <div class="slide-overlay"></div>
-              </div>
-              <div class="welcome-slide">
-                <img src="https://images.pexels.com/photos/2933243/pexels-photo-2933243.jpeg?cs=srgb&dl=pexels-jk04-2933243.jpg&fm=jpg" alt="Agriculture landscape">
-                <div class="slide-overlay"></div>
-              </div>
-              <div class="welcome-slide">
-                <img src="https://img.freepik.com/premium-photo/farmer-tending-crops-field-emphasizing-cycle-growth-sustainable-agriculture_996993-126149.jpg" alt="Farmer tending crops">
-                <div class="slide-overlay"></div>
-              </div>
-              <div class="welcome-slide">
-                <img src="https://media.istockphoto.com/id/1633877502/photo/smart-farming-agriculture-concept-man-holding-smartphone-monitor-and-track-agricultural.jpg?s=170667a&w=0&k=20&c=a_o7sky-tUpURgMu3EN2q37-H2zfUb5lwNKe7RwKpAM=" alt="Smart farming smartphone">
-                <div class="slide-overlay"></div>
-              </div>
-            </div>
-            <div class="slideshow-indicators" id="welcomeSlideDots">
-              <span class="slide-dot active" onclick="jumpToSlide(0)"></span>
-              <span class="slide-dot" onclick="jumpToSlide(1)"></span>
-              <span class="slide-dot" onclick="jumpToSlide(2)"></span>
-              <span class="slide-dot" onclick="jumpToSlide(3)"></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="welcome-branding">
-          <div class="logo-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 20h10M12 20V10M12 10a4 4 0 0 1-4-4 4 4 0 0 1 4 4zm0 0a4 4 0 0 0 4-4 4 4 0 0 0-4 4z"/></svg>
-            <span>Farming Intelligence</span>
-          </div>
-          <h1 class="app-title-huge">CropAI</h1>
-          <p class="app-subtitle-tagline">Smart Farming, Better Harvests</p>
-        </div>
+      <div class="welcome-bg" id="welcomeSlideshow">
+        <img src="https://tse1.mm.bing.net/th/id/OIP.Hrh11qtl2xgOF9AZm2a1DQHaNJ?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" alt="farming">
+        <img src="https://wallpaperaccess.com/full/6403049.jpg" alt="Tractor 2" class="welcome-bg-img">
+        <img src="https://thumbs.dreamstime.com/b/tractor-tilling-field-stands-agricultural-field-growing-season-to-work-soil-care-crops-325903799.jpg" alt="Tractor 3" class="welcome-bg-img">
+        <img src="https://tse2.mm.bing.net/th/id/OIP.Cilyj8N3k52vg67BQGpizgHaLH?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Tractor 4" class="welcome-bg-img">
+        <div class="welcome-bg-gradient"></div>
       </div>
 
-      <div class="welcome-interactive-container">
-        <div class="language-selector-section">
-          <label class="lang-selector-label">Select App Language / भाषा चुनें</label>
-          <div class="lang-chips-grid">
-            <button class="lang-chip active" onclick="selectLang(this)">English</button>
-            <button class="lang-chip" onclick="selectLang(this)">ગુજરાતી</button>
-            <button class="lang-chip" onclick="selectLang(this)">मराठी</button>
-            <button class="lang-chip" onclick="selectLang(this)">हिन्दी</button>
-            <button class="lang-chip" onclick="selectLang(this)">తెలుగు</button>
+      <div class="welcome-content-wrapper">
+        <div class="welcome-branding-new">
+          <div class="welcome-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 20h10M12 20V10M12 10a4 4 0 0 1-4-4 4 4 0 0 1 4 4zm0 0a4 4 0 0 0 4-4 4 4 0 0 0-4 4z"/></svg>
           </div>
+          <div class="welcome-typography">
+            <div class="wt-line1"><span class="text-green">Smart</span> <span class="text-gray">Solutions</span></div>
+            <div class="wt-line2">
+              <span class="tractor-pill"></span>
+              <span class="text-gray">Modern</span> <span class="text-green">Farmers</span>
+            </div>
+          </div>
+          <p class="welcome-desc">Empowering farmers with smart tools for better yields and decisions</p>
         </div>
 
-        <button class="welcome-play-btn" onclick="navigateTo('screen-home')">
-          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <span>Get Started</span>
-        </button>
+        <div class="welcome-bottom-action">
+          <div class="language-selector-section" style="margin-bottom: 20px;">
+            <div class="lang-chips-grid" style="justify-content: center;">
+              <button class="lang-chip active" onclick="selectLang(this)">English</button>
+              <button class="lang-chip" onclick="selectLang(this)">ગુજરાતી</button>
+              <button class="lang-chip" onclick="selectLang(this)">मराठी</button>
+              <button class="lang-chip" onclick="selectLang(this)">हिन्दी</button>
+              <button class="lang-chip" onclick="selectLang(this)">తెలుగు</button>
+            </div>
+          </div>
+          <div class="slide-button-container" id="slideButtonContainer">
+            <div class="slide-button-track">
+              <span class="slide-text">Get Started</span>
+              <span class="slide-arrows">>>></span>
+            </div>
+            <div class="slide-thumb" id="slideThumb">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -120,7 +107,7 @@
                 </div>
                 <div class="hero-visual-badge">
                   <div class="hero-visual-glow"></div>
-                  <img src="https://em-content.zobj.net/source/apple/453/seedling_1f331.png" alt="Crop AI" class="hero-plant-img">
+                  <img src="https://em-content.zobj.net/source/apple/453/sheaf-of-rice_1f33e.png" alt="Crop AI" class="hero-plant-img">
                 </div>
               </div>
 

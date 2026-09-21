@@ -1172,53 +1172,100 @@ function sendChatMessage() {
 }
 
 // =========================================================================
-// 11. WELCOME SCREEN SLIDESHOW CAROUSEL (3s Interval)
+// 11. WELCOME SCREEN SLIDER LOGIC
 // =========================================================================
-let currentWelcomeSlide = 0;
-let welcomeSlideInterval = null;
+let currentBgSlide = 0;
+let bgSlideInterval = null;
 
-function showSlide(index) {
-  const slides = document.querySelectorAll('.welcome-slide');
-  const dots = document.querySelectorAll('.slide-dot');
+function showBgSlide(index) {
+  const slides = document.querySelectorAll('#welcomeSlideshow .welcome-bg-img');
   if (!slides.length) return;
-
-  currentWelcomeSlide = (index + slides.length) % slides.length;
-
+  currentBgSlide = (index + slides.length) % slides.length;
   slides.forEach((s, idx) => {
-    s.classList.toggle('active', idx === currentWelcomeSlide);
-  });
-
-  dots.forEach((d, idx) => {
-    d.classList.toggle('active', idx === currentWelcomeSlide);
+    s.classList.toggle('active', idx === currentBgSlide);
   });
 }
 
-function nextSlide() {
-  showSlide(currentWelcomeSlide + 1);
+function nextBgSlide() {
+  showBgSlide(currentBgSlide + 1);
 }
 
-function jumpToSlide(index) {
-  showSlide(index);
-  resetSlideTimer();
+function startBgSlider() {
+  if (bgSlideInterval) clearInterval(bgSlideInterval);
+  bgSlideInterval = setInterval(nextBgSlide, 3000);
 }
 
-function resetSlideTimer() {
-  if (welcomeSlideInterval) clearInterval(welcomeSlideInterval);
-  welcomeSlideInterval = setInterval(nextSlide, 3000);
+function initWelcomeSlider() {
+  const container = document.getElementById('slideButtonContainer');
+  const thumb = document.getElementById('slideThumb');
+  if (!container || !thumb) return;
+
+  let isDragging = false;
+  let startX = 0;
+  let currentX = 0;
+  const maxDrag = container.offsetWidth - thumb.offsetWidth - 12; // 6px padding on each side
+
+  function onDragStart(e) {
+    isDragging = true;
+    startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+    thumb.style.transition = 'none';
+  }
+
+  function onDragMove(e) {
+    if (!isDragging) return;
+    let clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+    currentX = clientX - startX;
+    
+    if (currentX < 0) currentX = 0;
+    if (currentX > maxDrag) currentX = maxDrag;
+    
+    thumb.style.transform = `translateX(${currentX}px)`;
+  }
+
+  function onDragEnd(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    thumb.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+    
+    if (currentX >= maxDrag * 0.85) {
+      // Trigger navigation
+      thumb.style.transform = `translateX(${maxDrag}px)`;
+      setTimeout(() => {
+        navigateTo('screen-home');
+        // Reset slider
+        setTimeout(() => {
+          thumb.style.transform = 'translateX(0px)';
+        }, 300);
+      }, 200);
+    } else {
+      // Snap back
+      thumb.style.transform = 'translateX(0px)';
+    }
+  }
+
+  thumb.addEventListener('mousedown', onDragStart);
+  document.addEventListener('mousemove', onDragMove);
+  document.addEventListener('mouseup', onDragEnd);
+
+  thumb.addEventListener('touchstart', onDragStart, {passive: true});
+  document.addEventListener('touchmove', onDragMove, {passive: false});
+  document.addEventListener('touchend', onDragEnd);
 }
 
 // =========================================================================
 // 12. APP INITIALIZATION
 // =========================================================================
 document.addEventListener('DOMContentLoaded', () => {
-  resetSlideTimer();
+  initWelcomeSlider();
+  startBgSlider();
   renderKvkDirectory(KVK_DATABASE);
   detectUserLocationAndFetch(false);
   fetchLiveAgriNews(false);
 });
 
 // Auto-start immediately if script executes after DOMContentLoaded
-resetSlideTimer();
+initWelcomeSlider();
+startBgSlider();
 renderKvkDirectory(KVK_DATABASE);
 detectUserLocationAndFetch(false);
 fetchLiveAgriNews(false);
