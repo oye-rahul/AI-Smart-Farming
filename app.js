@@ -26,6 +26,59 @@ function selectLang(btn) {
 }
 
 // =========================================================================
+// DARK MODE / THEME CONTROLLER (0 ⇄ 255)
+// =========================================================================
+function initTheme() {
+  const savedTheme = localStorage.getItem('agroai_theme');
+  const isDark = savedTheme === 'dark';
+  applyTheme(isDark);
+}
+
+function toggleDarkMode() {
+  const isCurrentlyDark = document.body.classList.contains('dark-mode');
+  const nextIsDark = !isCurrentlyDark;
+  applyTheme(nextIsDark);
+  localStorage.setItem('agroai_theme', nextIsDark ? 'dark' : 'light');
+}
+
+function applyTheme(isDark) {
+  if (isDark) {
+    document.body.classList.add('dark-mode');
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.body.classList.remove('dark-mode');
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+
+  // Update theme toggle icons across all screens
+  const toggleBtns = document.querySelectorAll('.theme-toggle-btn');
+  toggleBtns.forEach(btn => {
+    btn.innerHTML = isDark
+      ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+    btn.setAttribute('aria-label', isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode');
+    btn.setAttribute('title', isDark ? 'Switch to Light Mode (255)' : 'Switch to Dark Mode (0)');
+  });
+
+  // Update profile screen switch and label if present
+  const profileDarkSwitch = document.getElementById('profileDarkSwitch');
+  if (profileDarkSwitch) {
+    if (isDark) {
+      profileDarkSwitch.classList.add('active');
+    } else {
+      profileDarkSwitch.classList.remove('active');
+    }
+  }
+
+  const profileDarkStatusText = document.getElementById('profileDarkStatusText');
+  if (profileDarkStatusText) {
+    profileDarkStatusText.textContent = isDark
+      ? 'Active: Deep Black (0) mode'
+      : 'Active: Clean White (255) mode';
+  }
+}
+
+// =========================================================================
 // 2. LIVE MANDI CROP PRICES & GEOLOCATION STATE DETECTOR (AGMARKNET GOV API)
 // =========================================================================
 const GOV_API_KEY = '579b464db66ec23bdd00000103f0d69113a6475c443aae0028bb1dbc';
@@ -355,6 +408,11 @@ function renderMarketList(records, stateLabel = '') {
     const date = item.arrival_date || 'Today';
     const emojiImg = getCropEmojiImg(commodity, 'apple-crop-icon');
 
+    const isLongTitle = commodity.length > 12;
+    const titleHtml = isLongTitle
+      ? `<marquee scrollamount="3" behavior="scroll" direction="left" class="crop-title-marquee">${commodity}</marquee>`
+      : `<span class="crop-title-text">${commodity}</span>`;
+
     return `
       <div class="market-crop-card" data-crop="${commodity} ${variety} ${market} ${district}">
         <div class="mandi-card-main-row">
@@ -362,7 +420,7 @@ function renderMarketList(records, stateLabel = '') {
             <div class="crop-icon-thumb">${emojiImg}</div>
             <div class="crop-name-stack">
               <div class="crop-name-label">
-                <span>${commodity}</span>
+                ${titleHtml}
                 <span class="crop-variety-tag">${variety}</span>
               </div>
               <span class="mandi-name-sub">📍 ${market}${district ? ', ' + district : ''}</span>
@@ -397,7 +455,7 @@ function updateHomeMiniPrices(records) {
     const emojiImg = getCropEmojiImg(commodity, 'apple-crop-icon-mini');
 
     const isLongText = commodity.length > 10;
-    const nameContent = isLongText 
+    const nameContent = isLongText
       ? `<marquee scrollamount="3" style="width: 100%; margin: 0; vertical-align: middle;">${emojiImg} <span style="margin-left:2px;">${commodity}</span></marquee>`
       : `${emojiImg} <span style="margin-left:2px;">${commodity}</span>`;
 
@@ -792,9 +850,7 @@ function computeAgroAdvisories(w) {
   }
 }
 
-// =========================================================================
-// 4. 📞 KISAN HELPLINE & KRISHI VIGYAN KENDRA (KVK) DIRECTORY
-// =========================================================================
+// Kisan Helpline & KVK Directory
 const KVK_DATABASE = [
   {
     state: 'Gujarat',
@@ -938,195 +994,7 @@ function filterKvkDirectory() {
   renderKvkDirectory(filtered);
 }
 
-// =========================================================================
-// 5. AI CROP DISEASE DETECTION SIMULATOR
-// =========================================================================
-const diseasesDatabase = [
-  {
-    name: "Tomato Late Blight",
-    severity: "High Severity",
-    confidence: "94.2%",
-    family: "Solanaceae",
-    symptoms: "Large, blue-gray to dark brown patches appear on leaves and stems, often accompanied by pale green halos and white mold on leaf undersides."
-  },
-  {
-    name: "Wheat Powdery Mildew",
-    severity: "Moderate Severity",
-    confidence: "91.8%",
-    family: "Poaceae",
-    symptoms: "White fluffy fungal patches on upper leaf surfaces turning into light brown powdery lesions."
-  },
-  {
-    name: "Cotton Bacterial Blight",
-    severity: "Critical Severity",
-    confidence: "96.4%",
-    family: "Malvaceae",
-    symptoms: "Angular water-soaked spots on leaf blades with reddish-brown necrotic centers and vein blackening."
-  }
-];
-let currentDiseaseIndex = 0;
-
-function simulateNewScan() {
-  const laser = document.getElementById('scanLaser');
-  if (laser) {
-    laser.style.display = 'block';
-    laser.style.animation = 'scanLaser 1.5s ease-in-out infinite alternate';
-  }
-
-  setTimeout(() => {
-    currentDiseaseIndex = (currentDiseaseIndex + 1) % diseasesDatabase.length;
-    const data = diseasesDatabase[currentDiseaseIndex];
-
-    document.getElementById('diseaseNameDisplay').textContent = data.name;
-    document.getElementById('severityPillDisplay').textContent = data.severity;
-    document.getElementById('confidenceDisplay').textContent = data.confidence;
-    document.getElementById('cropFamilyDisplay').textContent = data.family;
-    document.getElementById('symptomsTextDisplay').textContent = data.symptoms;
-    alert(`AI Scan Complete: Diagnosed "${data.name}" with ${data.confidence} accuracy.`);
-  }, 1000);
-}
-
-// =========================================================================
-// 6. AI CROP RECOMMENDATION ENGINE
-// =========================================================================
-function calculateCropRecommendation() {
-  const N = parseFloat(document.getElementById('recN').value) || 45;
-  const P = parseFloat(document.getElementById('recP').value) || 32;
-  const K = parseFloat(document.getElementById('recK').value) || 120;
-  const pH = parseFloat(document.getElementById('recPH').value) || 6.5;
-  const rain = parseFloat(document.getElementById('recRain').value) || 1200;
-  const temp = parseFloat(document.getElementById('recTemp').value) || 24;
-
-  let crop = "Golden Wheat";
-  let category = "Grain • Cereal Crop";
-  let score = "94% Match";
-
-  if (rain > 1500) {
-    crop = "Basmati Rice";
-    category = "Paddy • Wetland Crop";
-    score = "97% Match";
-  } else if (temp > 28) {
-    crop = "Hybrid Cotton";
-    category = "Fiber • Cash Crop";
-    score = "92% Match";
-  } else if (N > 80) {
-    crop = "Sweet Corn";
-    category = "Grain • High Nutrient";
-    score = "95% Match";
-  }
-
-  document.getElementById('recCropName').textContent = crop;
-  document.getElementById('recCropEmoji').innerHTML = getCropEmojiImg(crop, 'apple-crop-rec-img');
-  document.getElementById('recCropCategory').textContent = category;
-  document.getElementById('recMatchScore').textContent = score;
-  document.getElementById('recPHDisplay').textContent = pH;
-
-  const card = document.getElementById('cropRecResultCard');
-  if (card) {
-    card.style.transform = 'scale(1.02)';
-    setTimeout(() => card.style.transform = 'scale(1)', 200);
-  }
-}
-
-// =========================================================================
-// 7. YIELD PREDICTION ENGINE
-// =========================================================================
-function calculateYield() {
-  const crop = document.getElementById('yieldCropSelect').value;
-  const area = parseFloat(document.getElementById('yieldAreaSelect').value) || 5.5;
-  const soil = document.getElementById('yieldSoilSelect').value;
-  const irrig = document.getElementById('yieldIrrigSelect').value;
-
-  let baseYieldPerAcre = 40;
-  if (crop === 'wheat') baseYieldPerAcre = 41;
-  if (crop === 'rice') baseYieldPerAcre = 48;
-  if (crop === 'cotton') baseYieldPerAcre = 33;
-  if (crop === 'maize') baseYieldPerAcre = 52;
-  if (crop === 'soybean') baseYieldPerAcre = 28;
-  if (crop === 'sugarcane') baseYieldPerAcre = 290;
-
-  let soilMultiplier = soil === 'clay' ? 1.05 : (soil === 'black' ? 1.15 : 0.95);
-  let irrigMultiplier = irrig === 'drip' ? 1.15 : (irrig === 'sprinkler' ? 1.08 : 0.9);
-
-  const total = (baseYieldPerAcre * area * soilMultiplier * irrigMultiplier).toFixed(1);
-  document.getElementById('yieldOutputDisplay').textContent = `${total} Quintals`;
-}
-
-// =========================================================================
-// 8. PROFIT ESTIMATOR ENGINE
-// =========================================================================
-function calculateProfit() {
-  const yieldAmt = parseFloat(document.getElementById('profitYieldInput').value) || 180;
-  const cost = parseFloat(document.getElementById('profitCostInput').value) || 3200;
-  const rate = parseFloat(document.getElementById('profitRateInput').value) || 85;
-
-  const totalRevenue = yieldAmt * rate;
-  const netProfit = totalRevenue - cost;
-  const margin = ((netProfit / (totalRevenue || 1)) * 100).toFixed(2);
-  const roi = (totalRevenue / (cost || 1)).toFixed(2);
-
-  document.getElementById('profitNetDisplay').textContent = `$${netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  document.getElementById('profitMarginDisplay').textContent = `${margin}%`;
-  document.getElementById('profitRoiDisplay').textContent = `${roi}x`;
-
-  const costPct = Math.min(Math.max((cost / (totalRevenue || 1)) * 100, 10), 90);
-  const profitPct = 100 - costPct;
-
-  document.getElementById('costPortionBar').style.width = `${costPct}%`;
-  document.getElementById('profitPortionBar').style.width = `${profitPct}%`;
-  document.getElementById('costLegendText').textContent = `Cost ($${(cost / 1000).toFixed(1)}K)`;
-  document.getElementById('profitLegendText').textContent = `Profit ($${(netProfit / 1000).toFixed(1)}K)`;
-}
-
-// =========================================================================
-// 9. SOIL HEALTH SCORE ENGINE
-// =========================================================================
-function calculateSoilHealth() {
-  const N = parseFloat(document.getElementById('soilN').value) || 48;
-  const P = parseFloat(document.getElementById('soilP').value) || 14;
-  const K = parseFloat(document.getElementById('soilK').value) || 32;
-
-  let score = Math.round(Math.min(100, (N * 0.4 + P * 1.5 + K * 0.8)));
-  if (score < 40) score = 55;
-  if (score > 98) score = 96;
-
-  document.getElementById('soilScoreNumber').textContent = score;
-  const circle = document.getElementById('soilGaugeCircle');
-  if (circle) {
-    const offset = 188 - (188 * score / 100);
-    circle.style.strokeDashoffset = offset;
-  }
-
-  document.getElementById('soilNText').textContent = `Current value: ${N} mg/kg`;
-  document.getElementById('soilPText').textContent = `Current value: ${P} mg/kg`;
-  document.getElementById('soilKText').textContent = `Current value: ${K} mg/kg`;
-
-  const pBadge = document.getElementById('soilPBadge');
-  if (P < 20) {
-    pBadge.className = 'status-badge-deficient';
-    pBadge.textContent = 'Low Deficient';
-  } else {
-    pBadge.className = 'status-badge-optimal';
-    pBadge.textContent = 'Optimal';
-  }
-}
-
-function toggleSoilMode(mode) {
-  const reportBtn = document.getElementById('toggleReportBtn');
-  const manualBtn = document.getElementById('toggleManualBtn');
-  if (mode === 'report') {
-    reportBtn.classList.add('active');
-    manualBtn.classList.remove('active');
-    alert('Report Scan: Camera & OCR ready to scan your official soil lab PDF / printout.');
-  } else {
-    manualBtn.classList.add('active');
-    reportBtn.classList.remove('active');
-  }
-}
-
-// =========================================================================
-// 10. AI ASSISTANT CHAT MODAL
-// =========================================================================
+// AI Assistant Chat Modal
 function openChatModal() {
   document.getElementById('aiChatModal').classList.add('active');
 }
@@ -1220,10 +1088,10 @@ function initWelcomeSlider() {
     if (!isDragging) return;
     let clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
     currentX = clientX - startX;
-    
+
     if (currentX < 0) currentX = 0;
     if (currentX > maxDrag) currentX = maxDrag;
-    
+
     thumb.style.transform = `translateX(${currentX}px)`;
   }
 
@@ -1231,7 +1099,7 @@ function initWelcomeSlider() {
     if (!isDragging) return;
     isDragging = false;
     thumb.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
-    
+
     if (currentX >= maxDrag * 0.85) {
       // Trigger navigation
       thumb.style.transform = `translateX(${maxDrag}px)`;
@@ -1252,8 +1120,8 @@ function initWelcomeSlider() {
   document.addEventListener('mousemove', onDragMove);
   document.addEventListener('mouseup', onDragEnd);
 
-  thumb.addEventListener('touchstart', onDragStart, {passive: true});
-  document.addEventListener('touchmove', onDragMove, {passive: false});
+  thumb.addEventListener('touchstart', onDragStart, { passive: true });
+  document.addEventListener('touchmove', onDragMove, { passive: false });
   document.addEventListener('touchend', onDragEnd);
 }
 
@@ -1261,6 +1129,8 @@ function initWelcomeSlider() {
 // 12. APP INITIALIZATION
 // =========================================================================
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  initProfileSettings();
   initWelcomeSlider();
   startBgSlider();
   renderKvkDirectory(KVK_DATABASE);
@@ -1269,6 +1139,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Auto-start immediately if script executes after DOMContentLoaded
+initTheme();
+initProfileSettings();
 initWelcomeSlider();
 startBgSlider();
 renderKvkDirectory(KVK_DATABASE);
@@ -1497,4 +1369,212 @@ function filterNewsCategory(cat, btn) {
   document.querySelectorAll('.news-filter-chip').forEach(c => c.classList.remove('active'));
   if (btn) btn.classList.add('active');
   fetchLiveAgriNews(false);
+}
+
+// =========================================================================
+// 14. 👤 FARMER PROFILE & SETTINGS INTERACTIVE MODALS
+// =========================================================================
+
+// --- Toast Notification System ---
+let toastTimer = null;
+function showToast(message, icon = '✅') {
+  const toast = document.getElementById('agroToast');
+  const msgEl = document.getElementById('toastMessage');
+  const iconEl = document.getElementById('toastIcon');
+  if (!toast || !msgEl) return;
+
+  msgEl.textContent = message;
+  if (iconEl) iconEl.textContent = icon;
+
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2200);
+}
+
+// --- Edit Profile Modal ---
+function openEditProfileModal() {
+  const modal = document.getElementById('editProfileModal');
+  if (!modal) return;
+
+  const currentName = document.getElementById('farmerFullName')?.textContent || 'Rahul Malvi';
+  const currentLocation = document.getElementById('profileLocationDisplay')?.textContent || 'Ahmedabad APMC Zone, Gujarat';
+  const currentFarmSize = document.getElementById('profileStatFarmSize')?.textContent || '12.5 Acres';
+  const currentSoil = document.getElementById('profileStatSoil')?.textContent || 'Black Loam';
+  const currentCrops = document.getElementById('profileStatCrops')?.textContent || 'Wheat & Cotton';
+
+  if (document.getElementById('editProfileName')) document.getElementById('editProfileName').value = currentName;
+  if (document.getElementById('editProfileLocation')) document.getElementById('editProfileLocation').value = currentLocation;
+  if (document.getElementById('editProfileFarmSize')) document.getElementById('editProfileFarmSize').value = currentFarmSize;
+  if (document.getElementById('editProfileSoil')) document.getElementById('editProfileSoil').value = currentSoil;
+  if (document.getElementById('editProfileCrops')) document.getElementById('editProfileCrops').value = currentCrops;
+
+  modal.classList.add('active');
+}
+
+function closeEditProfileModal() {
+  const modal = document.getElementById('editProfileModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function saveFarmerProfile() {
+  const name = document.getElementById('editProfileName')?.value.trim() || 'Rahul Malvi';
+  const phone = document.getElementById('editProfilePhone')?.value.trim() || '+91 94281 55209';
+  const location = document.getElementById('editProfileLocation')?.value.trim() || 'Ahmedabad APMC Zone, Gujarat';
+  const farmSize = document.getElementById('editProfileFarmSize')?.value.trim() || '12.5 Acres';
+  const soil = document.getElementById('editProfileSoil')?.value.trim() || 'Black Loam';
+  const crops = document.getElementById('editProfileCrops')?.value.trim() || 'Wheat & Cotton';
+
+  const nameEl = document.getElementById('farmerFullName');
+  const locEl = document.getElementById('profileLocationDisplay');
+  const sizeEl = document.getElementById('profileStatFarmSize');
+  const soilEl = document.getElementById('profileStatSoil');
+  const cropsEl = document.getElementById('profileStatCrops');
+  const dkNameEl = document.getElementById('dkFarmerName');
+  const dkLandEl = document.getElementById('dkLandParcel');
+
+  if (nameEl) nameEl.textContent = name;
+  if (locEl) locEl.textContent = location;
+  if (sizeEl) sizeEl.textContent = farmSize;
+  if (soilEl) soilEl.textContent = soil;
+  if (cropsEl) cropsEl.textContent = crops;
+  if (dkNameEl) dkNameEl.textContent = name;
+  if (dkLandEl) dkLandEl.textContent = `${farmSize} (${location.split(',')[0]})`;
+
+  const profileData = { name, phone, location, farmSize, soil, crops };
+  localStorage.setItem('agroai_profile_data', JSON.stringify(profileData));
+
+  closeEditProfileModal();
+  showToast('Profile updated successfully!', '✅');
+}
+
+// --- Notification Preferences Modal ---
+function openNotificationModal() {
+  const modal = document.getElementById('notificationModal');
+  if (modal) modal.classList.add('active');
+}
+
+function closeNotificationModal() {
+  const modal = document.getElementById('notificationModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function toggleNotifPref(type, element) {
+  if (!element) return;
+  const isActive = element.classList.toggle('active');
+  const savedPrefs = JSON.parse(localStorage.getItem('agroai_notifs') || '{}');
+  savedPrefs[type] = isActive;
+  localStorage.setItem('agroai_notifs', JSON.stringify(savedPrefs));
+
+  const names = {
+    mandi: 'Mandi daily rate alerts',
+    weather: 'Storm & rain warnings',
+    pest: 'Pest outbreak advisories',
+    govt: 'PM-KISAN updates'
+  };
+  showToast(`${names[type] || 'Alert'} ${isActive ? 'Enabled' : 'Disabled'}`, isActive ? '🔔' : '🔕');
+
+  updateNotifSubText(savedPrefs);
+}
+
+function updateNotifSubText(prefs) {
+  const sub = document.getElementById('profileNotificationSub');
+  if (!sub) return;
+  const activeCount = Object.values(prefs).filter(Boolean).length;
+  if (activeCount === 0) {
+    sub.textContent = 'All alerts paused';
+  } else if (activeCount === 4) {
+    sub.textContent = 'All 4 alert channels active';
+  } else {
+    sub.textContent = `${activeCount} alert channels active`;
+  }
+}
+
+// --- Language Selector Modal ---
+function openLanguageModal() {
+  const modal = document.getElementById('languageModal');
+  if (modal) modal.classList.add('active');
+}
+
+function closeLanguageModal() {
+  const modal = document.getElementById('languageModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function setAppLanguage(code, name, rowElement) {
+  document.querySelectorAll('.lang-option-row').forEach(row => row.classList.remove('active'));
+  if (rowElement) rowElement.classList.add('active');
+
+  localStorage.setItem('agroai_selected_lang', code);
+  localStorage.setItem('agroai_selected_lang_name', name);
+
+  const langSub = document.getElementById('profileLangSub');
+  if (langSub) langSub.textContent = `${name} (Active)`;
+
+  showToast(`Language set to ${name}`, '🌐');
+  setTimeout(closeLanguageModal, 300);
+}
+
+// --- Digital Kisan ID Modal ---
+function openKisanIdModal() {
+  const modal = document.getElementById('kisanIdModal');
+  if (modal) modal.classList.add('active');
+}
+
+function closeKisanIdModal() {
+  const modal = document.getElementById('kisanIdModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function downloadKisanCard() {
+  showToast('Kisan ID saved to device photos! 📲', '✅');
+  setTimeout(closeKisanIdModal, 700);
+}
+
+// --- Initialize Profile and Settings from LocalStorage ---
+function initProfileSettings() {
+  try {
+    const rawProfile = localStorage.getItem('agroai_profile_data');
+    if (rawProfile) {
+      const p = JSON.parse(rawProfile);
+      if (p.name && document.getElementById('farmerFullName')) document.getElementById('farmerFullName').textContent = p.name;
+      if (p.location && document.getElementById('profileLocationDisplay')) document.getElementById('profileLocationDisplay').textContent = p.location;
+      if (p.farmSize && document.getElementById('profileStatFarmSize')) document.getElementById('profileStatFarmSize').textContent = p.farmSize;
+      if (p.soil && document.getElementById('profileStatSoil')) document.getElementById('profileStatSoil').textContent = p.soil;
+      if (p.crops && document.getElementById('profileStatCrops')) document.getElementById('profileStatCrops').textContent = p.crops;
+      if (p.name && document.getElementById('dkFarmerName')) document.getElementById('dkFarmerName').textContent = p.name;
+      if (p.farmSize && document.getElementById('dkLandParcel')) document.getElementById('dkLandParcel').textContent = `${p.farmSize} (${p.location ? p.location.split(',')[0] : 'Gujarat'})`;
+    }
+  } catch (e) {}
+
+  try {
+    const langName = localStorage.getItem('agroai_selected_lang_name');
+    const langCode = localStorage.getItem('agroai_selected_lang');
+    if (langName) {
+      const langSub = document.getElementById('profileLangSub');
+      if (langSub) langSub.textContent = `${langName} (Active)`;
+      if (langCode) {
+        document.querySelectorAll('.lang-option-row').forEach(row => {
+          if (row.getAttribute('data-lang') === langCode) {
+            row.classList.add('active');
+          } else {
+            row.classList.remove('active');
+          }
+        });
+      }
+    }
+  } catch (e) {}
+
+  try {
+    const rawNotifs = localStorage.getItem('agroai_notifs');
+    if (rawNotifs) {
+      const prefs = JSON.parse(rawNotifs);
+      if (prefs.mandi === false) document.getElementById('notifMandiSwitch')?.classList.remove('active');
+      if (prefs.weather === false) document.getElementById('notifWeatherSwitch')?.classList.remove('active');
+      if (prefs.pest === false) document.getElementById('notifPestSwitch')?.classList.remove('active');
+      if (prefs.govt === false) document.getElementById('notifGovtSwitch')?.classList.remove('active');
+      updateNotifSubText(prefs);
+    }
+  } catch (e) {}
 }
