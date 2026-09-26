@@ -604,6 +604,11 @@ body {
     inset 1px 1px 5px 0 rgba(255, 255, 255, 0.3),
     inset -1px -1px 5px 0 rgba(255, 255, 255, 0.3),
     0 2px 6px rgba(0, 0, 0, 0.05);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-drag: none;
 }
 
 .slide-button-track {
@@ -614,6 +619,8 @@ body {
   align-items: center;
   justify-content: flex-end;
   pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .slide-text {
@@ -622,6 +629,8 @@ body {
   font-weight: 500;
   margin-right: 55px;
   letter-spacing: 0.5px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .slide-arrows {
@@ -629,8 +638,17 @@ body {
   color: rgba(255, 255, 255, 0.3);
   font-size: 15px;
   letter-spacing: 3px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
+.slide-arrows img {
+  height: 40px;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
 .slide-thumb {
   width: 60px;
   height: 60px;
@@ -644,6 +662,16 @@ body {
   z-index: 2;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transition: transform 0.1s;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
+.slide-thumb img {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
 }
 
 .slide-thumb:active {
@@ -990,6 +1018,8 @@ body {
   flex-direction: column;
   gap: 6px;
   min-width: 124px;
+  max-width: 145px;
+  overflow: hidden;
   box-shadow: var(--shadow-sm);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1039,6 +1069,10 @@ body {
   font-size: 14px;
   font-weight: 800;
   color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .mini-pct-up {
@@ -1046,6 +1080,10 @@ body {
   font-family: var(--font-heading);
   font-size: 11px;
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .mini-pct-down {
@@ -1053,6 +1091,10 @@ body {
   font-family: var(--font-heading);
   font-size: 11px;
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 
@@ -1409,6 +1451,16 @@ body {
   flex-shrink: 0;
 }
 
+.tool-icon-frame img {
+  height: 24px;
+  width: 24px;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
 .tool-icon-frame.green {
   background: #eaf5eb;
   color: #2b6b2e;
@@ -1432,6 +1484,11 @@ body {
 .tool-icon-frame.teal {
   background: #e0f7f6;
   color: #009688;
+}
+
+.tool-icon-frame.cyan {
+  background: #e0f2fe;
+  color: #0284c7;
 }
 
 .tool-icon-frame.gold {
@@ -2222,6 +2279,16 @@ body {
   justify-content: center;
   color: var(--primary-green);
   flex-shrink: 0;
+}
+
+.settings-icon-box img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
 }
 
 .settings-icon-box svg {
@@ -3157,86 +3224,97 @@ body {
 .digital-kisan-card {
   background: linear-gradient(145deg, #0d3b1f 0%, #17542d 100%);
   border-radius: 20px;
-  padding: 16px;
+  padding: 18px;
   color: #ffffff;
   box-shadow: 0 8px 24px rgba(18, 53, 36, 0.25);
   display: flex;
   flex-direction: column;
   gap: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .dk-card-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  padding-bottom: 12px;
 }
 
 .dk-gov-tag {
-  font-size: 9px;
-  letter-spacing: 0.8px;
-  color: #8ce1a3;
-  font-weight: 700;
+  font-size: 9.5px;
+  letter-spacing: 0.6px;
+  color: #a3e8b4;
+  font-weight: 600;
   text-transform: uppercase;
 }
 
 .dk-card-title {
-  font-size: 14px;
-  font-weight: 800;
-  margin-top: 2px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  margin-top: 3px;
   color: #ffffff;
 }
 
 .dk-badge-verified {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 4px 10px;
   border-radius: 100px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
 .dk-card-body {
   display: flex;
-  gap: 14px;
+  gap: 16px;
   align-items: center;
 }
 
 .dk-qr-box {
-  width: 82px;
-  height: 82px;
+  width: 90px;
+  height: 90px;
   background: #ffffff;
-  border-radius: 12px;
-  padding: 5px;
+  border-radius: 14px;
+  padding: 6px;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .dk-meta-col {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   flex: 1;
+  min-width: 0;
 }
 
 .dk-field {
   display: flex;
   flex-direction: column;
-  line-height: 1.2;
+  gap: 1px;
+  line-height: 1.25;
 }
 
 .dk-label {
-  font-size: 9px;
+  font-size: 9.5px;
   color: #a8dfb7;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
 .dk-val {
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
   color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Floating Toast Pill */
@@ -3343,7 +3421,7 @@ body {
   color: #ffffff;
   position: relative;
   overflow: hidden;
-  box-shadow: inset 5px 5px 10px rgba(193, 193, 193, 0.4), inset -5px -5px 10px rgba(193, 193, 193, 0.4), 0 2px 015px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 1px 1px 0px #ffffff,inset -1px -1px 0px #ffffff, 0 2px 015px rgba(0, 0, 0, 0.4);
   margin-top: 10px;
 }
 
@@ -4044,7 +4122,7 @@ body,
   background: #ffffff;
   border-radius: 50%;
   border: 1px solid var(--border-light);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: inset 5px 5px 5px rgba(193, 193, 193, 0.2), inset -5px -5px 5px rgba(193, 193, 193, 0.2), 0 1px 10px rgba(0, 0, 0, 0.1);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   color: var(--text-main);
 }

@@ -73,8 +73,8 @@ function applyTheme(isDark) {
   const profileDarkStatusText = document.getElementById('profileDarkStatusText');
   if (profileDarkStatusText) {
     profileDarkStatusText.textContent = isDark
-      ? 'Active: Deep Black (0) mode'
-      : 'Active: Clean White (255) mode';
+      ? 'Active: Deep Black mode'
+      : 'Active: Clean White mode';
   }
 }
 
@@ -454,6 +454,9 @@ function updateHomeMiniPrices(records) {
     const modalPrice = rawModalPrice.toLocaleString('en-IN');
     const emojiImg = getCropEmojiImg(commodity, 'apple-crop-icon-mini');
 
+    const rawMarket = item.market ? item.market.replace(/\(.*\)/g, '').trim() : 'APMC';
+    const marketLabel = rawMarket.split(' ')[0] || 'APMC';
+
     const isLongText = commodity.length > 10;
     const nameContent = isLongText
       ? `<marquee scrollamount="3" style="width: 100%; margin: 0; vertical-align: middle;">${emojiImg} <span style="margin-left:2px;">${commodity}</span></marquee>`
@@ -468,7 +471,7 @@ function updateHomeMiniPrices(records) {
           </span>
         </div>
         <div class="mini-price-val">₹${modalPrice}/qt</div>
-        <div class="mini-pct-up">${item.market ? item.market.split(' ')[0] : 'APMC'}</div>
+        <div class="mini-pct-up">${marketLabel}</div>
       </div>
     `;
   }).join('');
