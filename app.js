@@ -997,7 +997,224 @@ function filterKvkDirectory() {
   renderKvkDirectory(filtered);
 }
 
-// AI Assistant Chat Modal
+// =========================================================================
+// 5. AI CROP DISEASE DETECTION SIMULATOR
+// =========================================================================
+const diseasesDatabase = [
+  {
+    name: "Tomato Late Blight",
+    severity: "High Severity",
+    confidence: "94.2%",
+    family: "Solanaceae",
+    symptoms: "Large, blue-gray to dark brown patches appear on leaves and stems, often accompanied by pale green halos and white mold on leaf undersides."
+  },
+  {
+    name: "Wheat Powdery Mildew",
+    severity: "Moderate Severity",
+    confidence: "91.8%",
+    family: "Poaceae",
+    symptoms: "White fluffy fungal patches on upper leaf surfaces turning into light brown powdery lesions."
+  },
+  {
+    name: "Cotton Bacterial Blight",
+    severity: "Critical Severity",
+    confidence: "96.4%",
+    family: "Malvaceae",
+    symptoms: "Angular water-soaked spots on leaf blades with reddish-brown necrotic centers and vein blackening."
+  }
+];
+let currentDiseaseIndex = 0;
+
+function simulateNewScan() {
+  const laser = document.getElementById('scanLaser');
+  if (laser) {
+    laser.style.display = 'block';
+    laser.style.animation = 'scanLaser 1.5s ease-in-out infinite alternate';
+  }
+
+  setTimeout(() => {
+    currentDiseaseIndex = (currentDiseaseIndex + 1) % diseasesDatabase.length;
+    const data = diseasesDatabase[currentDiseaseIndex];
+
+    const nameEl = document.getElementById('diseaseNameDisplay');
+    const sevEl = document.getElementById('severityPillDisplay');
+    const confEl = document.getElementById('confidenceDisplay');
+    const famEl = document.getElementById('cropFamilyDisplay');
+    const symEl = document.getElementById('symptomsTextDisplay');
+
+    if (nameEl) nameEl.textContent = data.name;
+    if (sevEl) sevEl.textContent = data.severity;
+    if (confEl) confEl.textContent = data.confidence;
+    if (famEl) famEl.textContent = data.family;
+    if (symEl) symEl.textContent = data.symptoms;
+
+    showToast(`AI Scan: Diagnosed "${data.name}" (${data.confidence})`, '🔬');
+  }, 1000);
+}
+
+// =========================================================================
+// 6. AI CROP RECOMMENDATION ENGINE
+// =========================================================================
+function calculateCropRecommendation() {
+  const N = parseFloat(document.getElementById('recN')?.value) || 45;
+  const P = parseFloat(document.getElementById('recP')?.value) || 32;
+  const K = parseFloat(document.getElementById('recK')?.value) || 120;
+  const pH = parseFloat(document.getElementById('recPH')?.value) || 6.5;
+  const rain = parseFloat(document.getElementById('recRain')?.value) || 1200;
+  const temp = parseFloat(document.getElementById('recTemp')?.value) || 24;
+
+  let crop = "Golden Wheat";
+  let category = "Grain • Cereal Crop";
+  let score = "94% Match";
+
+  if (rain > 1500) {
+    crop = "Basmati Rice";
+    category = "Paddy • Wetland Crop";
+    score = "97% Match";
+  } else if (temp > 28) {
+    crop = "Hybrid Cotton";
+    category = "Fiber • Cash Crop";
+    score = "92% Match";
+  } else if (N > 80) {
+    crop = "Sweet Corn";
+    category = "Grain • High Nutrient";
+    score = "95% Match";
+  }
+
+  const nameEl = document.getElementById('recCropName');
+  const emojiEl = document.getElementById('recCropEmoji');
+  const catEl = document.getElementById('recCropCategory');
+  const scoreEl = document.getElementById('recMatchScore');
+  const phEl = document.getElementById('recPHDisplay');
+
+  if (nameEl) nameEl.textContent = crop;
+  if (emojiEl) emojiEl.innerHTML = getCropEmojiImg(crop, 'apple-crop-rec-img');
+  if (catEl) catEl.textContent = category;
+  if (scoreEl) scoreEl.textContent = score;
+  if (phEl) phEl.textContent = pH;
+
+  const card = document.getElementById('cropRecResultCard');
+  if (card) {
+    card.style.transform = 'scale(1.02)';
+    setTimeout(() => card.style.transform = 'scale(1)', 200);
+  }
+}
+
+// =========================================================================
+// 7. YIELD PREDICTION ENGINE
+// =========================================================================
+function calculateYield() {
+  const crop = document.getElementById('yieldCropSelect')?.value || 'wheat';
+  const area = parseFloat(document.getElementById('yieldAreaSelect')?.value) || 5.5;
+  const soil = document.getElementById('yieldSoilSelect')?.value || 'black';
+  const irrig = document.getElementById('yieldIrrigSelect')?.value || 'drip';
+
+  let baseYieldPerAcre = 40;
+  if (crop === 'wheat') baseYieldPerAcre = 41;
+  if (crop === 'rice') baseYieldPerAcre = 48;
+  if (crop === 'cotton') baseYieldPerAcre = 33;
+  if (crop === 'maize') baseYieldPerAcre = 52;
+  if (crop === 'soybean') baseYieldPerAcre = 28;
+  if (crop === 'sugarcane') baseYieldPerAcre = 290;
+
+  let soilMultiplier = soil === 'clay' ? 1.05 : (soil === 'black' ? 1.15 : 0.95);
+  let irrigMultiplier = irrig === 'drip' ? 1.15 : (irrig === 'sprinkler' ? 1.08 : 0.9);
+
+  const total = (baseYieldPerAcre * area * soilMultiplier * irrigMultiplier).toFixed(1);
+  const outEl = document.getElementById('yieldOutputDisplay');
+  if (outEl) outEl.textContent = `${total} Quintals`;
+}
+
+// =========================================================================
+// 8. PROFIT ESTIMATOR ENGINE
+// =========================================================================
+function calculateProfit() {
+  const yieldAmt = parseFloat(document.getElementById('profitYieldInput')?.value) || 180;
+  const cost = parseFloat(document.getElementById('profitCostInput')?.value) || 3200;
+  const rate = parseFloat(document.getElementById('profitRateInput')?.value) || 85;
+
+  const totalRevenue = yieldAmt * rate;
+  const netProfit = totalRevenue - cost;
+  const margin = ((netProfit / (totalRevenue || 1)) * 100).toFixed(2);
+  const roi = (totalRevenue / (cost || 1)).toFixed(2);
+
+  const netEl = document.getElementById('profitNetDisplay');
+  const marginEl = document.getElementById('profitMarginDisplay');
+  const roiEl = document.getElementById('profitRoiDisplay');
+  const costBar = document.getElementById('costPortionBar');
+  const profitBar = document.getElementById('profitPortionBar');
+  const costLegend = document.getElementById('costLegendText');
+  const profitLegend = document.getElementById('profitLegendText');
+
+  if (netEl) netEl.textContent = `₹${netProfit.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (marginEl) marginEl.textContent = `${margin}%`;
+  if (roiEl) roiEl.textContent = `${roi}x`;
+
+  const costPct = Math.min(Math.max((cost / (totalRevenue || 1)) * 100, 10), 90);
+  const profitPct = 100 - costPct;
+
+  if (costBar) costBar.style.width = `${costPct}%`;
+  if (profitBar) profitBar.style.width = `${profitPct}%`;
+  if (costLegend) costLegend.textContent = `Cost (₹${(cost / 1000).toFixed(1)}K)`;
+  if (profitLegend) profitLegend.textContent = `Profit (₹${(netProfit / 1000).toFixed(1)}K)`;
+}
+
+// =========================================================================
+// 9. SOIL HEALTH SCORE ENGINE
+// =========================================================================
+function calculateSoilHealth() {
+  const N = parseFloat(document.getElementById('soilN')?.value) || 48;
+  const P = parseFloat(document.getElementById('soilP')?.value) || 14;
+  const K = parseFloat(document.getElementById('soilK')?.value) || 32;
+
+  let score = Math.round(Math.min(100, (N * 0.4 + P * 1.5 + K * 0.8)));
+  if (score < 40) score = 55;
+  if (score > 98) score = 96;
+
+  const scoreEl = document.getElementById('soilScoreNumber');
+  if (scoreEl) scoreEl.textContent = score;
+
+  const circle = document.getElementById('soilGaugeCircle');
+  if (circle) {
+    const offset = 188 - (188 * score / 100);
+    circle.style.strokeDashoffset = offset;
+  }
+
+  const nEl = document.getElementById('soilNText');
+  const pEl = document.getElementById('soilPText');
+  const kEl = document.getElementById('soilKText');
+  if (nEl) nEl.textContent = `Current value: ${N} mg/kg`;
+  if (pEl) pEl.textContent = `Current value: ${P} mg/kg`;
+  if (kEl) kEl.textContent = `Current value: ${K} mg/kg`;
+
+  const pBadge = document.getElementById('soilPBadge');
+  if (pBadge) {
+    if (P < 20) {
+      pBadge.className = 'status-badge-deficient';
+      pBadge.textContent = 'Low Deficient';
+    } else {
+      pBadge.className = 'status-badge-optimal';
+      pBadge.textContent = 'Optimal';
+    }
+  }
+}
+
+function toggleSoilMode(mode) {
+  const reportBtn = document.getElementById('toggleReportBtn');
+  const manualBtn = document.getElementById('toggleManualBtn');
+  if (mode === 'report') {
+    if (reportBtn) reportBtn.classList.add('active');
+    if (manualBtn) manualBtn.classList.remove('active');
+    alert('Report Scan: Camera & OCR ready to scan your official soil lab PDF / printout.');
+  } else {
+    if (manualBtn) manualBtn.classList.add('active');
+    if (reportBtn) reportBtn.classList.remove('active');
+  }
+}
+
+// =========================================================================
+// 10. AI ASSISTANT CHAT MODAL
+// =========================================================================
 function openChatModal() {
   document.getElementById('aiChatModal').classList.add('active');
 }
@@ -1549,7 +1766,7 @@ function initProfileSettings() {
       if (p.name && document.getElementById('dkFarmerName')) document.getElementById('dkFarmerName').textContent = p.name;
       if (p.farmSize && document.getElementById('dkLandParcel')) document.getElementById('dkLandParcel').textContent = `${p.farmSize} (${p.location ? p.location.split(',')[0] : 'Gujarat'})`;
     }
-  } catch (e) {}
+  } catch (e) { }
 
   try {
     const langName = localStorage.getItem('agroai_selected_lang_name');
@@ -1567,7 +1784,7 @@ function initProfileSettings() {
         });
       }
     }
-  } catch (e) {}
+  } catch (e) { }
 
   try {
     const rawNotifs = localStorage.getItem('agroai_notifs');
@@ -1579,5 +1796,5 @@ function initProfileSettings() {
       if (prefs.govt === false) document.getElementById('notifGovtSwitch')?.classList.remove('active');
       updateNotifSubText(prefs);
     }
-  } catch (e) {}
+  } catch (e) { }
 }
