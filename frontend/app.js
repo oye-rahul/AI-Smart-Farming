@@ -124,7 +124,16 @@ const APPLE_CROP_EMOJIS = {
   'peanuts': 'https://em-content.zobj.net/source/apple/453/peanuts_1f95c.png',
   'peanut': 'https://em-content.zobj.net/source/apple/453/peanuts_1f95c.png',
   'groundnut': 'https://em-content.zobj.net/source/apple/453/peanuts_1f95c.png',
-  'cotton': 'https://em-content.zobj.net/source/apple/453/cloud_2601-fe0f.png'
+  'cotton': 'https://em-content.zobj.net/source/apple/453/cloud_2601-fe0f.png',
+  'watermelon': 'https://em-content.zobj.net/source/apple/453/watermelon_1f349.png',
+  'grapes': 'https://em-content.zobj.net/source/apple/453/grapes_1f347.png',
+  'orange': 'https://em-content.zobj.net/source/apple/453/tangerine_1f34a.png',
+  'mango': 'https://em-content.zobj.net/source/apple/453/mango_1f96d.png',
+  'coconut': 'https://em-content.zobj.net/source/apple/453/coconut_1f965.png',
+  'coffee': 'https://em-content.zobj.net/source/apple/453/hot-beverage_2615.png',
+  'muskmelon': 'https://em-content.zobj.net/source/apple/453/melon_1f348.png',
+  'papaya': 'https://em-content.zobj.net/source/apple/453/melon_1f348.png',
+  'pomegranate': 'https://em-content.zobj.net/source/apple/453/red-apple_1f34e.png'
 };
 
 const APPLE_WEATHER_EMOJIS = {
@@ -1052,54 +1061,144 @@ function simulateNewScan() {
   }, 1000);
 }
 
-// =========================================================================
-// 6. AI CROP RECOMMENDATION ENGINE
-// =========================================================================
-function calculateCropRecommendation() {
-  const N = parseFloat(document.getElementById('recN')?.value) || 45;
-  const P = parseFloat(document.getElementById('recP')?.value) || 32;
-  const K = parseFloat(document.getElementById('recK')?.value) || 120;
-  const pH = parseFloat(document.getElementById('recPH')?.value) || 6.5;
-  const rain = parseFloat(document.getElementById('recRain')?.value) || 1200;
-  const temp = parseFloat(document.getElementById('recTemp')?.value) || 24;
+// ============================================================
+// AI CROP RECOMMENDATION ENGINE (FASTAPI INTEGRATION)
+// ============================================================
 
-  let crop = "Golden Wheat";
-  let category = "Grain • Cereal Crop";
-  let score = "94% Match";
+const CROP_METADATA_MAP = {
+  'rice': { name: 'Paddy Rice', category: 'Grain • High Water Requirement', icon: 'rice', temp: '20-27°C with submerged or saturated soil conditions.', fert: 'Nitrogen during vegetative growth; ensure adequate basal Phosphorus.' },
+  'wheat': { name: 'Golden Wheat', category: 'Grain • Cereal Winter Crop', icon: 'wheat', temp: '18-24°C in late Autumn/Winter. Avoid early heat.', fert: 'Balanced NPK promotes grain formation. Apply starter phosphate.' },
+  'maize': { name: 'Field Maize (Corn)', category: 'Cereal • Moderate Rainfall', icon: 'maize', temp: '21-30°C in warm sunshine and well-aerated soil.', fert: 'High Nitrogen demand during early vegetative stage for strong cobs.' },
+  'cotton': { name: 'Raw Cotton', category: 'Cash Crop • Commercial Fiber', icon: 'cotton', temp: '21-30°C with warm sun and minimal frost risk.', fert: 'Adequate Potassium to improve boll strength and fiber quality.' },
+  'apple': { name: 'Crisp Apple', category: 'Fruit • Temperate Zone', icon: 'apple', temp: '15-24°C with cold winter dormancy period.', fert: 'Rich organic compost and potassium-rich fertilizer.' },
+  'banana': { name: 'Cavendish Banana', category: 'Fruit • Tropical Perennial', icon: 'banana', temp: '24-30°C in humid tropical conditions.', fert: 'Heavy feeder of Potassium and Nitrogen with moist soil.' },
+  'grapes': { name: 'Vineyard Grapes', category: 'Fruit • Viticulture', icon: 'grapes', temp: '20-32°C in warm, dry weather.', fert: 'Moderate Nitrogen; balanced Potassium to support grape clusters.' },
+  'watermelon': { name: 'Sugar Watermelon', category: 'Melon • Cucurbit', icon: 'watermelon', temp: '24-32°C with full sunlight and warm soil.', fert: 'Boost Potassium and Phosphorus during flowering and fruiting.' },
+  'muskmelon': { name: 'Sweet Muskmelon', category: 'Melon • Cucurbit', icon: 'muskmelon', temp: '25-35°C in warm dry conditions.', fert: 'Avoid excessive Nitrogen at flowering; maintain consistent hydration.' },
+  'chickpea': { name: 'Desi Chickpea (Chana)', category: 'Pulse • Rabi Legume', icon: 'grain', temp: '18-26°C with mild winter weather.', fert: 'Fixes atmospheric nitrogen naturally; supply single superphosphate.' },
+  'kidneybeans': { name: 'Rajma (Kidney Beans)', category: 'Pulse • High Protein', icon: 'grain', temp: '18-25°C in fertile, well-drained loam.', fert: 'Phosphorus and Potassium support vigorous pod development.' },
+  'pigeonpeas': { name: 'Arhar / Toor Dal', category: 'Pulse • Drought Tolerant', icon: 'grain', temp: '20-30°C in warm conditions.', fert: 'Deep rooting crop; starter Phosphorus aids nodule growth.' },
+  'mothbeans': { name: 'Moth Bean', category: 'Pulse • Arid Region Crop', icon: 'grain', temp: '25-35°C in semi-arid zones.', fert: 'Minimal fertilizer requirement; drought hardy.' },
+  'mungbean': { name: 'Moong (Green Gram)', category: 'Pulse • Short Duration', icon: 'grain', temp: '25-32°C. Matures in 60-70 days.', fert: 'Rhizobium inoculation helps fulfill Nitrogen needs.' },
+  'blackgram': { name: 'Urad (Black Gram)', category: 'Pulse • Legume', icon: 'grain', temp: '25-35°C in warm and humid soil.', fert: 'Phosphorus-rich fertilizer enhances pod setting.' },
+  'lentil': { name: 'Masoor (Lentil)', category: 'Pulse • Rabi Crop', icon: 'grain', temp: '15-22°C in cool growing season.', fert: 'Apply starter fertilizer with Phosphorus before sowing.' },
+  'pomegranate': { name: 'Bhagwa Pomegranate', category: 'Fruit • Subtropical', icon: 'pomegranate', temp: '25-35°C in semi-arid atmosphere.', fert: 'Potassium and micronutrients ensure bright rind coloration.' },
+  'mango': { name: 'Mango', category: 'Fruit • Tropical Orchard', icon: 'mango', temp: '24-30°C with dry spell during flowering.', fert: 'Balanced NPK plus Zinc and Boron before flower set.' },
+  'orange': { name: 'Citrus Orange', category: 'Fruit • Subtropical Citrus', icon: 'orange', temp: '15-32°C with good soil drainage.', fert: 'Nitrogen and Potassium split applications keep foliage green.' },
+  'papaya': { name: 'Red Papaya', category: 'Fruit • Tropical Fast-Growing', icon: 'papaya', temp: '22-30°C in protected warm soil.', fert: 'Regular monthly applications of organic compost and NPK.' },
+  'coconut': { name: 'Coconut Palm', category: 'Plantation • Coastal Palm', icon: 'coconut', temp: '25-32°C with high coastal humidity.', fert: 'High Potassium and salt/chlorine demand for large nut yield.' },
+  'coffee': { name: 'Arabica Coffee', category: 'Plantation • Shade Loving', icon: 'coffee', temp: '15-24°C in hill agroforestry conditions.', fert: 'Heavy organic mulching and post-monsoon NPK dose.' },
+  'jute': { name: 'Golden Jute', category: 'Fiber • Cash Crop', icon: 'crop', temp: '24-35°C with abundant monsoon rainfall.', fert: 'Nitrogen drives stalk elongation and high fiber output.' }
+};
 
-  if (rain > 1500) {
-    crop = "Basmati Rice";
-    category = "Paddy • Wetland Crop";
-    score = "97% Match";
-  } else if (temp > 28) {
-    crop = "Hybrid Cotton";
-    category = "Fiber • Cash Crop";
-    score = "92% Match";
-  } else if (N > 80) {
-    crop = "Sweet Corn";
-    category = "Grain • High Nutrient";
-    score = "95% Match";
+async function calculateCropRecommendation() {
+  const nInput = document.getElementById('recN');
+  const pInput = document.getElementById('recP');
+  const kInput = document.getElementById('recK');
+  const phInput = document.getElementById('recPH');
+  const rainInput = document.getElementById('recRain');
+  const tempInput = document.getElementById('recTemp');
+  const humidInput = document.getElementById('recHumid') || document.getElementById('recHumidity');
+
+  const N = parseFloat(nInput?.value) || 45;
+  const P = parseFloat(pInput?.value) || 32;
+  const K = parseFloat(kInput?.value) || 120;
+  const pH = parseFloat(phInput?.value) || 6.5;
+  const rain = parseFloat(rainInput?.value) || 1200;
+  const temp = parseFloat(tempInput?.value) || 24;
+  const humidity = parseFloat(humidInput?.value) || 68;
+
+  const cropData = {
+    N: N,
+    P: P,
+    K: K,
+    temperature: temp,
+    humidity: humidity,
+    ph: pH,
+    rainfall: rain
+  };
+
+  const actionBtn = document.querySelector('#screen-crop-rec .btn-primary-action');
+  const origBtnContent = actionBtn ? actionBtn.innerHTML : null;
+  if (actionBtn) {
+    actionBtn.disabled = true;
+    actionBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;animation:spin 1s linear infinite;">
+        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+        <path d="M12 2a10 10 0 0 1 10 10" stroke-opacity="0.85"></path>
+      </svg>
+      <span>AI Analyzing Soil & Climate...</span>
+    `;
   }
 
-  const nameEl = document.getElementById('recCropName');
-  const emojiEl = document.getElementById('recCropEmoji');
-  const catEl = document.getElementById('recCropCategory');
-  const scoreEl = document.getElementById('recMatchScore');
-  const phEl = document.getElementById('recPHDisplay');
+  try {
+    const response = await fetch("http://127.0.0.1:8000/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cropData)
+    });
 
-  if (nameEl) nameEl.textContent = crop;
-  if (emojiEl) emojiEl.innerHTML = getCropEmojiImg(crop, 'apple-crop-rec-img');
-  if (catEl) catEl.textContent = category;
-  if (scoreEl) scoreEl.textContent = score;
-  if (phEl) phEl.textContent = pH;
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}`);
+    }
 
-  const card = document.getElementById('cropRecResultCard');
-  if (card) {
-    card.style.transform = 'scale(1.02)';
-    setTimeout(() => card.style.transform = 'scale(1)', 200);
+    const result = await response.json();
+    if (!result.success || !result.crop) {
+      throw new Error(result.error || 'Prediction failed');
+    }
+
+    const cropKey = String(result.crop).toLowerCase().trim();
+    const meta = CROP_METADATA_MAP[cropKey] || {
+      name: cropKey.charAt(0).toUpperCase() + cropKey.slice(1),
+      category: 'Recommended Agricultural Crop',
+      icon: cropKey,
+      temp: `Ideal temperature: ${temp}°C with rainfall of ${rain}mm.`,
+      fert: `Balanced soil nutrition tailored to N: ${N}, P: ${P}, K: ${K}.`
+    };
+
+    // Update UI elements in screen-crop-rec
+    const nameEl = document.getElementById('recCropName');
+    const catEl = document.getElementById('recCropCategory');
+    const emojiEl = document.getElementById('recCropEmoji');
+    const scoreEl = document.getElementById('recMatchScore');
+    const phEl = document.getElementById('recPHDisplay');
+    const insightTempEl = document.getElementById('recInsightTemp');
+    const insightFertEl = document.getElementById('recInsightFertilizer');
+    const cardEl = document.getElementById('cropRecResultCard');
+
+    if (nameEl) nameEl.textContent = meta.name;
+    if (catEl) catEl.textContent = meta.category;
+    if (emojiEl) emojiEl.innerHTML = getCropEmojiImg(meta.icon, 'apple-crop-rec-img');
+    if (scoreEl) scoreEl.textContent = '96% AI Match';
+    if (phEl) phEl.textContent = pH.toFixed(1);
+
+    if (insightTempEl) {
+      insightTempEl.innerHTML = `<strong>• Ideal Sowing Temp:</strong> Soil pH is <strong>${pH.toFixed(1)}</strong>. ${meta.temp}`;
+    }
+    if (insightFertEl) {
+      let fertStatus = N < 50 ? 'Nitrogen is low; supplement with Urea/organic compost.' : 'Nitrogen levels are sufficient.';
+      insightFertEl.innerHTML = `<strong>• Fertilizer Hint:</strong> ${fertStatus} ${meta.fert}`;
+    }
+
+    if (cardEl) {
+      cardEl.classList.remove('pulse-highlight');
+      void cardEl.offsetWidth; // trigger reflow
+      cardEl.classList.add('pulse-highlight');
+      cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    showToast(`AI Recommended: ${meta.name}! 🌱`, '🌾');
+
+  } catch (error) {
+    console.error("Crop recommendation error:", error);
+    showToast(`Backend error: ${error.message}. Is FastAPI running on 8000?`, '⚠️');
+  } finally {
+    if (actionBtn && origBtnContent) {
+      actionBtn.disabled = false;
+      actionBtn.innerHTML = origBtnContent;
+    }
   }
 }
-
 // =========================================================================
 // 7. YIELD PREDICTION ENGINE
 // =========================================================================

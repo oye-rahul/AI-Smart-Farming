@@ -2629,6 +2629,22 @@ body {
   flex-direction: column;
   gap: 12px;
   box-shadow: 0 4px 14px rgba(52, 199, 89, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.crop-rec-result-card.pulse-highlight {
+  animation: pulseGlow 0.6s ease-out;
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(52, 199, 89, 0.5); }
+  50% { transform: scale(1.015); box-shadow: 0 0 24px rgba(52, 199, 89, 0.35); }
+  100% { transform: scale(1); box-shadow: 0 4px 14px rgba(52, 199, 89, 0.1); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .rec-crop-badge-row {
