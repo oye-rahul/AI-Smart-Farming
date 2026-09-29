@@ -1444,9 +1444,7 @@ function initWelcomeSlider() {
   document.addEventListener('touchend', onDragEnd);
 }
 
-// =========================================================================
 // 12. APP INITIALIZATION
-// =========================================================================
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initProfileSettings();
