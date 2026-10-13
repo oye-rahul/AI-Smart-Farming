@@ -6,6 +6,49 @@
 // =========================================================================
 // 1. SCREEN NAVIGATION & SPA ROUTING
 // =========================================================================
+const MAIN_TAB_SCREENS = ['screen-home', 'screen-ai-features', 'screen-market', 'screen-profile'];
+const TAB_INDEX_MAP = {
+  'screen-home': 0,
+  'screen-ai-features': 1,
+  'screen-market': 2,
+  'screen-profile': 3
+};
+
+function updateNavPill(screenId, animate = true) {
+  const pill = document.getElementById('navIndicatorPill');
+  const tabs = document.querySelectorAll('.nav-tab-item');
+  if (!pill || !tabs.length) return;
+
+  const targetIndex = TAB_INDEX_MAP[screenId];
+  if (targetIndex === undefined) return;
+
+  tabs.forEach((t, idx) => {
+    if (idx === targetIndex) {
+      t.classList.add('active');
+    } else {
+      t.classList.remove('active');
+    }
+  });
+
+  if (!animate) {
+    pill.style.transition = 'none';
+  } else {
+    pill.style.transition = 'transform 0.36s cubic-bezier(0.22, 1, 0.36, 1)';
+    // Trigger upscale pop on inner pill
+    pill.classList.remove('scaling');
+    void pill.offsetWidth; // Force reflow to cleanly restart the upscale keyframe
+    pill.classList.add('scaling');
+  }
+
+  pill.style.transform = `translateX(${targetIndex * 100}%)`;
+
+  if (!animate) {
+    requestAnimationFrame(() => {
+      pill.style.transition = '';
+    });
+  }
+}
+
 function navigateTo(screenId) {
   const screens = document.querySelectorAll('.screen-view');
   screens.forEach(s => s.classList.remove('active'));
@@ -16,6 +59,37 @@ function navigateTo(screenId) {
     const scroll = target.querySelector('.scroll-area');
     if (scroll) scroll.scrollTop = 0;
   }
+
+  const globalNav = document.getElementById('globalBottomNav');
+  if (globalNav) {
+    if (MAIN_TAB_SCREENS.includes(screenId)) {
+      globalNav.classList.remove('nav-hidden');
+      updateNavPill(screenId, true);
+    } else {
+      globalNav.classList.add('nav-hidden');
+    }
+  }
+}
+
+function initBottomNav() {
+  const activeScreen = document.querySelector('.screen-view.active');
+  const globalNav = document.getElementById('globalBottomNav');
+  if (!globalNav) return;
+
+  if (activeScreen && MAIN_TAB_SCREENS.includes(activeScreen.id)) {
+    globalNav.classList.remove('nav-hidden');
+    setTimeout(() => updateNavPill(activeScreen.id, false), 30);
+  } else {
+    globalNav.classList.add('nav-hidden');
+  }
+
+  window.addEventListener('resize', () => {
+    const currentActiveTab = document.querySelector('.nav-tab-item.active');
+    if (currentActiveTab) {
+      const scr = currentActiveTab.getAttribute('data-screen');
+      if (scr) updateNavPill(scr, false);
+    }
+  });
 }
 
 // Language Selector
@@ -1007,58 +1081,200 @@ function filterKvkDirectory() {
 }
 
 // =========================================================================
-// 5. AI CROP DISEASE DETECTION SIMULATOR
+// 5. AI CROP DISEASE DETECTION (PYTORCH RESNET-18 BACKEND INTEGRATION)
 // =========================================================================
-const diseasesDatabase = [
-  {
-    name: "Tomato Late Blight",
-    severity: "High Severity",
-    confidence: "94.2%",
-    family: "Solanaceae",
-    symptoms: "Large, blue-gray to dark brown patches appear on leaves and stems, often accompanied by pale green halos and white mold on leaf undersides."
-  },
-  {
-    name: "Wheat Powdery Mildew",
-    severity: "Moderate Severity",
-    confidence: "91.8%",
-    family: "Poaceae",
-    symptoms: "White fluffy fungal patches on upper leaf surfaces turning into light brown powdery lesions."
-  },
-  {
-    name: "Cotton Bacterial Blight",
-    severity: "Critical Severity",
-    confidence: "96.4%",
-    family: "Malvaceae",
-    symptoms: "Angular water-soaked spots on leaf blades with reddish-brown necrotic centers and vein blackening."
-  }
-];
-let currentDiseaseIndex = 0;
 
-function simulateNewScan() {
+function triggerDiseaseCapture() {
+  const input = document.getElementById('diseaseCaptureInput');
+  if (input) input.click();
+}
+
+function triggerDiseaseUpload() {
+  const input = document.getElementById('diseaseUploadInput');
+  if (input) input.click();
+}
+
+async function handleDiseaseFileInput(inputElement) {
+  if (!inputElement || !inputElement.files || !inputElement.files[0]) return;
+  const file = inputElement.files[0];
+  await processAndPredictDiseaseImage(file);
+  inputElement.value = '';
+}
+
+/**
+ * Helper to dynamically resolve FastAPI backend URLs across devices & networks.
+ * When accessed from a mobile phone or another device on the same Wi-Fi network,
+ * window.location.hostname will be the host PC's Wi-Fi IP (e.g. 192.168.x.x or 10.x.x.x),
+ * allowing requests to seamlessly reach the FastAPI backend on port 8000.
+ */
+function getBackendEndpoints(path) {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const endpoints = [];
+
+  if (typeof window !== 'undefined' && window.location) {
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol && window.location.protocol.startsWith('http') ? window.location.protocol : 'http:';
+    const isFastApiPort = window.location.port === '8000';
+
+    if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      // Accessing from another device on the local network (e.g. smartphone over Wi-Fi)
+      if (isFastApiPort) {
+        endpoints.push(cleanPath);
+        endpoints.push(`${protocol}//${hostname}:8000${cleanPath}`);
+      } else {
+        // Frontend served from Live Server (e.g. port 5500)
+        endpoints.push(`${protocol}//${hostname}:8000${cleanPath}`);
+        endpoints.push(cleanPath);
+      }
+    } else if (hostname) {
+      // Accessing on local host PC
+      if (isFastApiPort) {
+        endpoints.push(cleanPath);
+        endpoints.push(`http://127.0.0.1:8000${cleanPath}`);
+        endpoints.push(`http://localhost:8000${cleanPath}`);
+      } else {
+        endpoints.push(`http://127.0.0.1:8000${cleanPath}`);
+        endpoints.push(`http://localhost:8000${cleanPath}`);
+        endpoints.push(cleanPath);
+      }
+    }
+  }
+
+  endpoints.push(`http://127.0.0.1:8000${cleanPath}`);
+  endpoints.push(`http://localhost:8000${cleanPath}`);
+  endpoints.push(cleanPath);
+
+  return [...new Set(endpoints)];
+}
+
+async function processAndPredictDiseaseImage(file) {
+  if (!file) return;
+
+  const preview = document.getElementById('diseaseImagePreview');
+  const illustration = document.getElementById('diseaseIllustration');
   const laser = document.getElementById('scanLaser');
+  const overlay = document.getElementById('scanStatusOverlay');
+  const statusText = document.getElementById('scanStatusText');
+
+  // 1. Show immediate image preview
+  const objectUrl = URL.createObjectURL(file);
+  if (preview) {
+    preview.src = objectUrl;
+    preview.style.display = 'block';
+  }
+  if (illustration) illustration.style.display = 'none';
+
+  // 2. Start scanning laser animation and overlay
   if (laser) {
     laser.style.display = 'block';
-    laser.style.animation = 'scanLaser 1.5s ease-in-out infinite alternate';
+    laser.style.animation = 'scanLaser 1.2s ease-in-out infinite alternate';
+  }
+  if (overlay) {
+    overlay.style.display = 'flex';
+    if (statusText) statusText.textContent = 'Diagnosing via PyTorch ResNet-18...';
   }
 
+  // 3. Send file to FastAPI Backend
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const endpoints = getBackendEndpoints('/predict-disease');
+
+  const cardEl = document.getElementById('diseaseResultsCard');
+  const errorEl = document.getElementById('diseaseErrorCard');
+  const errorMsgEl = document.getElementById('diseaseErrorMsg');
+
+  // Reset error card when initiating new scan
+  if (errorEl) errorEl.style.display = 'none';
+
+  let data = null;
+  let lastError = null;
+
+  for (const endpoint of endpoints) {
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        body: formData
+      });
+      const json = await response.json().catch(() => null);
+      if (response.ok && json && json.success) {
+        data = json;
+        break;
+      } else if (json && json.error) {
+        lastError = new Error(json.error);
+      } else if (!response.ok) {
+        lastError = new Error((json && json.error) || `Model API returned HTTP ${response.status}`);
+      }
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  // Allow laser animation to scan for visual feedback
   setTimeout(() => {
-    currentDiseaseIndex = (currentDiseaseIndex + 1) % diseasesDatabase.length;
-    const data = diseasesDatabase[currentDiseaseIndex];
+    if (laser) laser.style.display = 'none';
+    if (overlay) overlay.style.display = 'none';
 
-    const nameEl = document.getElementById('diseaseNameDisplay');
-    const sevEl = document.getElementById('severityPillDisplay');
-    const confEl = document.getElementById('confidenceDisplay');
-    const famEl = document.getElementById('cropFamilyDisplay');
-    const symEl = document.getElementById('symptomsTextDisplay');
+    if (data && data.success) {
+      if (errorEl) errorEl.style.display = 'none';
+      if (cardEl) cardEl.style.display = 'flex';
+      renderDiseaseResult(data);
+      showToast(`AI Diagnosis: ${data.prediction} (${data.confidence}%)`, '🔬');
+    } else {
+      console.warn("Backend inference error:", lastError || data);
+      const errMsg = (lastError && lastError.message) || (data && data.error) || 'Plant disease model is offline or encountered an error. Please verify backend is running.';
+      // HIDE RESULTS CARD ON ERROR - DO NOT SHOW FAKE OR PREVIOUS RESULTS
+      if (cardEl) cardEl.style.display = 'none';
+      if (errorEl) {
+        errorEl.style.display = 'flex';
+        if (errorMsgEl) errorMsgEl.textContent = errMsg;
+        errorEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      showToast(`Diagnosis Error: ${errMsg}`, '⚠️');
+    }
+  }, 750);
+}
 
-    if (nameEl) nameEl.textContent = data.name;
-    if (sevEl) sevEl.textContent = data.severity;
-    if (confEl) confEl.textContent = data.confidence;
-    if (famEl) famEl.textContent = data.family;
-    if (symEl) symEl.textContent = data.symptoms;
+function renderDiseaseResult(data) {
+  const nameEl = document.getElementById('diseaseNameDisplay');
+  const sevEl = document.getElementById('severityPillDisplay');
+  const confEl = document.getElementById('confidenceDisplay');
+  const famEl = document.getElementById('cropFamilyDisplay');
+  const symEl = document.getElementById('symptomsTextDisplay');
+  const step1 = document.getElementById('actionStep1');
+  const step2 = document.getElementById('actionStep2');
+  const step3 = document.getElementById('actionStep3');
+  const subStatus = document.getElementById('diseaseSubStatus');
 
-    showToast(`AI Scan: Diagnosed "${data.name}" (${data.confidence})`, '🔬');
-  }, 1000);
+  if (subStatus) subStatus.textContent = data.is_healthy ? "Health Verified" : "Pathogen Detected";
+  if (nameEl) nameEl.textContent = data.prediction || `${data.crop} - ${data.disease}`;
+
+  if (sevEl) {
+    sevEl.textContent = data.severity || (data.is_healthy ? 'Healthy' : 'High Severity');
+    sevEl.className = 'severity-pill';
+    if (data.is_healthy) {
+      sevEl.classList.add('healthy');
+    } else if ((data.severity || '').toLowerCase().includes('moderate')) {
+      sevEl.classList.add('moderate');
+    } else {
+      sevEl.classList.add('high');
+    }
+  }
+
+  if (confEl) confEl.textContent = `${data.confidence}%`;
+  if (famEl) famEl.textContent = data.family || 'Solanaceae';
+  if (symEl) symEl.textContent = data.symptoms || '';
+
+  if (data.actions && data.actions.length >= 3) {
+    if (step1) step1.textContent = data.actions[0];
+    if (step2) step2.textContent = data.actions[1];
+    if (step3) step3.textContent = data.actions[2];
+  }
+}
+
+// Backward compatibility alias
+function simulateNewScan() {
+  triggerDiseaseUpload();
 }
 
 // ============================================================
@@ -1120,6 +1336,11 @@ async function calculateCropRecommendation() {
 
   const actionBtn = document.querySelector('#screen-crop-rec .btn-primary-action');
   const origBtnContent = actionBtn ? actionBtn.innerHTML : null;
+  const cardEl = document.getElementById('cropRecResultCard');
+  const errorEl = document.getElementById('cropRecErrorCard');
+  const errorMsgEl = document.getElementById('cropRecErrorMsg');
+  const placeholderEl = document.getElementById('cropRecPlaceholderCard');
+
   if (actionBtn) {
     actionBtn.disabled = true;
     actionBtn.innerHTML = `
@@ -1131,21 +1352,44 @@ async function calculateCropRecommendation() {
     `;
   }
 
+  // Clear previous error while running
+  if (errorEl) errorEl.style.display = 'none';
+
+  let result = null;
+  let lastError = null;
+  const endpoints = getBackendEndpoints('/predict');
+
   try {
-    const response = await fetch("http://127.0.0.1:8000/predict", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(cropData)
-    });
+    for (const endpoint of endpoints) {
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(cropData)
+        });
 
-    if (!response.ok) {
-      throw new Error(`API returned ${response.status}`);
+        const json = await response.json().catch(() => null);
+
+        if (response.ok && json && json.success && json.crop) {
+          result = json;
+          break;
+        } else if (json && json.error) {
+          lastError = new Error(json.error);
+        } else if (!response.ok) {
+          lastError = new Error((json && json.error) || `Model API returned HTTP ${response.status}`);
+        }
+      } catch (err) {
+        lastError = err;
+      }
     }
 
-    const result = await response.json();
-    if (!result.success || !result.crop) {
-      throw new Error(result.error || 'Prediction failed');
+    if (!result || !result.crop) {
+      throw lastError || new Error('Crop recommendation model is currently unavailable or offline.');
     }
+
+    // Success: Hide placeholder and error, show real result
+    if (placeholderEl) placeholderEl.style.display = 'none';
+    if (errorEl) errorEl.style.display = 'none';
 
     const cropKey = String(result.crop).toLowerCase().trim();
     const meta = CROP_METADATA_MAP[cropKey] || {
@@ -1164,7 +1408,6 @@ async function calculateCropRecommendation() {
     const phEl = document.getElementById('recPHDisplay');
     const insightTempEl = document.getElementById('recInsightTemp');
     const insightFertEl = document.getElementById('recInsightFertilizer');
-    const cardEl = document.getElementById('cropRecResultCard');
 
     if (nameEl) nameEl.textContent = meta.name;
     if (catEl) catEl.textContent = meta.category;
@@ -1181,6 +1424,7 @@ async function calculateCropRecommendation() {
     }
 
     if (cardEl) {
+      cardEl.style.display = 'flex';
       cardEl.classList.remove('pulse-highlight');
       void cardEl.offsetWidth; // trigger reflow
       cardEl.classList.add('pulse-highlight');
@@ -1191,7 +1435,16 @@ async function calculateCropRecommendation() {
 
   } catch (error) {
     console.error("Crop recommendation error:", error);
-    showToast(`Backend error: ${error.message}. Is FastAPI running on 8000?`, '⚠️');
+    const errMsg = error.message || 'Crop recommendation model is offline or encountered an error.';
+    // CRITICAL: HIDE RESULT CARD ON ERROR - DO NOT SHOW FAKE OR PREVIOUS RESULTS
+    if (cardEl) cardEl.style.display = 'none';
+    if (placeholderEl) placeholderEl.style.display = 'none';
+    if (errorEl) {
+      errorEl.style.display = 'flex';
+      if (errorMsgEl) errorMsgEl.textContent = errMsg;
+      errorEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    showToast(`Model Error: ${errMsg}`, '⚠️');
   } finally {
     if (actionBtn && origBtnContent) {
       actionBtn.disabled = false;
@@ -1450,6 +1703,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initProfileSettings();
   initWelcomeSlider();
   startBgSlider();
+  initBottomNav();
   renderKvkDirectory(KVK_DATABASE);
   detectUserLocationAndFetch(false);
   fetchLiveAgriNews(false);
@@ -1460,6 +1714,7 @@ initTheme();
 initProfileSettings();
 initWelcomeSlider();
 startBgSlider();
+initBottomNav();
 renderKvkDirectory(KVK_DATABASE);
 detectUserLocationAndFetch(false);
 fetchLiveAgriNews(false);

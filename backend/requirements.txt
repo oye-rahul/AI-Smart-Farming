@@ -5,3 +5,7 @@ numpy
 scikit-learn
 pandas
 joblib
+torch
+torchvision
+pillow
+python-multipart

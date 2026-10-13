@@ -305,6 +305,7 @@ body {
   align-items: center;
   justify-content: flex-start;
   backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(8px);
   position: absolute;
   bottom: 0;
   left: 0;
@@ -313,20 +314,80 @@ body {
   z-index: 50;
   border-radius: 50px;
   box-shadow: inset 1px 5px 2px 0 rgba(255, 255, 255, 0.700),
-    inset -1px -5px 2px 0 rgba(255, 255, 255, 0.700);
+    inset -1px -5px 2px 0 rgba(255, 255, 255, 0.700),
+    0 8px 24px rgba(18, 53, 36, 0.08);
   margin: 0 18px 10px 18px;
+  transition: transform 0.38s cubic-bezier(0.34, 1.3, 0.64, 1),
+              opacity 0.28s ease;
+  will-change: transform, opacity;
+}
+
+.bottom-nav-bar.nav-hidden {
+  transform: translateY(120%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .nav-tabs-row {
-  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.374);
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.15);
   border-radius: 30px;
-  padding: 0 1px 0 1px;
+  padding: 0 4px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   align-self: stretch;
   flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fluid Sliding Active Indicator Pill (Outer Track) */
+.nav-indicator-pill {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / 4);
+  pointer-events: none;
+  z-index: 1;
+  transform: translateX(0);
+  transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* Inner Upscaling Pill (Independent Scale Pop) */
+.nav-pill-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 26px;
+  background: #00ff223e;
+  box-shadow: inset 1px 2px 3px 0 rgba(0, 180, 15, 0.15),
+              inset -1px -2px 3px 0 rgba(0, 180, 15, 0.15),
+              0 3px 12px rgba(52, 199, 89, 0.25);
+  transform: scale(1);
+  transform-origin: center center;
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+.nav-indicator-pill.scaling .nav-pill-inner {
+  animation: pillUpscalePop 0.8s cubic-bezier(0.34, 1.2, 0.4, 1);
+}
+
+@keyframes pillUpscalePop {
+  0% {
+    transform: scale(0.93, 0.93);
+  }
+  35% {
+    transform: scale(1.1, 1.1);
+  }
+  85% {
+    transform: scale(0.99,0.99);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
 }
 
 .nav-tab-item {
@@ -335,41 +396,47 @@ body {
   gap: 1px;
   align-items: center;
   justify-content: center;
-  width: 79px;
+  flex: 1;
+  height: 100%;
   cursor: pointer;
-  transition: all 0.2s ease;
+  position: relative;
+  z-index: 2;
+  background: transparent !important;
+  box-shadow: none !important;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.18s cubic-bezier(0.34, 1.5, 0.64, 1);
+}
+
+.nav-tab-item:active {
+  transform: scale(0.92);
 }
 
 .nav-tab-item.active {
-  background: #6dff8173;
-  padding: 7px 0;
-  border-radius: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  align-items: center;
-  justify-content: center;
-  width: 79px;
-  cursor: pointer;
-  transition: all 2s ease;
-  box-shadow: inset 1px 2px 2px 0 rgba(0, 180, 15, 0.15),
-    inset -1px -2px 2px 0 rgba(0, 180, 15, 0.15);
+  background: transparent !important;
+  box-shadow: none !important;
 }
-
 
 .nav-tab-item svg {
   width: 22px;
   height: 22px;
   stroke: var(--text-muted);
-  transition: all 0.2s ease;
+  transition: transform 0.4s cubic-bezier(0.34, 1.55, 0.64, 1),
+              stroke 0.25s ease;
+  transform: translateY(0) scale(1);
+  transform-origin: center center;
 }
 
 .nav-tab-icon {
   width: 22px;
   height: 22px;
   object-fit: contain;
-  transition: all 0.2s ease;
+  transition: transform 0.4s cubic-bezier(0.34, 1.55, 0.64, 1),
+              opacity 0.25s ease,
+              filter 0.3s ease;
   opacity: 0.6;
+  transform: translateY(0) scale(1);
+  transform-origin: center center;
 }
 
 .nav-tab-label {
@@ -377,23 +444,29 @@ body {
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  white-space: nowrap;
+  transition: transform 0.38s cubic-bezier(0.34, 1.45, 0.64, 1),
+              color 0.25s ease,
+              font-weight 0.25s ease;
+  transform: translateY(0) scale(1);
+  transform-origin: center center;
 }
 
+/* Upscale and lift when active */
 .nav-tab-item.active svg {
   stroke: var(--primary-green);
-  transform: translateY(-2px);
+  transform: translateY(-5px) scale(1.16);
 }
 
 .nav-tab-item.active .nav-tab-icon {
   opacity: 1;
-  transform: translateY(-2px);
-  filter: drop-shadow(0 1px 2px rgba(26, 77, 46, 0.2));
+  transform: translateY(0px) scale(1.18);
 }
 
 .nav-tab-item.active .nav-tab-label {
   color: var(--primary-green);
   font-weight: 700;
+  transform: translateY(-1px) scale(1.06);
 }
 
 .home-indicator-bar {
@@ -799,8 +872,7 @@ body {
     radial-gradient(circle at 82% 26%, rgba(115, 192, 134, 0.75) 0%, rgba(185, 238, 198, 0) 52%),
     radial-gradient(circle at 50% 90%, rgba(112, 231, 233, 0.605) 0%, rgba(155, 240, 180, 0) 65%),
     linear-gradient(155deg, #e9e1f8 0%, #f8ecf8 35%, #dde4e0 68%, #cfbad2 100%);
-  border: none;
-  border-radius: 28px;
+  border: 1px solid #ffffff91; border-radius: 28px;
   padding: 22px 20px 18px 20px;
   overflow: hidden;
   box-shadow: inset 12px 1px 20px 0 rgba(150, 150, 150, 0.45),inset -1px -1px 20px 0 rgba(255, 255, 255, 0.45), 0 2px 15px rgba(0, 0, 0, 0.2);
@@ -2370,7 +2442,7 @@ body {
    ========================================================================== */
 
 .disease-body {
-  padding: 0 18px 18px 18px;
+  padding: 5px 18px 18px 18px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -2388,36 +2460,122 @@ body {
 
 .leaf-photo-container {
   border-radius: 18px;
-  height: 180px;
+  height: 220px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #1b3d23, #436d4a);
+  background: #112215;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.scan-laser-beam {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 3px;
-  background: #34c759;
-  box-shadow: 0 0 10px #34c759;
-  animation: scanLaser 3s ease-in-out infinite alternate;
+.disease-default-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 18px;
+  display: block;
+  filter: contrast(1.02) brightness(0.98);
+  transition: transform 0.3s ease;
 }
 
-@keyframes scanLaser {
-  0% {
-    top: 10%;
-    opacity: 0.8;
-  }
+.leaf-photo-container:hover .disease-default-img {
+  transform: scale(1.02);
+}
 
-  100% {
-    top: 90%;
-    opacity: 0.8;
+.disease-uploaded-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 18px;
+  display: block;
+}
+
+.scan-status-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 25, 15, 0.82);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  z-index: 10;
+  border-radius: 18px;
+}
+
+.scan-spinner-ring {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(52, 199, 89, 0.25);
+  border-top-color: #34c759;
+  border-radius: 50%;
+  animation: scanSpin 0.75s linear infinite;
+}
+
+@keyframes scanSpin {
+  to {
+    transform: rotate(360deg);
   }
+}
+
+.disease-action-buttons-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.btn-scan-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 14px;
+  border-radius: 16px;
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  border: none;
+}
+
+.btn-capture-camera {
+  background: linear-gradient(135deg, #1a4d2e, #2b6b2e);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(26, 77, 46, 0.3);
+}
+
+.btn-capture-camera:hover,
+.btn-capture-camera:active {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 18px rgba(26, 77, 46, 0.45);
+}
+
+.btn-upload-gallery {
+  background: #ffffff;
+  color: var(--primary-dark);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-upload-gallery:hover,
+.btn-upload-gallery:active {
+  background: #f0f7f2;
+  transform: translateY(-2px) scale(1.02);
+}
+
+.btn-scan-option svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .disease-results-card {
@@ -2456,11 +2614,31 @@ body {
 .severity-pill {
   background: var(--warning-light);
   border-radius: 100px;
-  padding: 4px 10px;
+  padding: 5px 12px;
   color: var(--warning);
   font-family: var(--font-heading);
   font-size: 11px;
   font-weight: 700;
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+}
+
+.severity-pill.healthy {
+  background: #eaf5eb;
+  color: #2b6b2e;
+  border-color: #34c759;
+}
+
+.severity-pill.moderate {
+  background: #fff8e1;
+  color: #e65100;
+  border-color: #ffb300;
+}
+
+.severity-pill.high {
+  background: #ffebee;
+  color: #c62828;
+  border-color: #e53935;
 }
 
 .disease-stats-2col {
@@ -2531,6 +2709,50 @@ body {
   color: var(--text-muted);
   font-size: 12px;
   line-height: 17px;
+}
+
+/* AI Model Explicit Error & Placeholder States */
+.ai-model-error-card {
+  background: #fef2f2;
+  border: 1.5px solid #f87171;
+  border-radius: 20px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.08);
+  margin-bottom: 4px;
+}
+
+.ai-model-error-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #b91c1c;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ai-model-error-msg {
+  color: #7f1d1d;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+  word-break: break-word;
+}
+
+.ai-model-placeholder-card {
+  background: #ffffff;
+  border: 1.5px dashed var(--border-light);
+  border-radius: 20px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  color: var(--text-muted);
 }
 
 /* ==========================================================================
@@ -4387,6 +4609,17 @@ body.dark-mode .nav-tabs-row {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
 }
 
+body.dark-mode .nav-pill-inner {
+  background: rgba(52, 199, 89, 0.24);
+  box-shadow: inset 0 0 10px rgba(52, 199, 89, 0.35),
+              0 4px 16px rgba(52, 199, 89, 0.25);
+  border: 1px solid rgba(52, 199, 89, 0.35);
+}
+
+body.dark-mode .nav-pill-inner::after {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
 body.dark-mode .nav-tab-label {
   color: #8fa399;
 }
@@ -4400,8 +4633,12 @@ body.dark-mode .nav-tab-icon {
 }
 
 body.dark-mode .nav-tab-item.active {
-  background: rgba(52, 199, 89, 0.22);
-  box-shadow: inset 0 0 10px rgba(52, 199, 89, 0.25);
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.dark-mode .nav-tab-item.active .nav-tab-icon {
+  filter: invert(1) brightness(1.3) drop-shadow(0 2px 8px rgba(52, 199, 89, 0.6));
 }
 
 /* AI Features Screen */
@@ -4624,6 +4861,47 @@ body.dark-mode .advisory-text,
 body.dark-mode .disease-desc-p,
 body.dark-mode .metric-label {
   color: #8fa399;
+}
+
+body.dark-mode .disease-name-title {
+  color: #ffffff;
+}
+
+body.dark-mode .symptoms-text {
+  color: #d1ded6;
+}
+
+body.dark-mode .disease-stat-box {
+  background: #131a15;
+  border: 1px solid #1e2922;
+}
+
+body.dark-mode .btn-upload-gallery {
+  background: #141c16;
+  color: #ffffff;
+  border-color: #243328;
+}
+
+body.dark-mode .btn-upload-gallery:hover {
+  background: #1b261e;
+}
+
+body.dark-mode .severity-pill.healthy {
+  background: #0d2818;
+  color: #4ade80;
+  border-color: #2e7d32;
+}
+
+body.dark-mode .severity-pill.moderate {
+  background: #2c2008;
+  color: #fbbf24;
+  border-color: #b45309;
+}
+
+body.dark-mode .severity-pill.high {
+  background: #2c1211;
+  color: #f87171;
+  border-color: #991b1b;
 }
 
 body.dark-mode input,
