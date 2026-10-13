@@ -53,7 +53,7 @@
         <div class="welcome-content-wrapper">
           <div class="welcome-branding-new">
             <div class="welcome-logo">
-              <img src="ChatGPT Image Sep 22, 2026, 01_03_13 AM.png" alt="Logo"
+              <img src="assets/logo.png" alt="Logo"
                 style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
             </div>
             <div class="welcome-typography">
@@ -485,7 +485,7 @@
             <div class="profile-card-inner">
               <div class="avatar-ring-container">
                 <div class="avatar-img-circle">
-                  <img src="assets\user_avatar.jpg" alt="">
+                  <img src="assets/user_avatar.jpg" alt="">
                 </div>
                 <div class="avatar-verified-badge" title="e-KYC Verified">✓</div>
               </div>
@@ -612,6 +612,24 @@
                 <svg viewBox="0 0 24 24" class="settings-chevron" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="m9 18 6-6-6-6" />
                 </svg>
+              </div>
+
+              <div class="settings-item-row" onclick="openBackendSettingsModal()" style="cursor: pointer;">
+                <div class="settings-item-left">
+                  <div class="settings-icon-box" style="background:#e8f5e9;color:#2e7d32;">
+                    <img src="https://img.icons8.com/?size=100&id=113833&format=png&color=000000" alt="">
+                  </div>
+                  <div class="settings-text-col">
+                    <span class="settings-opt-title">AI Backend &amp; Cloud API</span>
+                    <span class="settings-opt-sub" id="backendStatusSubtitle">Vercel / Auto-detecting...</span>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span id="backendStatusPill" style="font-size:10px;font-weight:700;padding:3px 7px;border-radius:10px;background:rgba(34,197,94,0.15);color:#22c55e;">● Probing</span>
+                  <svg viewBox="0 0 24 24" class="settings-chevron" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </div>
               </div>
 
               <div class="settings-item-row" onclick="navigateTo('screen-kvk-directory')">
@@ -2079,6 +2097,63 @@
           </div>
         </div>
       </nav>
+
+      <!-- =========================================================================
+         AI BACKEND & CLOUD API CONFIGURATION MODAL
+         ========================================================================= -->
+      <div id="backendSettingsModal" class="settings-modal-overlay">
+        <div class="settings-modal-content">
+          <div class="settings-modal-header">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="settings-icon-box" style="width:34px;height:34px;background:#e8f5e9;color:#2e7d32;">
+                <img src="https://img.icons8.com/?size=100&id=113833&format=png&color=000000" alt="" style="width:20px;height:20px;">
+              </div>
+              <div>
+                <h3 class="settings-modal-title">AI Backend Settings</h3>
+                <p class="settings-modal-sub">Vercel Serverless &amp; Cloud ML</p>
+              </div>
+            </div>
+            <button class="icon-btn" onclick="closeBackendSettingsModal()" style="width:32px;height:32px;">✕</button>
+          </div>
+
+          <div class="settings-modal-body" style="padding-bottom:12px;">
+            <div style="background:rgba(255,255,255,0.06);padding:14px 16px;border-radius:14px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.1);">
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+                <span style="opacity:0.75;">Status:</span>
+                <span id="modalBackendHealthStatus" style="font-weight:700;color:#22c55e;">Probing...</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+                <span style="opacity:0.75;">Disease Classifier:</span>
+                <span id="modalBackendDiseaseStatus" style="font-weight:600;">ONNX (38 Classes)</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;">
+                <span style="opacity:0.75;">Crop Recommender:</span>
+                <span id="modalBackendCropStatus" style="font-weight:600;">KNN ML Active</span>
+              </div>
+            </div>
+
+            <div style="margin-bottom:14px;">
+              <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px;opacity:0.85;">
+                Custom Backend URL (Optional)
+              </label>
+              <input type="text" id="customBackendUrlInput" placeholder="e.g. https://my-backend.onrender.com"
+                style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:1px solid rgba(128,128,128,0.25);background:rgba(0,0,0,0.04);font-size:13px;outline:none;">
+              <p style="font-size:11px;opacity:0.65;margin:6px 0 0 0;">
+                Leave empty for automatic Vercel Serverless Function or local server routing.
+              </p>
+            </div>
+          </div>
+
+          <div class="settings-modal-footer" style="display:flex;gap:10px;">
+            <button type="button" class="btn-secondary-action" onclick="testBackendConnection(true)" style="flex:1;padding:12px 14px;border-radius:12px;border:1px solid rgba(128,128,128,0.25);background:transparent;cursor:pointer;font-weight:600;font-size:13px;">
+              <span>Test Ping</span>
+            </button>
+            <button type="button" class="btn-primary-action" onclick="saveBackendSettings()" style="flex:1;padding:12px 14px;border-radius:12px;cursor:pointer;font-weight:600;font-size:13px;">
+              <span>Save &amp; Apply</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
       <!-- Floating Toast Notification -->
       <div id="agroToast" class="agro-toast-pill">

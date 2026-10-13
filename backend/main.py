@@ -4,18 +4,42 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import sys
-from pathlib import Path
-import joblib
-import pickle
-import numpy as np
-import pandas as pd
-import torch
-import torch.nn as nn
-from torchvision import models, transforms
-from PIL import Image
+import os
 import io
 import json
+from pathlib import Path
+import numpy as np
+from PIL import Image
 
+# Graceful optional imports
+try:
+    import onnxruntime as ort
+    ONNX_AVAILABLE = True
+except ImportError:
+    ort = None
+    ONNX_AVAILABLE = False
+
+try:
+    import torch
+    import torch.nn as nn
+    from torchvision import models, transforms
+    TORCH_AVAILABLE = True
+except ImportError:
+    torch = None
+    nn = None
+    models = None
+    transforms = None
+    TORCH_AVAILABLE = False
+
+try:
+    import joblib
+except ImportError:
+    joblib = None
+
+try:
+    import pickle
+except ImportError:
+    pickle = None
 
 if sys.stdout and hasattr(sys.stdout, "reconfigure"):
     try:
@@ -26,12 +50,10 @@ if sys.stdout and hasattr(sys.stdout, "reconfigure"):
 app = FastAPI(
     title="AI Smart Farming API",
     description="Precision Crop Recommendation & Optical Plant Disease Detection",
-    version="2.0.0"
+    version="2.1.0"
 )
 
-# CORS
-# Allows your frontend to communicate with FastAPI
-
+# Enable CORS for all origins so web and mobile clients connect freely
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -40,56 +62,117 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# LOAD CROP RECOMMENDATION MODEL
-
+# -----------------------------------------------------------------------------
+# LOCATE MODELS DIRECTORY
+# -----------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent
-MODELS_DIR = (BASE_DIR / "Models") if (BASE_DIR / "Models").exists() else (BASE_DIR / "models")
-CROP_MODEL_PATH = (MODELS_DIR / "Crop-reom.pkl") if (MODELS_DIR / "Crop-reom.pkl").exists() else (MODELS_DIR / "crop-reom.pkl")
+ROOT_DIR = BASE_DIR.parent
+
+POSSIBLE_MODEL_DIRS = [
+    BASE_DIR / "Models",
+    BASE_DIR / "models",
+    ROOT_DIR / "backend" / "Models",
+    ROOT_DIR / "backend" / "models",
+    ROOT_DIR / "Models",
+    Path.cwd() / "backend" / "Models",
+    Path.cwd() / "Models",
+]
+
+MODELS_DIR = None
+for candidate in POSSIBLE_MODEL_DIRS:
+    if candidate.exists() and candidate.is_dir():
+        MODELS_DIR = candidate
+        break
+
+if MODELS_DIR is None:
+    MODELS_DIR = BASE_DIR / "Models"
+
+# -----------------------------------------------------------------------------
+# 1. LOAD CROP RECOMMENDATION MODEL
+# -----------------------------------------------------------------------------
 crop_model = None
+crop_knn_data = None
 
-try:
-    crop_model = joblib.load(CROP_MODEL_PATH)
-    print("Crop recommendation model loaded successfully with joblib")
-except Exception as e_joblib:
+# A) Try ultra-fast, zero-dependency JSON KNN data (works anywhere, avoids pickle version mismatches)
+crop_json_path = MODELS_DIR / "crop_knn_data.json"
+if crop_json_path.exists():
     try:
-        with open(CROP_MODEL_PATH, "rb") as file:
-            crop_model = pickle.load(file)
-        print("Crop recommendation model loaded successfully with pickle")
-    except Exception as e_pickle:
-        print(f"Warning: Failed to load crop model: joblib={e_joblib}, pickle={e_pickle}")
+        with open(crop_json_path, "r", encoding="utf-8") as f:
+            crop_knn_data = json.load(f)
+            crop_knn_data["X"] = np.array(crop_knn_data["X"], dtype=np.float64)
+            crop_knn_data["y"] = np.array(crop_knn_data["y"], dtype=np.int64)
+            crop_knn_data["classes"] = np.array(crop_knn_data["classes"])
+            print("Crop recommendation engine loaded via JSON KNN dataset")
+    except Exception as e_json:
+        print(f"Notice: Failed to load crop JSON data: {e_json}")
 
-# LOAD PLANT DISEASE CLASSIFIER (ResNet-18 PyTorch)
+# B) Fallback or primary pickle/joblib model
+crop_pkl_path = (MODELS_DIR / "Crop-reom.pkl") if (MODELS_DIR / "Crop-reom.pkl").exists() else (MODELS_DIR / "crop-reom.pkl")
+if crop_pkl_path.exists():
+    if joblib:
+        try:
+            crop_model = joblib.load(crop_pkl_path)
+            print("Crop recommendation model loaded with joblib")
+        except Exception:
+            pass
+    if crop_model is None and pickle:
+        try:
+            with open(crop_pkl_path, "rb") as file:
+                crop_model = pickle.load(file)
+            print("Crop recommendation model loaded with pickle")
+        except Exception:
+            pass
 
-DISEASE_MODEL_PATH = MODELS_DIR / "plant_classifier.pth"
-CLASS_NAMES_PATH = MODELS_DIR / "class_names.json"
-
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-disease_model = None
+# -----------------------------------------------------------------------------
+# 2. LOAD PLANT DISEASE CLASSIFIER (ONNX or PyTorch)
+# -----------------------------------------------------------------------------
+onnx_session = None
+torch_disease_model = None
 disease_classes = []
+disease_engine = None
 
-if CLASS_NAMES_PATH.exists() and DISEASE_MODEL_PATH.exists():
+class_names_path = MODELS_DIR / "class_names.json"
+onnx_model_path = MODELS_DIR / "plant_classifier.onnx"
+torch_model_path = MODELS_DIR / "plant_classifier.pth"
+
+if class_names_path.exists():
     try:
-        with open(CLASS_NAMES_PATH, "r", encoding="utf-8") as f:
+        with open(class_names_path, "r", encoding="utf-8") as f:
             disease_classes = json.load(f)
+    except Exception as e_cls:
+        print(f"Warning: Failed to load disease class names: {e_cls}")
 
-        disease_model = models.resnet18()
-        disease_model.fc = nn.Linear(disease_model.fc.in_features, len(disease_classes))
-        state_dict = torch.load(DISEASE_MODEL_PATH, map_location=device)
-        disease_model.load_state_dict(state_dict)
-        disease_model.to(device)
-        disease_model.eval()
-        print(f"Plant disease classifier loaded successfully ({len(disease_classes)} classes on {device})")
-    except Exception as e_disease:
-        print(f"Warning: Failed to load plant disease model: {e_disease}")
-else:
-    print(f"Warning: Disease model files missing at {DISEASE_MODEL_PATH} or {CLASS_NAMES_PATH}")
+# Try ONNX Runtime first (lightweight, under 250MB Lambda limit, highly optimized for CPU)
+if ONNX_AVAILABLE and onnx_model_path.exists() and len(disease_classes) > 0:
+    try:
+        # Disable heavy telemetry, run on CPUExecutionProvider
+        opts = ort.SessionOptions()
+        opts.enable_mem_pattern = True
+        opts.enable_cpu_mem_arena = True
+        onnx_session = ort.InferenceSession(str(onnx_model_path), sess_options=opts, providers=["CPUExecutionProvider"])
+        disease_engine = "onnx"
+        print(f"Plant disease classifier loaded with ONNX Runtime ({len(disease_classes)} classes)")
+    except Exception as e_onnx:
+        print(f"Notice: ONNX Runtime failed to load: {e_onnx}")
 
-disease_transform = transforms.Compose([
-    transforms.Resize((224, 224)),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-])
+# Fallback to PyTorch ResNet-18 if available and ONNX not active
+if onnx_session is None and TORCH_AVAILABLE and torch_model_path.exists() and len(disease_classes) > 0:
+    try:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        torch_disease_model = models.resnet18()
+        torch_disease_model.fc = nn.Linear(torch_disease_model.fc.in_features, len(disease_classes))
+        state_dict = torch.load(torch_model_path, map_location=device)
+        torch_disease_model.load_state_dict(state_dict)
+        torch_disease_model.to(device)
+        torch_disease_model.eval()
+        disease_engine = f"torch-{device}"
+        print(f"Plant disease classifier loaded with PyTorch ({len(disease_classes)} classes on {device})")
+    except Exception as e_torch:
+        print(f"Warning: PyTorch model failed to load: {e_torch}")
+
+# Preprocessing constants (standard ImageNet normalization)
+NORM_MEAN = np.array([0.485, 0.456, 0.406], dtype=np.float32)
+NORM_STD = np.array([0.229, 0.224, 0.225], dtype=np.float32)
 
 CROP_FAMILIES = {
     "apple": "Rosaceae",
@@ -122,7 +205,7 @@ def analyze_disease_result(raw_label: str, confidence: float):
 
     if is_healthy:
         severity = "Healthy"
-        symptoms = f"Leaf tissues exhibit uniform chlorophyll distribution, healthy cellular integrity, and zero visible fungal pustules or bacterial spots."
+        symptoms = "Leaf tissues exhibit uniform chlorophyll distribution, healthy cellular integrity, and zero visible fungal pustules or bacterial spots."
         actions = [
             "Maintain balanced watering schedule adhering to current weather conditions.",
             "Continue seasonal NPK nutrient fertilization as prescribed for this growth phase.",
@@ -154,14 +237,16 @@ def analyze_disease_result(raw_label: str, confidence: float):
         "disease": disease_clean,
         "is_healthy": is_healthy,
         "severity": severity,
-        "confidence": round(confidence, 1),
+        "confidence": round(float(confidence), 1),
         "family": family,
         "symptoms": symptoms,
-        "actions": actions
+        "actions": actions,
+        "engine": disease_engine or "unknown"
     }
 
-
-# INPUT DATA STRUCTURE (CROP RECOMMENDATION)
+# -----------------------------------------------------------------------------
+# INPUT DATA SCHEMA
+# -----------------------------------------------------------------------------
 class CropInput(BaseModel):
     N: float
     P: float
@@ -171,110 +256,155 @@ class CropInput(BaseModel):
     ph: float
     rainfall: float
 
-
-@app.get("/")
-def home():
-    return RedirectResponse(url="/app/")
-
-
-@app.get("/api/health")
+# -----------------------------------------------------------------------------
+# API ROUTES (Supporting both root and /api prefixed routes)
+# -----------------------------------------------------------------------------
 @app.get("/health")
+@app.get("/api/health")
 def health():
     return {
         "success": True,
-        "message": "AI Smart Farming API is running",
-        "crop_model_loaded": crop_model is not None,
-        "disease_model_loaded": disease_model is not None,
-        "frontend_url": "/app/"
+        "message": "AI Smart Farming API is operational",
+        "crop_model_loaded": (crop_knn_data is not None) or (crop_model is not None),
+        "crop_engine": "json-knn" if crop_knn_data is not None else ("joblib" if crop_model is not None else None),
+        "disease_model_loaded": (onnx_session is not None) or (torch_disease_model is not None),
+        "disease_engine": disease_engine,
+        "num_classes": len(disease_classes),
+        "platform": "serverless" if os.environ.get("VERCEL") else "standard"
     }
 
-
 @app.post("/predict")
+@app.post("/api/predict")
 def predict_crop(data: CropInput):
-    if crop_model is None:
-        return JSONResponse(
-            status_code=503,
-            content={
-                "success": False,
-                "error": "Crop recommendation model (Crop-reom.pkl) is not loaded on this server."
+    # Method 1: Ultra-fast NumPy KNN using crop_knn_data.json
+    if crop_knn_data is not None:
+        try:
+            sample = np.array([[data.N, data.P, data.K, data.temperature, data.humidity, data.ph, data.rainfall]], dtype=np.float64)
+            diff = crop_knn_data["X"] - sample
+            dist_sq = np.sum(diff * diff, axis=1)
+            k = int(crop_knn_data.get("n_neighbors", 5))
+            top_k_indices = np.argsort(dist_sq)[:k]
+            top_k_labels = crop_knn_data["y"][top_k_indices]
+            majority_label_idx = int(np.bincount(top_k_labels).argmax())
+            predicted_crop = str(crop_knn_data["classes"][majority_label_idx])
+            return {
+                "success": True,
+                "crop": predicted_crop,
+                "engine": "edge-knn"
             }
-        )
+        except Exception as err:
+            print(f"Error in JSON KNN inference: {err}")
 
-    try:
-        features = pd.DataFrame([{
-            'N': data.N,
-            'P': data.P,
-            'K': data.K,
-            'temperature': data.temperature,
-            'humidity': data.humidity,
-            'ph': data.ph,
-            'rainfall': data.rainfall
-        }])
-
-        prediction = crop_model.predict(features)
-        crop = prediction[0]
-
-        return {
-            "success": True,
-            "crop": str(crop)
-        }
-    except Exception as error:
-        return JSONResponse(
-            status_code=500,
-            content={
-                "success": False,
-                "error": f"Crop model inference error: {str(error)}"
+    # Method 2: Scikit-learn model via joblib/pickle
+    if crop_model is not None:
+        try:
+            sample = np.array([[data.N, data.P, data.K, data.temperature, data.humidity, data.ph, data.rainfall]])
+            prediction = crop_model.predict(sample)
+            return {
+                "success": True,
+                "crop": str(prediction[0]),
+                "engine": "sklearn"
             }
-        )
+        except Exception as err:
+            return JSONResponse(
+                status_code=500,
+                content={"success": False, "error": f"Crop model inference error: {str(err)}"}
+            )
 
+    return JSONResponse(
+        status_code=503,
+        content={"success": False, "error": "Crop recommendation model is not loaded on this server."}
+    )
 
 @app.post("/predict-disease")
 @app.post("/predict-plant")
+@app.post("/api/predict-disease")
+@app.post("/api/predict-plant")
 async def predict_plant_disease(file: UploadFile = File(...)):
-    if disease_model is None:
+    if onnx_session is None and torch_disease_model is None:
         return JSONResponse(
             status_code=503,
             content={
                 "success": False,
-                "error": "Plant disease model (plant_classifier.pth / class_names.json) is not loaded on this server."
+                "error": "Plant disease model (plant_classifier.onnx / plant_classifier.pth) is not loaded on this server."
             }
         )
 
     try:
         image_bytes = await file.read()
-        image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-        tensor = disease_transform(image).unsqueeze(0).to(device)
+        image = Image.open(io.BytesIO(image_bytes)).convert("RGB").resize((224, 224), Image.Resampling.BILINEAR)
 
-        with torch.no_grad():
-            outputs = disease_model(tensor)
-            probs = torch.softmax(outputs, dim=1)
-            pred_idx = torch.argmax(probs, dim=1).item()
-            conf = float(probs[0][pred_idx].item() * 100)
+        # Preprocess: convert to float [0, 1], normalize with ImageNet mean/std, shape (1, 3, 224, 224)
+        arr = np.array(image, dtype=np.float32) / 255.0
+        normalized = (arr - NORM_MEAN) / NORM_STD
+        channel_first = np.transpose(normalized, (2, 0, 1))
+        batch = np.expand_dims(channel_first, axis=0)
 
-        raw_label = disease_classes[pred_idx]
-        return analyze_disease_result(raw_label, conf)
+        # A) ONNX Runtime Inference
+        if onnx_session is not None:
+            input_name = onnx_session.get_inputs()[0].name
+            outputs = onnx_session.run(None, {input_name: batch})[0]
+            logits = outputs[0]
+            exp_logits = np.exp(logits - np.max(logits))
+            probs = exp_logits / np.sum(exp_logits)
+            pred_idx = int(np.argmax(probs))
+            conf = float(probs[pred_idx] * 100.0)
+            raw_label = disease_classes[pred_idx]
+            return analyze_disease_result(raw_label, conf)
+
+        # B) PyTorch Inference fallback
+        if torch_disease_model is not None:
+            device = next(torch_disease_model.parameters()).device
+            tensor = torch.from_numpy(batch).to(device)
+            with torch.no_grad():
+                outputs = torch_disease_model(tensor)
+                probs = torch.softmax(outputs, dim=1)
+                pred_idx = torch.argmax(probs, dim=1).item()
+                conf = float(probs[0][pred_idx].item() * 100.0)
+            raw_label = disease_classes[pred_idx]
+            return analyze_disease_result(raw_label, conf)
 
     except Exception as error:
         return JSONResponse(
             status_code=500,
-            content={
-                "success": False,
-                "error": f"Disease classifier inference failed: {str(error)}"
-            }
+            content={"success": False, "error": f"Disease classifier inference failed: {str(error)}"}
         )
 
+# -----------------------------------------------------------------------------
+# STATIC FRONTEND MOUNTING (For standalone local server)
+# -----------------------------------------------------------------------------
+POSSIBLE_FRONTEND_DIRS = [
+    ROOT_DIR / "frontend",
+    BASE_DIR / "frontend",
+    Path.cwd() / "frontend",
+    ROOT_DIR,
+]
 
-# MOUNT FRONTEND
+FRONTEND_DIR = None
+for candidate in POSSIBLE_FRONTEND_DIRS:
+    if candidate.exists() and (candidate / "index.html").exists():
+        FRONTEND_DIR = candidate
+        break
 
-FRONTEND_DIR = BASE_DIR.parent / "frontend"
-ASSETS_DIR = BASE_DIR.parent / "assets"
+if FRONTEND_DIR:
+    # Mount assets directory if available
+    assets_dir = FRONTEND_DIR / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
 
-if ASSETS_DIR.exists():
-    app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
+    # Mount entire frontend under /app
+    app.mount("/app", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
 
-if FRONTEND_DIR.exists():
-    app.mount("/app", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
-
+@app.get("/")
+def home():
+    if FRONTEND_DIR:
+        return RedirectResponse(url="/app/")
+    return {
+        "status": "online",
+        "name": "AI Smart Farming API",
+        "docs": "/docs",
+        "health": "/health"
+    }
 
 if __name__ == "__main__":
     import uvicorn
@@ -298,6 +428,4 @@ if __name__ == "__main__":
     print("  (Open the Network URL on your phone or other device)")
     print("=" * 60)
 
-    target = "backend.main:app" if (Path.cwd() / "backend").exists() else "main:app"
-    uvicorn.run(target, host="0.0.0.0", port=8000, reload=True)
-
+    uvicorn.run(app, host="0.0.0.0", port=8000)

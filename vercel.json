@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "functions": {
+    "api/**/*.py": {
+      "memory": 1024,
+      "maxDuration": 30,
+      "includeFiles": "backend/**"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/health", "destination": "/api/index.py" },
+    { "source": "/api/predict-disease", "destination": "/api/index.py" },
+    { "source": "/api/predict-plant", "destination": "/api/index.py" },
+    { "source": "/api/predict", "destination": "/api/index.py" },
+    { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/health", "destination": "/api/index.py" },
+    { "source": "/predict-disease", "destination": "/api/index.py" },
+    { "source": "/predict-plant", "destination": "/api/index.py" },
+    { "source": "/predict", "destination": "/api/index.py" },
+    { "source": "/docs", "destination": "/api/index.py" },
+    { "source": "/openapi.json", "destination": "/api/index.py" },
+    { "source": "/app", "destination": "/index.html" },
+    { "source": "/app/", "destination": "/index.html" },
+    { "source": "/app/(.*)", "destination": "/$1" }
+  ]
+}

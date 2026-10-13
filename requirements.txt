@@ -1,0 +1,8 @@
+# Production requirements for Vercel Serverless ML Deployment
+# Note: PyTorch is replaced by ONNX Runtime to remain well within Vercel's 250MB limit
+fastapi>=0.110.0
+pydantic>=2.0.0
+pillow>=10.0.0
+numpy>=1.24.0
+onnxruntime>=1.16.0
+python-multipart>=0.0.9

@@ -5,8 +5,20 @@ desktop.ini
 *.tmp
 *.log
 
+# Python virtual environment & cache
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Vercel deployment cache
+.vercel/
+
 # IDE & Editor folders
 .vscode/
 .idea/
-
-.gitignore
