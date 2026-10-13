@@ -2115,6 +2115,9 @@ function setAppLanguage(code, name, rowElement) {
   const langSub = document.getElementById('profileLangSub');
   if (langSub) langSub.textContent = `${name} (Active)`;
 
+  const welcomeLang = document.getElementById('welcomeActiveLangText');
+  if (welcomeLang) welcomeLang.textContent = name;
+
   showToast(`Language set to ${name}`, '🌐');
   setTimeout(closeLanguageModal, 300);
 }
@@ -2157,6 +2160,8 @@ function initProfileSettings() {
     if (langName) {
       const langSub = document.getElementById('profileLangSub');
       if (langSub) langSub.textContent = `${langName} (Active)`;
+      const welcomeLang = document.getElementById('welcomeActiveLangText');
+      if (welcomeLang) welcomeLang.textContent = langName;
       if (langCode) {
         document.querySelectorAll('.lang-option-row').forEach(row => {
           if (row.getAttribute('data-lang') === langCode) {
