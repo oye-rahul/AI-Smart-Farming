@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "cleanUrls": true,
   "functions": {
     "api/**/*.py": {
       "memory": 1024,
@@ -8,6 +7,10 @@
       "includeFiles": "backend/**"
     }
   },
+  "redirects": [
+    { "source": "/app", "destination": "/frontend/index.html", "permanent": false },
+    { "source": "/app/", "destination": "/frontend/index.html", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/api/health", "destination": "/api/index.py" },
     { "source": "/api/predict-disease", "destination": "/api/index.py" },
@@ -21,13 +24,10 @@
     { "source": "/docs", "destination": "/api/index.py" },
     { "source": "/openapi.json", "destination": "/api/index.py" },
     { "source": "/", "destination": "/frontend/index.html" },
-    { "source": "/index.html", "destination": "/frontend/index.html" },
-    { "source": "/app", "destination": "/frontend/index.html" },
-    { "source": "/app/", "destination": "/frontend/index.html" },
-    { "source": "/app/(.*)", "destination": "/frontend/$1" },
     { "source": "/assets/(.*)", "destination": "/frontend/assets/$1" },
     { "source": "/main.css", "destination": "/frontend/main.css" },
     { "source": "/app.js", "destination": "/frontend/app.js" },
     { "source": "/SFPRODISPLAYMEDIUM.OTF", "destination": "/frontend/SFPRODISPLAYMEDIUM.OTF" }
   ]
 }
+
