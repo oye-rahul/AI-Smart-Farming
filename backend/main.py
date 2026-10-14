@@ -1,5 +1,5 @@
 from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.responses import RedirectResponse, JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -395,9 +395,13 @@ if FRONTEND_DIR:
     # Mount entire frontend under /app
     app.mount("/app", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
 
+@app.get("/app")
+def app_route():
+    return RedirectResponse(url="/app/")
+
 @app.get("/")
 def home():
-    if FRONTEND_DIR:
+    if FRONTEND_DIR and (FRONTEND_DIR / "index.html").exists():
         return RedirectResponse(url="/app/")
     return {
         "status": "online",
