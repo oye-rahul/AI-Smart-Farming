@@ -5,10 +5,7 @@
     "api/**/*.py": {
       "memory": 1024,
       "maxDuration": 30,
-      "includeFiles": [
-        "backend/**",
-        "frontend/**"
-      ]
+      "includeFiles": "backend/**"
     }
   },
   "rewrites": [
